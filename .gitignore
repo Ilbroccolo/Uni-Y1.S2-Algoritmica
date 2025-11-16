@@ -1,0 +1,15 @@
+# File di compilazione LaTeX da ignorare
+*.aux
+*.log
+*.toc
+*.out
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+*.synctex(busy)
+
+# Non salvare i PDF (vengono generati dal codice)
+*.pdf
+
+# File temporanei del sistema operativo
+.DS_Store

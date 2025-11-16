@@ -1,0 +1,125 @@
+% ===================================================================
+% FILE: Precizazione1.tex
+% ===================================================================
+
+\part {Master's Theorem}
+Quando si tratta di risolvere equazioni di ricorrenza \textbf{bilanciate}, è possibile utilizzare il Master's Theorem.
+\begin{equation}
+    T(n)=\begin{cases}
+        \Theta(1) & n \leq k \\
+        a \cdot T(\frac{n}{b}) + f(n) & n >k
+    \end{cases}
+\end{equation}
+L'intuizione consiste nel fare un confronto tra $f(n)$ e $n^{\log_b{a}}$.
+% --- APPLICAZIONE STILE ---
+\begin{definition}[Master Theorem: I Tre Casi]
+Ci sono tre casi possibili:
+\begin{itemize}
+    \item \textbf{Minore}: $f(n) = O(n^{\log_b{a}-\epsilon})$ per qualche costante $\epsilon > 0$.
+    $f(n)$ cresce \textbf{polinomialmente} più lentamente di $n^{\log_b{a}}$.
+    \emph{Soluzione}: $T(n) = \Theta(n^{\log_b{a}})$.
+    
+    \begin{example}
+        Data la seguente equazione di ricorrenza:
+        \begin{equation}
+            T(n) = 9 \cdot T(\frac{n}{3}) + n
+        \end{equation}
+        Abbiamo che $a=9$, $b=3$, $f(n) = n$, $n^{\log_3 9} = n^2$.Possiamo dedurre quindi che, per un $\epsilon = 1$:
+        \begin{equation}
+            f(n)  = n = O(n^{\log_3 9 - \epsilon}) = O(n)
+        \end{equation}
+    \end{example}
+    
+    \item \textbf{Uguale}: $f(n) = \Theta(n^{\log_b{a}}\cdot \ln^k{n})$ per qualche costante $k \geq 0$.
+    $f(n)$ e $n^{\log_b{a}}$ crescono allo stesso modo.
+    \emph{Soluzione}: $T(n) = \Theta(n^{\log_b{a}} \cdot \ln^{k+1}{n})$.
+    \item \textbf{Maggiore}: $f(n) = \Omega(n^{\log_b{a} + \epsilon})$ per qualche costante $\epsilon > 0$.
+    $f(n)$ cresce \textbf{polinomialmente} più in fretta e rispetta la \textbf{condizione di regolarità}: $a \cdot f(\frac{n}{b}) \leq c \cdot f(n)$ per $c<1$.
+    \emph{Soluzione}: $T(n) = \Theta(f(n))$.
+\end{itemize}
+\end{definition}
+
+
+\begin{observation}
+    Il Master's Theorem si può usare solamente quando $f(x)$ cresce \textbf{polinomialmente} più in fretta o lentamente di $n^{\log_b{a}}$.
+\end{observation}
+
+
+\newpage
+\section{Guida Pratica all'Applicazione del Master's Theorem}
+
+Il Teorema Master è uno strumento potente per risolvere equazioni di ricorrenza \textbf{bilanciate}.
+La forma standard è:
+\[
+    T(n) = a \cdot T(\frac{n}{b}) + f(n)
+\]
+
+% --- APPLICAZIONE STILE ---
+\begin{observation}[Logica: "Tradurre" l'Equazione]
+Per usare il teorema, devi prima "tradurre" la tua equazione:
+\begin{itemize}
+    \item \textbf{$a$}: Il numero di \textbf{sotto-problemi} ($a \geq 1$).
+    \item \textbf{$n/b$}: La dimensione di \textbf{ciascun sotto-problema} ($b > 1$).
+    \item \textbf{$f(n)$}: Il costo "extra" per \textbf{dividere} e \textbf{combinare}.
+\end{itemize}
+L'idea centrale è confrontare $f(n)$ con $n^{\log_b{a}}$.
+\end{observation}
+
+\paragraph{Come Applicarlo in un Esercizio: Passo Passo}
+
+\begin{example}[Guida Passo-Passo: $T(n) = 9 \cdot T(\frac{n}{3}) + n$]
+    
+    \subparagraph{Passo 1: Identificare $a$, $b$, e $f(n)$}
+    Dall'equazione $T(n) = 9 \cdot T(\frac{n}{3}) + n$:
+    \begin{itemize}
+        \item $a = 9$ (sotto-problemi)
+        \item $b = 3$ (dimensione 1/3)
+        \item $f(n) = n$ (costo extra)
+    \end{itemize}
+    
+    
+    
+    \subparagraph{Passo 2: Calcolare il "Confine" Ricorsivo}
+    Calcola il valore $n^{\log_b{a}}$.
+    \begin{itemize}
+        \item $n^{\log_3 9} = n^2$
+    \end{itemize}
+    
+    \subparagraph{Passo 3: Confrontare $f(n)$ con $n^{\log_b{a}}$}
+    Confrontiamo $f(n) = n$ con $n^2$.
+    \paragraph{I Tre Casi del Teorema}
+    \subparagraph{Caso 1: $f(n)$ cresce più LENTAMENTE}
+    \begin{itemize}
+        \item \textbf{Logica:} Il costo è dominato dalla ricorsione.
+        \item \textbf{Condizione:} $f(n) = O(n^{\log_b{a}-\epsilon})$ per $\epsilon > 0$.
+        \item \textbf{Soluzione:} $T(n) = \Theta(n^{\log_b{a}})$.
+    \end{itemize}
+    
+    \subparagraph{Verifica del nostro Esempio:}
+    $f(n) = n$ e $n^{\log_b{a}} = n^2$.
+    $f(n) = n$ è $O(n^{2-\epsilon})$ scegliendo $\epsilon=1$.
+    Rientriamo nel \textbf{Caso 1}.
+    \emph{Soluzione:} $T(n) = \Theta(n^2)$.
+    
+    \subparagraph{Caso 2: $f(n)$ cresce alla STESSA VELOCITÀ}
+    \begin{itemize}
+        \item \textbf{Logica:} Costo bilanciato.
+        \item \textbf{Condizione:} $f(n) = \Theta(n^{\log_b{a}}\cdot \ln^k{n})$ per $k \geq 0$.
+        \item \textbf{Soluzione:} $T(n) = \Theta(n^{\log_b{a}} \cdot \ln^{k+1}{n})$.
+    \end{itemize}
+    
+    \subparagraph{Caso 3: $f(n)$ cresce più VELOCEMENTE}
+    \begin{itemize}
+        \item \textbf{Logica:} Costo dominato dal lavoro extra $f(n)$.
+        \item \textbf{Condizione 1:} $f(n) = \Omega(n^{\log_b{a} + \epsilon})$ per $\epsilon > 0$.
+        \item \textbf{Condizione 2 (Regolarità):} $a \cdot f(\frac{n}{b}) \leq c \cdot f(n)$ per $c < 1$.
+        \item \textbf{Soluzione:} $T(n) = \Theta(f(n))$.
+    \end{itemize}
+\end{example}
+
+\begin{observation}[Limiti del Teorema]
+Il Teorema Master \textbf{non si può usare} se $f(n)$ non cresce \emph{polinomialmente} più velocemente o più lentamente di $n^{\log_b{a}}$.
+Ad esempio, se $f(x) = \log{n}$ non potremmo utilizzarlo (perché non è polinomialmente diverso da $n^0=1$).
+\end{observation}
+
+\newpage

@@ -1,0 +1,174 @@
+% ===================================================================
+% PREAMBOLO MIGLIORATO (A.A. 2024-2025)
+% (Versione corretta e unificata)
+% ===================================================================
+\documentclass[12pt, a4paper]{article}
+
+% ---- 1. IMPOSTAZIONI FONDAMENTALI (Lingua, Encoding, Font) ----
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[english, italian]{babel}
+\usepackage{lmodern}
+
+% ---- 2. LAYOUT E GEOMETRIA ----
+\usepackage[a4paper,top=2cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
+
+% ---- 3. PACCHETTI MATEMATICI E SIMBOLI ----
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+
+% ---- 4. GRAFICA, FIGURE E COLORI ----
+\usepackage{graphicx}
+\graphicspath{ {./images/} }
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{wrapfig}
+\usepackage[dvipsnames,svgnames]{xcolor} 
+\usepackage{tikz} %%% AGGIUNTO: Pacchetto fondamentale per i grafici
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, calc, decorations.pathmorphing, snakes} %%% AGGIUNTO: Librerie per i grafici
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, calc, decorations.pathmorphing, snakes}
+
+% ---- 5. LINK E RIFERIMENTI (MIGLIORAMENTO GRAFICO) ----
+\usepackage[pdfusetitle, bookmarksopen=true, bookmarksnumbered=true]{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=RoyalBlue,
+    citecolor=OliveGreen,
+    urlcolor=NavyBlue,
+    filecolor=Magenta,
+    linktoc=all
+}
+
+% ---- 6. HEADER E FOOTER (Stile più leggero) ----
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[LE,RO]{\small A.A 2024-2025}
+\fancyhead[RE,LO]{\small Programmazione ed Algoritmi}
+\fancyfoot[RE,LO]{\small \rightmark} 
+\fancyfoot[LE,RO]{\small \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+\setlength{\headheight}{14pt} %%% AGGIUNTO: Corregge l'avviso "headheight is too small"
+
+% ---- 7. AMBIENTI TEOREMA (STILE ISOLATO) ----
+\usepackage{amsthm}
+\usepackage{mdframed} 
+
+% Definizioni di base
+\theoremstyle{plain}
+\newtheorem{theorem}{Teorema}[section]
+\theoremstyle{definition}
+\newtheorem{definition}{Definizione}[section]
+\newtheorem{example}{Esempio}[section]
+\newtheorem{observation}{Osservazione}[subsection]
+\newtheorem{dimostrazione}{Dimostrazione}[section]
+\newtheorem{note}{Note}[subsection]
+
+% --- STILE BOX ISOLATO ---
+\mdfdefinestyle{boxTeorema}{
+    linewidth=1pt,
+    linecolor=gray!40,
+    backgroundcolor=gray!5,
+    roundcorner=5pt,
+    skipabove=\topsep,
+    skipbelow=\topsep
+}
+\surroundwithmdframed[style=boxTeorema]{definition}
+\surroundwithmdframed[style=boxTeorema]{example}
+\surroundwithmdframed[style=boxTeorema]{observation}
+
+% ---- 8. CODICE (LISTINGS) ----
+\usepackage{listings}
+
+\definecolor{codegray}{rgb}{0.97,0.97,0.97}
+\definecolor{commentpurple}{rgb}{0.5,0,0.5}
+\definecolor{stringred}{rgb}{0.8,0,0}
+\lstset{ 
+    language=javascript, 
+    backgroundcolor=\color{codegray}, 
+    basicstyle=\footnotesize\ttfamily,
+    numbers=left, numberstyle=\tiny\color{gray},
+    frame=tb, framerule=0.4pt,
+    
+}
+
+% ---- 9. ALTRI PACCHETTI UTILI ----
+\usepackage{multicol} 
+\usepackage{soul}     
+\usepackage{enumitem} 
+\usepackage{lipsum}   
+\usepackage{mwe}      
+
+% ---- 10. PACCHETTI E STILE PSEUDOCODICE (Stile Box Automatico) ----
+\usepackage{algorithm}     
+\usepackage{algpseudocode} 
+\usepackage{etoolbox}      
+
+% --- Stile Box (Grayscale) per Algoritmi ---
+% 1. Definiamo uno STILE SPECIFICO 'algoBoxStyle' (scala di grigi).
+\mdfdefinestyle{algoBoxStyle}{
+    linewidth=1pt,
+    linecolor=gray!60,      % Bordo grigio medio
+    backgroundcolor=gray!8, % Sfondo grigio chiarissimo
+    roundcorner=5pt,
+    skipabove=\topsep,
+    skipbelow=\topsep,
+    nobreak=true            % Tenta di non spezzare il blocco tra le pagine
+}
+
+% 2. Applichiamo automaticamente il box a TUTTI gli ambienti 'algorithmic'
+
+\BeforeBeginEnvironment{algorithmic}{%
+  \begin{mdframed}[style=algoBoxStyle]%
+}
+%    Rileva \end{algorithmic} e chiude il box.
+\AfterEndEnvironment{algorithmic}{%
+  \end{mdframed}%
+}
+
+% --- Miglioramento Stile Interno (algpseudocode) ---
+
+% 1. Commenti: grigi, font teletype (tt), corsivo, con simbolo
+\algrenewcommand\algorithmiccomment[1]{\color{gray!80}\ttfamily\itshape\(\triangleright\) #1}
+
+% 2. Numeri di riga: piccoli e grigi, per essere meno invadenti
+\algrenewcommand\alglinenumber[1]{\tiny\color{gray!80}#1:}
+
+% ===================================================================
+% INIZIO DOCUMENTO PRINCIPALE
+% ===================================================================
+\begin{document}
+
+% --- TITOLO E INDICE (Generati dal Main) ---
+\title{\textbf{Appunti di Programmazione ed Algoritmi}}
+\author{Realizzato da: Joseph Zucchelli}
+\date{A.A 2024-2025}
+\maketitle
+\tableofcontents
+
+\newpage
+
+% ---- Inclusione dei capitoli/lezioni ----
+% Se hai spostato i file in una cartella 'lezioni', usa 'lezioni/Lezione1'
+% Altrimenti lascia 'Lezione1' se sono nella stessa cartella.
+
+\input{lezioni/Lezione1}
+\input{lezioni/Precizazione0}
+
+\input{lezioni/Lezione2}
+\input{lezioni/Lezione3}
+\input{lezioni/Lezione4}
+\input{lezioni/Lezione5}
+\input{lezioni/Lezione6}
+\input{lezioni/Lezione7}
+\input{lezioni/Lezione8}
+\input{lezioni/Precizazione1}
+
+
+
+% ... ecc.
+
+\end{document}

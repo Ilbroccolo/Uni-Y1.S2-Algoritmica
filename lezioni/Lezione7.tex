@@ -1,0 +1,174 @@
+% ===================================================================
+% FILE: Lezione7.tex
+% ===================================================================
+
+\part*{Spiegazione della Lezione 23 (12/10/2025)}
+\section*{Introduzione: Relazioni di Ricorrenza}
+
+Questi appunti della Lezione 23 affrontano un argomento cruciale nell'analisi degli algoritmi: le \textbf{Relazioni di Ricorrenza}.
+In breve, queste sono equazioni matematiche usate per descrivere il tempo di esecuzione, $T(n)$, di un algoritmo che chiama sé stesso (cioè un algoritmo ricorsivo).
+
+\subsection*{Tipi di Relazioni di Ricorrenza}
+Gli appunti ne identificano tre tipi principali.
+
+
+\begin{definition}[Relazioni Bilanciate (Divide et Impera)]
+    Sono le più comuni negli algoritmi "Divide et Impera" (come Mergesort).
+    Hanno una forma specifica:
+    \[
+        T(n) = aT\left(\frac{n}{b}\right) + f(n)
+    \]
+    \begin{itemize}
+        \item \textbf{$a$} è il numero di sotto-problemi in cui dividiamo il problema principale.
+        \item \textbf{$n/b$} è la dimensione di ciascun sotto-problema.
+        \item \textbf{$f(n)$} è chiamata la "forzante" e rappresenta il lavoro "extra" fatto per dividere e ricombinare i risultati.
+    \end{itemize}
+\end{definition}
+
+\begin{enumerate}
+    \setcounter{enumi}{1} 
+    \item \textbf{Relazioni di Ordine K:} Queste dipendono dai valori immediatamente precedenti, come $T(n-1)$, $T(n-2)$, ecc. (es. Fibonacci).
+    \item \textbf{Caso Generale:} Una forma più complessa dove i sotto-problemi potrebbero non avere dimensioni uguali.
+\end{enumerate}
+
+\subsection*{Esempi Concreti di Relazioni Bilanciate}
+
+\begin{example}[Mergesort]
+    Per ordinare un array, lo divide in 2 metà ($a=2$), le ordina ricorsivamente (ciascuna di dimensione $n/2$, quindi $b=2$) e poi le fonde (un'operazione che costa $\Theta(n)$).
+    La sua relazione è: $T(n) = 2T\left(\frac{n}{2}\right) + \Theta(n)$.
+\end{example}
+
+\begin{example}[Ricerca Binaria]
+    Per cercare in un array ordinato, fa un confronto, poi chiama ricorsivamente sé stessa su \emph{una} sola metà ($a=1$) di dimensione $n/2$ ($b=2$).
+    Il costo del confronto è costante, $\Theta(1)$. La sua relazione è: $T(n) \le T\left(\frac{n}{2}\right) + \Theta(1)$.
+\end{example}
+
+\subsection*{Come Risolvere Queste Relazioni?}
+Una volta che abbiamo l'equazione, come troviamo la complessità finale?
+Gli appunti elencano quattro metodi:
+
+\begin{enumerate}
+    \item \textbf{Metodo Iterativo}
+    \item \textbf{Metodo di Sostituzione} (Induzione)
+    \item \textbf{Albero di Ricorsione} (Metodo grafico)
+    \item \textbf{Teorema Principale (Master Theorem)}
+\end{enumerate}
+
+
+\section*{Il Cuore della Lezione: Il Master Theorem}
+Il Teorema Principale (Master Theorem) è una "ricetta" che funziona solo per le relazioni bilanciate $T(n) = aT\left(\frac{n}{b}\right) + f(n)$.
+L'idea centrale è \textbf{confrontare due "forze"}:
+\begin{enumerate}
+    \item Il costo della \textbf{ricorsione} (quanti sotto-problemi si creano).
+    \item Il costo del \textbf{lavoro extra} $f(n)$ (la "forzante").
+\end{enumerate}
+
+\begin{definition}[Il Master Theorem]
+    Data $T(n) = aT\left(\frac{n}{b}\right) + f(n)$, si calcola la \textbf{"Funzione Spartiacque"}: \textbf{$n^{\log_b a}$}.
+    Confrontando $f(n)$ con $n^{\log_b a}$ si ricade in uno dei tre casi:
+
+    \begin{itemize}
+        \item \textbf{Caso 1: $f(n)$ polinomialmente minore} ($f(n) = O(n^{\log_b a - \epsilon})$)
+        \begin{itemize}
+            \item \textbf{Logica:} Il costo è dominato dalla ricorsione (dalle foglie).
+            \item \textbf{Soluzione: $T(n) = \Theta(n^{\log_b a})$}.
+        \end{itemize}
+        
+        \item \textbf{Caso 2: $f(n)$ circa uguale} ($f(n) = \Theta(n^{\log_b a} \cdot \log^k n)$)
+        \begin{itemize}
+            \item \textbf{Logica:} Le forze sono bilanciate; il costo è lo stesso ad ogni livello.
+            \item \textbf{Soluzione: $T(n) = \Theta(n^{\log_b a} \cdot \log^{k+1} n)$}. (Se $k=0$, la soluzione è $\Theta(n^{\log_b a} \cdot \log n)$).
+        \end{itemize}
+        
+        \item \textbf{Caso 3: $f(n)$ polinomialmente maggiore} ($f(n) = \Omega(n^{\log_b a + \epsilon})$)
+        \begin{itemize}
+            \item \textbf{Logica:} Il costo è dominato dal lavoro extra $f(n)$ (il collo di bottiglia).
+            \item \textbf{Controllo:} Richiede la "Condizione di Regolarità" ($a f(n/b) \le c f(n)$).
+            \item \textbf{Soluzione: $T(n) = \Theta(f(n))$}.
+        \end{itemize}
+    \end{itemize}
+\end{definition}
+
+
+\subsection*{Applicazioni del Master Theorem}
+
+\begin{example}[Mergesort]
+    $T(n) = 2T\left(\frac{n}{2}\right) + \Theta(n)$
+    \begin{itemize}
+        \item $a=2, b=2$. Spartiacque: $n^{\log_2 2} = n$.
+        \item Confronto: $f(n) = \Theta(n)$ è \emph{uguale} allo spartiacque (Caso 2 con $k=0$).
+        \item \textbf{Soluzione: $\Theta(n \log n)$}.
+    \end{itemize}
+\end{example}
+
+\begin{example}[Ricerca Binaria]
+    $T(n) = T\left(\frac{n}{2}\right) + \Theta(1)$
+    \begin{itemize}
+        \item $a=1, b=2$. Spartiacque: $n^{\log_2 1} = n^0 = 1$.
+        \item Confronto: $f(n) = \Theta(1)$ è \emph{uguale} allo spartiacque (Caso 2 con $k=0$).
+        \item \textbf{Soluzione: $\Theta(1 \cdot \log n) = \Theta(\log n)$}.
+    \end{itemize}
+\end{example}
+
+\begin{example}[Esempio (Min/Max)]
+    $T(n) = 2T\left(\frac{n}{2}\right) + \Theta(1)$
+    \begin{itemize}
+        \item $a=2, b=2$. Spartiacque: $n^{\log_2 2} = n$.
+        \item Confronto: $f(n) = \Theta(1)$ è \emph{polinomialmente minore} di $n$ (Caso 1).
+        \item \textbf{Soluzione: $\Theta(n)$}.
+    \end{itemize}
+\end{example}
+
+\begin{example}[Esempio 1 (dal testo)]
+    $T(n) = 9T\left(\frac{n}{3}\right) + n$
+    \begin{itemize}
+        \item $a=9, b=3$. Spartiacque: $n^{\log_3 9} = n^2$.
+        \item Confronto: $f(n) = n$ è \emph{polinomialmente minore} di $n^2$ (Caso 1).
+        \item \textbf{Soluzione: $\Theta(n^2)$}.
+    \end{itemize}
+\end{example}
+
+\begin{example}[Esempio 2 (dal testo)]
+    $T(n) \le T\left(\frac{2n}{3}\right) + 1$
+    \begin{itemize}
+        \item $a=1, b=3/2$. Spartiacque: $n^{\log_{3/2} 1} = n^0 = 1$.
+        \item Confronto: $f(n) = 1$ è \emph{uguale} allo spartiacque (Caso 2 con $k=0$).
+        \item \textbf{Soluzione: $\Theta(\log n)$}.
+    \end{itemize}
+\end{example}
+
+\begin{example}[Esempio 3 (dal testo)]
+    $T(n) = 3T\left(\frac{n}{4}\right) + n \log n$
+    \begin{itemize}
+        \item $a=3, b=4$. Spartiacque: $n^{\log_4 3} \approx n^{0.792}$.
+        \item Confronto: $f(n) = n \log n$ è \emph{polinomialmente maggiore} (Caso 3).
+        \item (Si verifica la condizione di regolarità).
+        \item \textbf{Soluzione: $\Theta(f(n)) = \Theta(n \log n)$}.
+    \end{itemize}
+\end{example}
+
+
+
+\begin{observation}[Riepilogo della Lezione]
+    Gli appunti della Lezione 23 introducono le \textbf{Relazioni di Ricorrenza} per analizzare $T(n)$ degli algoritmi ricorsivi. Si concentrano sulle \textbf{Relazioni Bilanciate} ($T(n) = aT(n/b) + f(n)$). Dopo aver elencato quattro metodi di risoluzione, si focalizzano sul \textbf{Master Theorem}.
+    
+    Il teorema confronta $f(n)$ con lo "spartiacque" $n^{\log_b a}$ e definisce tre casi:
+    \begin{enumerate}
+        \item \textbf{Caso 1 ($f(n)$ minore):} Soluzione: $\Theta(n^{\log_b a})$.
+        \item \textbf{Caso 2 ($f(n)$ uguale):} Soluzione: $\Theta(n^{\log_b a} \cdot \log n)$ (o $\log^{k+1} n$).
+        \item \textbf{Caso 3 ($f(n)$ maggiore):} Soluzione: $\Theta(f(n))$ (con C.R.).
+    \end{enumerate}
+\end{observation}
+
+
+\section*{ASA (Esercizi per casa)}
+
+\begin{example}[Esercizi ASA]
+    Risolvere le seguenti relazioni di ricorrenza:
+    \begin{enumerate}
+        \item $T(n) = 3T(\frac{n}{2}) + n^2$
+        \item $T(n) = 3T(\frac{n}{4}) + \frac{n}{5} \log n$
+    \end{enumerate}
+\end{example}
+
+\newpage

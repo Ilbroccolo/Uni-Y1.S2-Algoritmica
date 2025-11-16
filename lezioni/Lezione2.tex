@@ -1,0 +1,170 @@
+% ===================================================================
+% FILE: Lezione3.tex
+% ===================================================================
+
+\part{Lezione 13 (16/10/2025) }
+
+\section{Selection Sort (Analisi) }
+Pseudocodice (identico a Lez12) .
+\begin{algorithmic}[1]
+\Procedure{SelectionSort}{A} 
+    \For{$i = 1 \to n-1$} 
+        \State $min = i$
+        \For{$j = i+1 \to n$} \Comment{Il loop interno fa $(n-i)$ iterazioni }
+            \If{$A[j] < A[min]$} 
+                \State $min = j$ 
+            \EndIf
+        \EndFor
+        \State \Call{Swap}{A[i], A[min]} [cite: 130]
+    \EndFor
+\EndProcedure
+\end{algorithmic}
+
+\subsection{Analisi Complessità (Numero Confronti) }
+Il costo è dominato dal numero di confronti ($A[j] < A[min]$). [cite: 131]
+Il ciclo esterno `for i` esegue $n-1$ iterazioni . [cite: 132]
+Il ciclo interno `for j` esegue $n-i$ iterazioni per ogni $i$ .
+Il numero totale di confronti $C(n)$ è:
+\[ C(n) = \sum_{i=1}^{n-1} (n-i) \]
+\[ C(n) = (n-1) + (n-2) + \dots + 2 + 1 \]
+Questa è la somma dei primi $n-1$ numeri naturali . [cite: 133]
+\[ C(n) = \frac{(n-1)n}{2} = \frac{n^2}{2} - \frac{n}{2} \]
+
+La complessità è \textbf{Quadratica} , $T(n) \in \Theta(n^2)$. [cite: 134]
+\begin{observation}
+A differenza di Insertion Sort, la complessità di Selection Sort è $\Theta(n^2)$ \emph{sempre}, sia nel caso ottimo, medio e pessimo, perché i cicli `for` vengono eseguiti sempre lo stesso numero di volte. [cite: 135]
+\end{observation}
+
+\subsection{Invariante di Ciclo }
+
+\begin{definition}[Invariante: Selection Sort]
+\textbf{Invariante:} All'inizio dell'iterazione $i$-esima del ciclo FOR esterno (per $i=1..n-1$) :
+\begin{enumerate}
+    \item Il sottoarray $A[1..i-1]$ contiene gli $i-1$ elementi più piccoli di A . [cite: 136]
+    \item Il sottoarray $A[1..i-1]$ è ordinato . [cite: 137]
+\end{enumerate}
+(Si dimostra per induzione ).
+\end{definition}
+
+\section{Esercizi}
+
+
+\begin{example}[Esercizio 1: Cerca A[i] = i (Array non ordinato)]
+\begin{itemize}
+    \item \textbf{Input}: Array $A[1..n]$ di interi . [cite: 138]
+    \item \textbf{Output}: TRUE se $\exists i$ t.c. $A[i] = i$ , FALSE altrimenti . [cite: 139]
+\end{itemize}
+
+\begin{algorithmic}[1]
+\Procedure{Cerca-Indice}{A, n}
+    \State $i = 1$
+    \State $trovato = \text{false}$ 
+    \While{(\textbf{not} $trovato$) \textbf{and} ($i \le n$)} 
+        \If{$A[i] == i$} 
+            \State $trovato = \text{true}$ 
+        \Else
+            \State $i = i + 1$
+        \EndIf
+    \EndWhile
+    \State \Return $trovato$ 
+\EndProcedure
+\end{algorithmic}
+\textbf{Analisi:}
+\begin{itemize}
+    \item Caso Ottimo: $A[1]=1$. $T(n) \in \Theta(1)$ . [cite: 140]
+    \item Caso Pessimo: Nessun $i$ t.c. $A[i]=i$. $T(n) \in \Theta(n)$ (Lineare) . [cite: 141]
+\end{itemize}
+\end{example}
+
+
+\begin{example}[Esercizio 2: Cerca A[i] = i (Array ordinato)]
+\begin{itemize}
+    \item \textbf{Input}: Array $A[1..n]$ di interi, \textbf{ordinato} . [cite: 142]
+    \item \textbf{Output}: TRUE se $\exists i$ t.c. $A[i] = i$ . [cite: 142]
+\end{itemize}
+Si può usare una modifica della Ricerca Binaria . [cite: 143]
+Si calcola $q = \lfloor (p+r)/2 \rfloor$ . [cite: 144]
+\begin{itemize}
+    \item Se $A[q] == q$: Trovato.
+    \item Se $A[q] > q$: L'elemento $i$ (se esiste) non può essere a destra di $q$. Si cerca a sinistra ($r=q-1$) . [cite: 145]
+    \item Se $A[q] < q$: L'elemento $i$ (se esiste) non può essere a sinistra di $q$. Si cerca a destra ($p=q+1$) . [cite: 146]
+\end{itemize}
+\textbf{Analisi}: $T(n) \in O(\log n)$ .
+\end{example}
+
+
+\begin{example}[Esercizio 3: Cerca A[i] = i (Ordinato, positivi, distinti)]
+\begin{itemize}
+    \item \textbf{Input}: Array $A[1..n]$ ordinato, di interi \textbf{positivi} e \textbf{distinti} . [cite: 148]
+    \item \textbf{Output}: TRUE se $\exists i$ t.c. $A[i] = i$ . [cite: 148]
+\end{itemize}
+Se $A[1] = 1$: Ritorna TRUE. [cite: 149]
+Se $A[1] > 1$: (cioè $A[1] \ge 2$). Allora $A[i] \ge A[1] + (i-1) \ge 2 + i - 1 = i+1$. [cite: 150]
+Quindi $A[i] > i$ per ogni $i$. Ritorna FALSE. [cite: 150]
+L'algoritmo corretto è:
+\begin{algorithmic}[1]
+\Procedure{Cerca-i-Positivi}{A} 
+    \State \Return $(A[1] == 1)$ 
+\EndProcedure
+\end{algorithmic}
+\textbf{Analisi}: $T(n) \in \Theta(1)$ (Costante) . [cite: 151]
+\end{example}
+
+\begin{example}[Esercizio 4: Somma K]
+\begin{itemize}
+    \item \textbf{Input}: Array $A[1..n]$ di interi, $k$ intero . [cite: 152]
+    \item \textbf{Output}: TRUE se $\exists i, j$ t.c. $A[i] + A[j] = k$ . [cite: 153]
+\end{itemize}
+\textbf{Soluzione 1 (Brute force):}
+\begin{algorithmic}[1]
+\For{$i = 1 \to n-1$} 
+    \For{$j = i+1 \to n$} 
+        \If{$A[i] + A[j] == k$} 
+            \State \Return $\text{true}$
+        \EndIf
+    \EndFor
+\EndFor
+\State \Return $\text{false}$
+\end{algorithmic}
+\textbf{Analisi 1}: Caso pessimo $\Theta(n^2)$ (Quadratico) . [cite: 154]
+\textbf{Soluzione 2 (se $A$ è ordinato ):}
+Si usano due indici, $L=1$ e $R=n$. [cite: 155]
+\begin{algorithmic}[1]
+\State $L=1$, $R=n$
+\While{$L < R$}
+    \State $somma = A[L] + A[R]$
+    \If{$somma == k$}
+        \State \Return $\text{true}$
+    \ElsIf{$somma < k$}
+        \State $L = L + 1$ \Comment{Serve una somma più grande }
+    \Else
+        \State $R = R - 1$ \Comment{Serve una somma più piccola}
+    \EndIf
+\EndWhile
+\State \Return $\text{false}$
+\end{algorithmic}
+\textbf{Analisi 2}: $T(n) \in \Theta(n)$ (Lineare) . [cite: 156]
+\end{example}
+
+
+\begin{example}[Esercizio 5: Array Palindromo]
+\begin{itemize}
+    \item \textbf{Input}: Array $A[1..n]$ . [cite: 157]
+    \item \textbf{Output}: TRUE se $A$ è palindromo , FALSE altrimenti . (E.g., `[3, 7, 21, 40, 21, 7, 3]` ). [cite: 158]
+\end{itemize}
+\textbf{Soluzione (con due indici):}
+\begin{algorithmic}[1]
+\State $i=1$, $j=n$
+\While{$i < j$}
+    \If{$A[i] \neq A[j]$}
+        \State \Return $\text{false}$
+    \EndIf
+    \State $i = i + 1$
+    \State $j = j - 1$
+\EndWhile
+\State \Return $\text{true}$
+\end{algorithmic}
+\textbf{Analisi}: $T(n) \in \Theta(n)$. [cite: 159]
+\end{example}
+
+\newpage

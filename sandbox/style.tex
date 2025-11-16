@@ -1,0 +1,358 @@
+% ===================================================================
+% PREAMBOLO MIGLIORATO (A.A. 2024-2025)
+% (Come da te fornito)
+% ===================================================================
+\documentclass[12pt, a4paper]{article}
+
+% ---- 1. IMPOSTAZIONI FONDAMENTALI (Lingua, Encoding, Font) ----
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[english, italian]{babel}
+\usepackage{lmodern}
+
+% ---- 2. LAYOUT E GEOMETRIA ----
+\usepackage[a4paper,top=2cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
+
+% ---- 3. PACCHETTI MATEMATICI E SIMBOLI ----
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+
+% ---- 4. GRAFICA, FIGURE E COLORI ----
+\usepackage{graphicx}
+\graphicspath{ {./images/} } % NOTA: Le immagini 'example-image-*' sono fornite da 'mwe'
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{wrapfig}
+\usepackage[dvipsnames]{xcolor}
+
+% ---- 5. LINK E RIFERIMENTI (MIGLIORAMENTO GRAFICO) ----
+\usepackage[pdfusetitle, bookmarksopen=true, bookmarksnumbered=true]{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=RoyalBlue,
+    citecolor=OliveGreen,
+    urlcolor=NavyBlue,
+    filecolor=Magenta,
+    linktoc=all
+}
+
+% ---- 6. HEADER E FOOTER (Stile più leggero) ----
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[LE,RO]{\small A.A 2024-2025}
+\fancyhead[RE,LO]{\small Programmazione ed Algoritmi}
+\fancyfoot[RE,LO]{\small \rightmark} % \rightmark = Sezione corrente
+\fancyfoot[LE,RO]{\small \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+% ---- 7. AMBIENTI TEOREMA (MIGLIORAMENTO GRAFICO) ----
+\usepackage{amsthm}
+\usepackage{mdframed} % Per creare box attorno agli ambienti
+
+% Definizioni di base
+\theoremstyle{plain}
+\newtheorem{theorem}{Teorema}[section]
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definizione}[section]
+\newtheorem{example}{Esempio}[section]
+\newtheorem{observation}{Osservazione}[subsection]
+\newtheorem{dimostrazione}{Dimostrazione}[section]
+\newtheorem{note}{Note}[subsection]
+
+% Applichiamo uno stile 'boxed'
+\mdfsetup{
+    linewidth=1pt,
+    linecolor=gray!40,
+    backgroundcolor=gray!5,
+    roundcorner=5pt,
+    skipabove=\topsep,
+    skipbelow=\topsep
+}
+\surroundwithmdframed[style=mddefault]{definition}
+\surroundwithmdframed[style=mddefault]{example}
+\surroundwithmdframed[style=mddefault]{observation}
+
+% ---- 8. CODICE (MIGLIORAMENTO GRAFICO) ----
+\usepackage{listings}
+
+% Definiamo colori
+\definecolor{codegray}{rgb}{0.97,0.97,0.97}
+\definecolor{commentpurple}{rgb}{0.5,0,0.5}
+\definecolor{stringred}{rgb}{0.8,0,0}
+
+\lstdefinelanguage{JavaScript}{
+  keywords={typeof, new, true, false, catch, function, return, null, switch, var, let, ref, if, in, while, do, else, case, break},
+  keywordstyle=\color{RoyalBlue}\bfseries,
+  ndkeywords={class, export, boolean, throw, implements, import, this, print},
+  ndkeywordstyle=\color{OliveGreen}\bfseries,
+  identifierstyle=\color{black},
+  sensitive=false,
+  comment=[l]{//},
+  morecomment=[s]{/*}{*/},
+  commentstyle=\color{commentpurple}\ttfamily,
+  stringstyle=\color{stringred}\ttfamily,
+  morestring=[b]',
+  morestring=[b]"
+}
+
+\lstset{
+    language=JavaScript,
+    backgroundcolor=\color{codegray},
+    extendedchars=true,
+    basicstyle=\footnotesize\ttfamily,
+    showstringspaces=false,
+    showspaces=false,
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    numbersep=5pt,
+    tabsize=2,
+    breaklines=true,
+    showtabs=false,
+    captionpos=b,
+    frame=tb,
+    framesep=3pt,
+    framerule=0.4pt,
+    aboveskip=1.5em,
+    belowskip=1.5em
+}
+
+
+
+
+
+
+
+
+% ---- 7. AMBIENTI TEOREMA (MIGLIORAMENTO GRAFICO) ----
+\usepackage{amsthm}
+\usepackage{mdframed} % Per creare box attorno agli ambienti
+
+% Definizioni di base (come le avevi)
+\theoremstyle{plain}
+\newtheorem{theorem}{Teorema}[section]
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definizione}[section]
+\newtheorem{example}{Esempio}[section]
+\newtheorem{observation}{Osservazione}[subsection]
+\newtheorem{dimostrazione}{Dimostrazione}[section]
+\newtheorem{note}{Note}[subsection]
+
+% --- STILE BOX ISOLATO ---
+% 1. Definiamo uno STILE SPECIFICO chiamato 'boxTeorema'.
+%    Queste impostazioni (sfondo, bordi, etc.) sono ora
+%    isolate e valgono SOLO per questo stile.
+\mdfdefinestyle{boxTeorema}{
+    linewidth=1pt,
+    linecolor=gray!40,
+    backgroundcolor=gray!5,
+    roundcorner=5pt,
+    skipabove=\topsep,
+    skipbelow=\topsep
+}
+
+% 2. Applichiamo QUELLO stile specifico (style=boxTeorema)
+%    invece dello stile di default.
+\surroundwithmdframed[style=boxTeorema]{definition}
+\surroundwithmdframed[style=boxTeorema]{example}
+\surroundwithmdframed[style=boxTeorema]{observation}
+
+
+
+
+% ---- 9. ALTRI PACCHETTI UTILI ----
+\usepackage{multicol}
+\usepackage{soul}
+\usepackage{enumitem}
+\usepackage{lipsum} % <-- AGGIUNTO per testo fittizio
+\usepackage{mwe}    % <-- AGGIUNTO per immagini di esempio (es. example-image-a)
+
+% ---- TITOLO E AUTORE ----
+\title{\textbf{Foglio di Stile (Sarto) \\ Programmazione ed Algoritmi}}
+\author{Realizzato da: Joseph Zucchelli}
+\date{A.A 2024-2025}
+
+% ===================================================================
+% INIZIO DOCUMENTO DI ESEMPIO
+% ===================================================================
+\begin{document}
+
+\maketitle
+\newpage
+\tableofcontents
+
+\newpage
+
+% ===================================================================
+% ESEMPI DI STILE
+% ===================================================================
+
+\section{Stile dei Titoli e Testo}
+\label{sec:testo}
+Questa sezione mostra lo stile del testo base (font, dimensione 12pt) e la gerarchia dei titoli. L'header e il footer (definiti con `fancyhdr`) sono visibili su questa pagina.
+
+\lipsum[1]
+
+\subsection{Sottosezione di Esempio}
+Questo è un titolo di secondo livello. \lipsum[2]
+
+\subsubsection{Sottoparagrafo}
+Questo è un titolo di terzo livello. \lipsum[3]
+
+\paragraph{Paragrafo}
+Questo è un titolo di quarto livello, solitamente inline. \lipsum[4]
+
+\section{Stili del Testo, Link e Liste}
+\lipsum[5]
+
+\subsection{Evidenziazione e Link}
+Questo testo mostra lo stile \textbf{grassetto}, \textit{corsivo} e \hl{evidenziato (con soul)}.
+
+Qui ci sono i link (come definiti da \texttt{hypersetup}):
+\begin{itemize}
+    \item \textbf{Link interno (RoyalBlue):} Vedi la Sezione \ref{sec:testo}.
+    \item \textbf{Link web (NavyBlue):} Visita \url{https://www.google.com}.
+    \item \textbf{Citazione (OliveGreen):} Secondo \cite{esempio}.
+\end{itemize}
+
+\subsection{Liste e Colonne}
+Questo è un esempio di lista non ordinata (gestita da \texttt{enumitem}):
+\begin{itemize}
+    \item Primo elemento.
+    \item Secondo elemento con sotto-lista:
+    \begin{itemize}
+        \item Sotto-elemento A.
+        \item Sotto-elemento B.
+    \end{itemize}
+\end{itemize}
+
+Questo testo è formattato su due colonne utilizzando \texttt{multicol}:
+\begin{multicols}{2}
+\lipsum[6]
+\end{multicols}
+
+
+\section{Ambienti Teorema e Box}
+Questa sezione mostra gli ambienti \texttt{amsthm} personalizzati.
+
+\subsection{Ambienti con Box (mdframed)}
+Gli ambienti seguenti sono stati incorniciati utilizzando \texttt{mdframed}.
+
+\begin{definition}[Concetto Chiave]
+Questa è una definizione. Ha uno sfondo grigio chiaro, bordi arrotondati e una linea grigia sottile.
+\end{definition}
+
+\lipsum[7]
+
+\begin{example}[Calcolo]
+Questo è un esempio. Usa lo stesso stile della definizione per coerenza visiva.
+\end{example}
+
+\begin{observation}
+Questa è un'osservazione. Anch'essa è incorniciata per metterla in evidenza.
+\end{observation}
+
+\subsection{Ambienti Standard}
+Gli ambienti seguenti usano lo stile \texttt{amsthm} di base.
+
+\begin{theorem}[di Pitagora]
+In un triangolo rettangolo, $a^2 + b^2 = c^2$.
+\end{theorem}
+
+\begin{dimostrazione}
+Questa è una dimostrazione (definita con \texttt{theoremstyle\{definition\}}), quindi appare con testo dritto e titolo in grassetto, ma senza box.
+\lipsum[8]
+\end{em} % \end{dimostrazione} non è un ambiente standard, ma \em per \it
+% Nota: Se 'dimostrazione' dovesse avere un \qed (quadratino),
+% andrebbe usato \begin{proof}...\end{proof} da amsthm e
+% rinominato con \renewcommand{\proofname}{Dimostrazione}
+\begin{proof}[Dimostrazione (con amsthm)]
+    Questa è una dimostrazione che usa l'ambiente \texttt{proof} standard di \texttt{amsthm}, che include automaticamente il simbolo Q.E.D.
+\end{proof}
+
+
+\section{Codice (Listings)}
+Questo è un blocco di codice formattato con \texttt{listings} secondo le tue specifiche (linguaggio JavaScript, colori personalizzati, sfondo grigio, numeri di riga e frame superiore/inferiore).
+
+\begin{lstlisting}[language=JavaScript, caption={Esempio di codice JavaScript formattato.}, label={lst:js}]
+// Questo è un commento
+function saluta(nome) {
+  var saluto = "Ciao, " + nome;
+  let test = true;
+  
+  if (test) {
+    console.log(saluto); // Stampa su console
+  }
+  
+  /* Commento
+     multilinea */
+  return saluto;
+}
+
+var utente = 'Mondo';
+saluta(utente);
+\end{lstlisting}
+
+\lipsum[9]
+
+\section{Grafica e Figure}
+\label{sec:figure}
+Qui mostriamo come appaiono le figure, le didascalie e il testo a capo. Le immagini usate sono degli esempi forniti dal pacchetto \texttt{mwe}.
+
+\begin{wrapfigure}{r}{0.4\textwidth}
+    \vspace{-15pt} % Aggiustamento per allineare meglio
+    \centering
+    \includegraphics[width=\linewidth]{example-image-b}
+    \caption{Una figura con testo a capo (\texttt{wrapfig}).}
+    \label{fig:wrap}
+\end{wrapfigure}
+
+Questo è un testo che scorre attorno a un'immagine posizionata sulla destra. Stiamo usando il pacchetto \texttt{wrapfig} per ottenere questo effetto. \lipsum[10]
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.6\textwidth]{example-image-a}
+    \caption{Una figura standard centrata.}
+    \label{fig:standard}
+\end{figure}
+
+Infine, un esempio di sottofigure affiancate utilizzando \texttt{subcaption}.
+
+\begin{figure}[h!]
+    \centering
+    \begin{subfigure}{0.45\textwidth}
+        \includegraphics[width=\linewidth]{example-image-c}
+        \caption{Prima sottofigura.}
+        \label{fig:sub1}
+    \end{subfigure}
+    \hfill % Spazio orizzontale flessibile
+    \begin{subfigure}{0.45\textwidth}
+        \includegraphics[width=\linewidth]{example-image-a}
+        \caption{Seconda sottofigura.}
+        \label{fig:sub2}
+    \end{subfigure}
+    \caption{Una figura composta da due sottofigure.}
+    \label{fig:subs}
+\end{figure}
+
+\section{Elementi Matematici}
+Testo con elementi matematici inline, come $E = mc^2$, utilizzando l'ambiente standard. Simboli da \texttt{amssymb} e \texttt{amsfonts}: $\mathbb{R}$, $\mathcal{P}(A)$, $\forall x \in \mathbb{N}$.
+
+Equazioni complesse vengono gestite con \texttt{amsmath}:
+\begin{align}
+    \int_0^\infty e^{-x^2} dx &= \frac{\sqrt{\pi}}{2} \label{eq:1} \\
+    \sum_{n=1}^\infty \frac{1}{n^2} &= \frac{\pi^2}{6} \label{eq:2}
+\end{align}
+
+
+% ---- Bibliografia fittizia per l'esempio \cite ----
+\begin{thebibliography}{9}
+    \bibitem{esempio}
+    A. Autore, \textit{Un libro di esempio per la citazione}, Casa Editrice, 2024.
+\end{thebibliography}
+
+\end{document}

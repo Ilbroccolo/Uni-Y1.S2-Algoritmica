@@ -1,0 +1,645 @@
+\documentclass[a4paper, 12pt]{article}
+
+% Pacchetti standard
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[italian]{babel}
+\usepackage{geometry}
+\geometry{a4paper, margin=1in}
+\usepackage{framed} % Per il box Esercizio
+
+% Pacchetti matematici
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{mathtools} % Per 'cases*'
+\usepackage{graphicx} % Per includere immagini (necessario per l'albero)
+
+% Definizioni di Teoremi e Ambienti
+\theoremstyle{definition}
+\newtheorem*{definition}{Definizione}
+\newtheorem*{sol}{Soluzione}
+\newtheorem*{ragionamento}{Ragionamento}
+
+% Stile per le dimostrazioni
+\renewcommand{\qedsymbol}{$\blacksquare$}
+
+% Abbreviazioni comode per le funzioni
+\DeclareMathOperator{\len}{len}
+\DeclareMathOperator{\app}{app}
+\DeclareMathOperator{\rev}{rev}
+\DeclareMathOperator{\Max}{Max}
+\DeclareMathOperator{\Min}{Min}
+\DeclareMathOperator{\Ordinato}{Ordinato}
+\DeclareMathOperator{\Ins}{Ins}
+\DeclareMathOperator{\add}{add}
+\DeclareMathOperator{\mul}{mul}
+\DeclareMathOperator{\val}{val}
+\DeclareMathOperator{\expo}{exp} 
+
+% Abbreviazioni per i tipi
+\newcommand{\LA}{\text{LA}}
+\newcommand{\BTN}{\text{BTN}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\NTerm}{\text{NTerm}}
+
+\title{Fondamenti di Informatica - Esercitazione 4}
+\author{Fabiola Arduini e Joseph Zucchelli}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section*{ESERCIZIO 1 (Liste)}
+
+\begin{framed}
+\textit{Sia $A$ un insieme e $LA$ l'insieme delle liste di elementi di $A$, e siano $\app$, $\len$ e $\rev$ le funzioni su liste definite [...] Dimostrare per induzione strutturale le seguenti uguaglianze:}
+\begin{enumerate}
+    \item \textit{Per ogni $lst_1, lst_2 \in \LA$, $\len(\app(lst_1, lst_2)) = \len(lst_1) + \len(lst_2)$.}
+    \item \textit{Per ogni $lst \in \LA$, $\len(\rev(lst)) = \len(lst)$.}
+\end{enumerate}
+\end{framed}
+
+\begin{ragionamento}
+In questo esercizio, utilizziamo due proprietà delle liste ($\LA$) usando l'induzione strutturale.
+\begin{itemize}
+    \item \textbf{Proprietà 1:} La lunghezza di due liste concatenate (`app`) è semplicemente la somma delle loro lunghezze individuali.
+    \item \textbf{Proprietà 2:} Invertire (`rev`) una lista non ne altera la lunghezza.
+\end{itemize}
+\end{ragionamento}
+
+\subsection*{1.1: \texttt{len(app)}}
+Per ogni $lst_1, lst_2 \in \LA$, $\len(\app(lst_1, lst_2)) = \len(lst_1) + \len(lst_2)$.
+
+\begin{proof}[Dimostrazione (per induzione su $lst_1$)]
+\
+\\
+\textbf{C.B. (Caso Base): $lst_1 = []$}
+\begin{align*}
+\len(\app([], lst_2)) &= \len(lst_2) && \text{(Def. C.B. app)} \\
+&= \len(lst_2) + 0 && \text{(Calcolo)} \\
+&= \len(lst_2) + \len([]) && \text{(Def. C.B. len)}
+\end{align*}
+\
+\\
+\textbf{C.I. (Caso Induttivo): $lst_1 = (a:lst'_1)$}
+\begin{align*}
+\len(\app(a:lst'_1, lst_2)) &= \len(a: \app(lst'_1, lst_2)) && \text{(Def. C.I. app)} \\
+&= \len(\app(lst'_1, lst_2)) + 1 && \text{(Def. C.I. len)} \\
+&= (\len(lst'_1) + \len(lst_2)) + 1 && \text{(Ipotesi Induttiva)} \\
+&= (\len(lst'_1) + 1) + \len(lst_2) && \text{(Prop. Associativa)} \\
+&= \len(a:lst'_1) + \len(lst_2) && \text{(Def. C.I. len)}
+\end{align*}
+\end{proof}
+
+\subsection*{1.2: \texttt{len(rev)}}
+Per ogni $lst \in \LA$, $\len(\rev(lst)) = \len(lst)$.
+
+\begin{proof}[Dimostrazione (per induzione su $lst$)]
+\
+\\
+\textbf{C.B. (Caso Base): $lst = []$}
+\begin{align*}
+\len(\rev([])) &= \len([]) && \text{(Def. C.B. rev)}
+\end{align*}
+\
+\\
+\textbf{C.I. (Caso Induttivo): $lst = (a:lst')$}
+\begin{align*}
+\len(\rev(a:lst')) &= \len(\app(\rev(lst'), [a])) && \text{(Def. C.I. rev)} \\
+&= \len(\rev(lst')) + \len([a]) && \text{(Da Esercizio 1.1)} \\
+&= \len(lst') + \len([a]) && \text{(Ipotesi Induttiva)} \\
+&= \len(lst') + 1 && \text{(Calcolo, $\len([a])=1$)} \\
+&= \len(a:lst') && \text{(Def. C.I. len)}
+\end{align*}
+\end{proof}
+
+\newpage
+\section*{ESERCIZIO 2 (Funzioni \texttt{Max} e \texttt{Min})}
+
+\begin{framed}
+\textit{Sia $\N \cup \{\infty\}$ l'insieme dei numeri naturali esteso con un elemento $\infty$ che, intuitivamente, rappresenta un'entità più grande di tutti i naturali [...] Si consideri l'insieme $\BTN$ degli alberi binari etichettati con elementi di $\N$.}
+\begin{enumerate}
+    \item \textit{Definire per induzione su $BTN$ la funzione $\Max: \BTN \to \N \cup \{0\}$ che restituisce l'etichetta di valore massimo tra tutte quelle che appaiono in un albero. (Suggerimento: $\Max(\lambda) = 0$, dove 0 come al solito è l'albero vuoto).}
+    \item \textit{Definire per induzione su $BTN$ la funzione $\Min: \BTN \to \N \cup \{\infty\}$ che restituisce l'etichetta di valore minimo tra tutte quelle che appaiono in un albero. (Suggerimento: $\Min(\lambda) = \infty$, dove $\lambda$ è l'albero vuoto).}
+\end{enumerate}
+\textit{Ad esempio sia $t_1$ l'albero in Figura 1.1: $\Min(t_1) = 1$, $\Max(t_1) = 15$.}
+\end{framed}
+
+\
+\begin{center}
+% Questo comando include l'immagine. 
+
+\includegraphics[width=1.0\textwidth]{coso1.png}
+\end{center}
+\
+
+\begin{ragionamento}
+Qui, definiamo due funzioni ricorsive sull'insieme $\BTN$.
+\begin{itemize}
+    \item \textbf{Max:} Restituisce l'etichetta di valore massimo in un albero di tipo $\BTN$. Per l'elemento vuoto $\lambda \in \BTN$, usiamo 0 come elemento neutro per il $\max$.
+    \item \textbf{Min:} Restituisce l'etichetta di valore minimo in un albero di tipo $\BTN$. Per l'elemento vuoto $\lambda \in \BTN$, usiamo $\infty$ come elemento neutro per il $\min$.
+\end{itemize}
+\end{ragionamento}
+
+\subsection*{2.1: Definizione \texttt{Max}}
+Definire per induzione su $\BTN$ la funzione $\Max: \BTN \to \N \cup \{0\}$.
+\begin{sol}
+\begin{itemize}
+    \item \textbf{C.B.:} $\Max(\lambda) = 0$
+    \item \textbf{C.I.:} $\Max(N(t_1, n, t_2)) = \max(n, \Max(t_1), \Max(t_2))$
+\end{itemize}
+\end{sol}
+
+
+\subsection*{2.2: Definizione \texttt{Min}}
+Definire per induzione su $\BTN$ la funzione $\Min: \BTN \to \N \cup \{\infty\}$.
+\begin{sol}
+\begin{itemize}
+    \item \textbf{C.B.:} $\Min(\lambda) = \infty$
+    \item \textbf{C.I.:} $\Min(N(t_1, n, t_2)) = \min(n, \Min(t_1), \Min(t_2))$
+\end{itemize}
+\end{sol}
+
+\begin{ragionamento}[Traccia di calcolo induttivo per $t_1$]
+Applichiamo le definizioni induttive per calcolare $\Max(t_1)$ e $\Min(t_1)$, come richiesto dall'esempio del testo.
+\\
+Sia $t_1 = N(t_{L1}, 8, t_{R1})$, dove $t_1 \in \BTN$:
+\begin{itemize}
+    \item $t_{L1} = N(N(\lambda, 1, \lambda), 3, N(\lambda, 5, \lambda))$
+    \item $t_{R1} = N(\lambda, 10, N(N(\lambda, 14, \lambda), 13, N(\lambda, 15, \lambda)))$
+\end{itemize}
+
+\textbf{Calcolo $\Max(t_1) = 15$:}
+\begin{align*}
+\Max(t_1) &= \max(8, \Max(t_{L1}), \Max(t_{R1})) \\
+% Calcolo Max(t_L1)
+\Max(t_{L1}) &= \max(3, \Max(N(\lambda, 1, \lambda)), \Max(N(\lambda, 5, \lambda))) \\
+&= \max(3, \max(1, 0, 0), \max(5, 0, 0)) \\
+&= \max(3, 1, 5) = 5 \\
+% Calcolo Max(t_R1)
+\Max(t_{R1}) &= \max(10, \Max(\lambda), \Max(N(N(\lambda, 14, \lambda), 13, N(\lambda, 15, \lambda)))) \\
+&= \max(10, 0, \max(13, \Max(N(\lambda, 14, \lambda)), \Max(N(\lambda, 15, \lambda)))) \\
+&= \max(10, 0, \max(13, \max(14, 0, 0), \max(15, 0, 0))) \\
+&= \max(10, 0, \max(13, 14, 15)) \\
+&= \max(10, 0, 15) = 15 \\
+% Calcolo finale
+\Max(t_1) &= \max(8, 5, 15) = 15
+\end{align*}
+
+\textbf{Calcolo $\Min(t_1) = 1$:}
+\begin{align*}
+\Min(t_1) &= \min(8, \Min(t_{L1}), \Min(t_{R1})) \\
+% Calcolo Min(t_L1)
+\Min(t_{L1}) &= \min(3, \Min(N(\lambda, 1, \lambda)), \Min(N(\lambda, 5, \lambda))) \\
+&= \min(3, \min(1, \infty, \infty), \min(5, \infty, \infty)) \\
+&= \min(3, 1, 5) = 1 \\
+% Calcolo Min(t_R1)
+\Min(t_{R1}) &= \min(10, \Min(\lambda), \Min(N(N(\lambda, 14, \lambda), 13, N(\lambda, 15, \lambda)))) \\
+&= \min(10, \infty, \min(13, \Min(N(\lambda, 14, \lambda)), \Min(N(\lambda, 15, \lambda)))) \\
+&= \min(10, \infty, \min(13, \min(14, \infty, \infty), \min(15, \infty, \infty))) \\
+&= \min(10, \infty, \min(13, 14, 15)) \\
+&= \min(10, \infty, 13) = 10 \\
+% Calcolo finale
+\Min(t_1) &= \min(8, 1, 10) = 1
+\end{align*}
+\end{ragionamento}
+
+\section*{ESERCIZIO 3 (Funzione \texttt{Ordinato})}
+
+\begin{framed}
+\textit{Si ricorda che l'insieme dei valori Booleani $Bool \equiv \{\text{true}, \text{false}\}$ [...] Si consideri l'insieme $BTN$ e le funzioni $\Min$, $\Max$ [...] Si consideri la funzione $\Ordinato: \BTN \to Bool$ definita come segue:}
+\begin{itemize}
+    \item \textit{[CL. BASE] $\Ordinato(\lambda) = \text{true}$}
+    \item \textit{[CL. INDUTTIVA] $\Ordinato(N(t_1, n, t_2)) = \begin{cases*}
+        \text{false} & se $n \le \Max(t_1)$ \\
+        \text{false} & se $n \ge \Min(t_2)$ \\
+        \Ordinato(t_1) \land \Ordinato(t_2) & \text{altrimenti}
+        \end{cases*}$}
+\end{itemize}
+\textit{Siano $t_1, t_2, t_3$ gli alberi in Figura 1.1. Calcolare $\Ordinato(t_1)$, $\Ordinato(t_2)$ e $\Ordinato(t_3)$.}
+\end{framed}
+
+\begin{ragionamento}
+Definiamo la funzione $\Ordinato$, che verifica se un albero di tipo $\BTN$ è un \textbf{Albero Binario di Ricerca} (BST). Un albero $t \in \BTN$ è ordinato se:
+\begin{enumerate}
+    \item L'albero vuoto $\lambda \in \BTN$ è ordinato (Caso Base).
+    \item Per un albero non vuoto $N(t_1, n, t_2) \in \BTN$ (Caso Induttivo):
+    \begin{itemize}
+        \item Il sottoalbero sinistro $t_1$ è ordinato.
+        \item Il sottoalbero destro $t_2$ è ordinato.
+        \item L'etichetta $n$ è \emph{maggiore} di ogni etichetta in $t_1$ (cioè $n > \Max(t_1)$).
+        \item L'etichetta $n$ è \emph{minore} di ogni etichetta in $t_2$ (cioè $n < \Min(t_2)$).
+    \end{itemize}
+\end{enumerate}
+\end{ragionamento}
+
+\subsection*{Calcolo di $\Ordinato(t_1)$, $\Ordinato(t_2)$ e $\Ordinato(t_3)$}
+
+\begin{sol}
+Chiamiamo $O(t)$ la funzione $\Ordinato(t)$.
+\\
+Siano $t_1, t_2, t_3$ gli alberi $\in \BTN$ della Figura 1.1.
+\
+\\
+\textbf{Calcolo $\Ordinato(t_1)$:}
+Sia $t_1 = N(t_{L1}, 8, t_{R1})$.
+\begin{itemize}
+    \item $t_{L1} = N(N(\lambda, 1, \lambda), 3, N(\lambda, 5, \lambda))$
+    \item $t_{R1} = N(\lambda, 10, N(N(\lambda, 14, \lambda), 13, N(\lambda, 15, \lambda)))$
+\end{itemize}
+Valutiamo $O(t_1) = \Ordinato(N(t_{L1}, 8, t_{R1}))$
+\begin{itemize}
+    \item $n=8$, $\Max(t_{L1}) = 5$ (calcolato prima), $\Min(t_{R1}) = 10$ (calcolato prima).
+    \item Condizione $n \le \Max(t_1)$: $8 \le 5$ è \textbf{false}.
+    \item Condizione $n \ge \Min(t_2)$: $8 \ge 10$ è \textbf{false}.
+    \item Caso "altrimenti": $O(t_{L1}) \land O(t_{R1})$.
+\end{itemize}
+Calcoliamo $O(t_{L1})$ e $O(t_{R1})$:
+\begin{itemize}
+    \item $O(t_{L1}) = O(N(N(\lambda, 1, \lambda), 3, N(\lambda, 5, \lambda)))$
+        \begin{itemize}
+            \item $n=3$, $\Max(t_{1L}) = 1$, $\Min(t_{1R}) = 5$.
+            \item $3 \le 1$ è false. $3 \ge 5$ è false.
+            \item Caso "altrimenti": $O(N(\lambda, 1, \lambda)) \land O(N(\lambda, 5, \lambda))$. Entrambi sono \textbf{true}.
+            \item Quindi $O(t_{L1}) = \textbf{true}$.
+        \end{itemize}
+    \item $O(t_{R1}) = O(N(\lambda, 10, N(N(\lambda, 14, \lambda), 13, N(\lambda, 15, \lambda))))$
+        \begin{itemize}
+            \item $n=10$, $\Max(t_{1L}) = 0$, $\Min(t_{1R}) = \min(13, 14, 15) = 13$.
+            \item $10 \le 0$ è false. $10 \ge 13$ è false.
+            \item Caso "altrimenti": $O(\lambda) \land O(N(N(\lambda, 14, \lambda), 13, N(\lambda, 15, \lambda)))$.
+            \item Dobbiamo calcolare $O(N(\dots, 13, \dots))$:
+                \begin{itemize}
+                    \item $n=13$, $\Max(t_{L}) = 14$, $\Min(t_{R}) = 15$.
+                    \item Condizione $n \le \Max(t_1)$: $13 \le 14$ è \textbf{true}.
+                    \item La funzione restituisce \textbf{false}.
+                \end{itemize}
+            \item Quindi $O(t_{R1}) = \text{true} \land \textbf{false} = \textbf{false}$.
+        \end{itemize}
+\end{itemize}
+Il risultato finale per $O(t_1) = O(t_{L1}) \land O(t_{R1}) = \textbf{true} \land \textbf{false} = \textbf{false}$.
+\
+\\
+\textbf{Calcolo $\Ordinato(t_2)$:}
+Sia $t_2 = N(t_{L2}, 9, t_{R2})$.
+\begin{itemize}
+    \item $t_{L2} = N(N(\lambda, 1, \lambda), 3, N(\lambda, 5, \lambda))$
+    \item $t_{R2} = N(\lambda, 10, N(N(\lambda, 12, \lambda), 13, \lambda))$
+\end{itemize}
+Valutiamo $O(t_2) = O(N(t_{L2}, 9, t_{R2}))$.
+\begin{itemize}
+    \item $n=9$, $\Max(t_{L2}) = 5$, $\Min(t_{R2}) = \min(10, \infty, \min(13, 12, \infty)) = 10$.
+    \item Condizione $9 \le 5$ è \textbf{false}.
+    \item Condizione $9 \ge 10$ è \textbf{false}.
+    \item Caso "altrimenti": $O(t_{L2}) \land O(t_{R2})$.
+\end{itemize}
+Calcoliamo $O(t_{L2})$ e $O(t_{R2})$:
+\begin{itemize}
+    \item $O(t_{L2}) = \textbf{true}$ (come calcolato prima).
+    \item $O(t_{R2}) = O(N(\lambda, 10, N(N(\lambda, 12, \lambda), 13, \lambda)))$
+        \begin{itemize}
+            \item $n=10$, $\Max(t_{L}) = 0$, $\Min(t_{R}) = \min(13, 12, \infty) = 12$.
+            \item $10 \le 0$ è false. $10 \ge 12$ è false.
+            \item Caso "altrimenti": $O(\lambda) \land O(N(N(\lambda, 12, \lambda), 13, \lambda))$.
+            \item Calcoliamo $O(N(\dots, 13, \dots))$:
+                \begin{itemize}
+                    \item $n=13$, $\Max(t_{L}) = 12$, $\Min(t_{R}) = \infty$.
+                    \item $13 \le 12$ è false. $13 \ge \infty$ è false.
+                    \item Caso "altrimenti": $O(N(\lambda, 12, \lambda)) \land O(\lambda)$. Entrambi \textbf{true}.
+                \end{itemize}
+            \item Quindi $O(t_{R2})$ è $\textbf{true} \land \textbf{true} = \textbf{true}$.
+        \end{itemize}
+\end{itemize}
+Il risultato finale per $O(t_2) = O(t_{L2}) \land O(t_{R2}) = \textbf{true} \land \textbf{true} = \textbf{true}$.
+\
+\\
+\textbf{Calcolo $\Ordinato(t_3)$:}
+Sia $t_3 = N(t_{L3}, 8, t_{R3})$.
+\begin{itemize}
+    \item $t_{L3} = N(N(\lambda, 1, \lambda), 3, N(N(\lambda, 4, \lambda), 5, \lambda))$
+    \item $t_{R3} = N(\lambda, 10, N(\lambda, 13, N(N(\lambda, 11, \lambda), 12, \lambda)))$
+\end{itemize}
+Valutiamo $O(t_3) = O(N(t_{L3}, 8, t_{R3}))$.
+\begin{itemize}
+    \item $n=8$.
+    \item $\Max(t_{L3}) = \max(3, 1, \max(5, 4, 0)) = 5$.
+    \item $\Min(t_{R3}) = \min(10, \infty, \min(13, \infty, \min(12, 11, \infty))) = \min(10, 11) = 10$.
+    \item Condizione $8 \le 5$ è \textbf{false}.
+    \item Condizione $8 \ge 10$ è \textbf{false}.
+    \item Caso "altrimenti": $O(t_{L3}) \land O(t_{R3})$.
+\end{itemize}
+Calcoliamo $O(t_{L3})$ e $O(t_{R3})$:
+\begin{itemize}
+    \item $O(t_{L3}) = O(N(N(\lambda, 1, \lambda), 3, N(N(\lambda, 4, \lambda), 5, \lambda)))$
+        \begin{itemize}
+            \item $n=3$, $\Max(t_{L}) = 1$, $\Min(t_{R}) = \min(5, 4, \infty) = 4$.
+            \item $3 \le 1$ è false. $3 \ge 4$ è false.
+            \item Caso "altrimenti": $O(N(\lambda, 1, \lambda)) \land O(N(N(\lambda, 4, \lambda), 5, \lambda))$.
+            \item Entrambi sono \textbf{true} (per $N(\dots,5,\dots)$: $5 \le 4$ false, $5 \ge \infty$ false).
+            \item Quindi $O(t_{L3}) = \textbf{true}$.
+        \end{itemize}
+    \item $O(t_{R3}) = O(N(\lambda, 10, N(\lambda, 13, N(N(\lambda, 11, \lambda), 12, \lambda))))$
+        \begin{itemize}
+            \item $n=10$, $\Max(t_{L}) = 0$, $\Min(t_{R}) = \min(13, \infty, \min(12, 11, \infty)) = 11$.
+            \item $10 \le 0$ è false. $10 \ge 11$ è false.
+            \item Caso "altrimenti": $O(\lambda) \land O(N(\lambda, 13, N(N(\lambda, 11, \lambda), 12, \lambda)))$.
+            \item Calcoliamo $O(N(\dots, 13, \dots))$:
+                \begin{itemize}
+                    \item $n=13$, $\Max(t_{L}) = 0$, $\Min(t_{R}) = \min(12, 11, \infty) = 11$.
+                    \item Condizione $n \ge \Min(t_2)$: $13 \ge 11$ è \textbf{true}.
+                    \item La funzione restituisce \textbf{false}.
+                \end{itemize}
+            \item Quindi $O(t_{R3}) = \text{true} \land \textbf{false} = \textbf{false}$.
+        \end{itemize}
+\end{itemize}
+Il risultato finale per $O(t_3) = O(t_{L3}) \land O(t_{R3}) = \textbf{true} \land \textbf{false} = \textbf{false}$.
+\end{sol}
+
+
+\section*{ESERCIZIO 4 (Funzione \texttt{Ins})}
+
+\begin{framed}
+\textit{Si vuole definire una funzione $\Ins: \N \times \BTN \to \BTN$ che, preso in input un numero naturale $n \in \N$ e un albero $t \in \BTN$, aggiunge a $t$ una foglia etichettata con $n$. [...] si vuole che questa operazione preservi la proprietà \texttt{Ordinato} [...]}
+\begin{enumerate}
+    \item \textit{Definire per induzione su $BTN$ la funzione $\Ins: \N \times \BTN \to \BTN$.}
+    \item \textit{Sia $t = N(N(\lambda, 2, \lambda), 5, N(N(\lambda, 7, \lambda), 9, \lambda)) \in \BTN$. Valutare esplicitamente, usando la funzione proposta, $\Ins(4, t)$, $\Ins(6, t)$ e $\Ins(9, t)$.}
+\end{enumerate}
+\end{framed}
+
+\begin{ragionamento}
+Definiamo la funzione $\Ins(n, t)$ (inserimento). Per questa operazione, stabiliamo una logica che rispetti la proprietà di \emph{ordinamento} (BST):
+\begin{itemize}
+    \item \textbf{Caso Base ($t=\lambda$):} Se l'albero $t \in \BTN$ è vuoto ($\lambda$), creiamo un nuovo albero $N(\lambda, n, \lambda)$.
+    \item \textbf{Caso Induttivo ($t=N(t_1, m, t_2) \in \BTN$):} Confrontiamo $n$ con la radice $m$:
+    \begin{itemize}
+        \item Se $n < m$, inseriamo $n$ nel sottoalbero \emph{sinistro}: $N(\Ins(n, t_1), m, t_2)$.
+        \item Se $n > m$, inseriamo $n$ nel sottoalbero \emph{destro}: $N(t_1, m, \Ins(n, t_2))$.
+        \item Se $n = m$, non inseriamo il duplicato e restituiamo l'albero $t$ com'è.
+    \end{itemize}
+\end{itemize}
+\end{ragionamento}
+
+\subsection*{4.1: Definizione della funzione \texttt{Ins}}
+$\Ins: \N \times \BTN \to \BTN$.
+\begin{sol}
+\begin{itemize}
+    \item \textbf{C.B.:} $\Ins(n, \lambda) = N(\lambda, n, \lambda)$
+    \item \textbf{C.I.:}
+    $\Ins(n, N(t_1, m, t_2)) = \begin{cases*}
+        N(\Ins(n, t_1), m, t_2) & se $n < m$ \\
+        N(t_1, m, \Ins(n, t_2)) & se $n > m$ \\
+        N(t_1, m, t_2) & altrimenti (se $n = m$)
+        \end{cases*}$
+\end{itemize}
+\end{sol}
+
+\subsection*{4.2: Valutazione d'esempio}
+Sia $t = N(N(\lambda, 2, \lambda), 5, N(N(\lambda, 7, \lambda), 9, \lambda))$. Valutare $\Ins(4, t)$, $\Ins(6, t)$ e $\Ins(9, t)$.
+\begin{sol}
+\
+\\
+\textbf{Valutazione $\Ins(4, t)$:}
+\begin{align*}
+\Ins(4, t) &= \Ins(4, N(\dots, 5, \dots)) && 4 < 5 \\
+&= N(\Ins(4, N(\lambda, 2, \lambda)), 5, N(\dots, 9, \dots)) && 4 > 2 \\
+&= N(N(\lambda, 2, \Ins(4, \lambda)), 5, N(\dots, 9, \dots)) && \text{C.B.} \\
+&= N(N(\lambda, 2, N(\lambda, 4, \lambda)), 5, N(N(\lambda, 7, \lambda), 9, \lambda))
+\end{align*}
+\
+\\
+\textbf{Valutazione $\Ins(6, t)$:}
+\begin{align*}
+\Ins(6, t) &= \Ins(6, N(\dots, 5, \dots)) && 6 > 5 \\
+&= N(N(\lambda, 2, \lambda), 5, \Ins(6, N(N(\lambda, 7, \lambda), 9, \lambda))) && 6 < 9 \\
+&= N(N(\lambda, 2, \lambda), 5, N(\Ins(6, N(\lambda, 7, \lambda)), 9, \lambda)) && 6 < 7 \\
+&= N(N(\lambda, 2, \lambda), 5, N(N(\Ins(6, \lambda), 7, \lambda), 9, \lambda)) && \text{C.B.} \\
+&= N(N(\lambda, 2, \lambda), 5, N(N(N(\lambda, 6, \lambda), 7, \lambda), 9, \lambda))
+\end{align*}
+\
+\\
+\textbf{Valutazione $\Ins(9, t)$:}
+\begin{align*}
+\Ins(9, t) &= \Ins(9, N(\dots, 5, \dots)) && 9 > 5 \\
+&= N(N(\lambda, 2, \lambda), 5, \Ins(9, N(N(\lambda, 7, \lambda), 9, \lambda))) && 9 = 9 \\
+&= N(N(\lambda, 2, \lambda), 5, N(N(\lambda, 7, \lambda), 9, \lambda)) \\
+&= t && \text{(L'albero non cambia)}
+\end{align*}
+\end{sol}
+
+
+\section*{ESERCIZIO 5 (Proprietà \texttt{Ordinato(Ins)})}
+
+\begin{framed}
+\textit{Con riferimento alla funzione \texttt{Ordinato} dell'Esercizio 3 e alla funzione \texttt{Ins} dell'Esercizio 4, dimostrare per induzione strutturale che per tutti gli $n \in \N$ e $t \in \BTN$ vale che: Se $\Ordinato(t) = \text{true}$, allora $\Ordinato(\Ins(n,t)) = \text{true}$.}
+\end{framed}
+
+\begin{ragionamento}
+In questo esercizio, dimostriamo una proprietà cruciale: se partiamo da un albero $t \in \BTN$ che è \emph{già} un albero binario di ricerca (cioè $\Ordinato(t) = \text{true}$), quando inseriamo un nuovo elemento $n$ tramite la nostra funzione $\Ins$, l'albero $\Ins(n, t) \in \BTN$ risultante sarà \emph{ancora} un albero binario di ricerca.
+\end{ragionamento}
+
+\subsection*{Dimostrazione della proprietà}
+$\forall n \in \N, t \in \BTN$. Se $\Ordinato(t) = \text{true}$, allora $\Ordinato(\Ins(n,t)) = \text{true}$.
+
+\begin{proof}[Dimostrazione (per induzione strutturale su $t$)]
+\
+\\
+\textbf{C.B. (Caso Base): $t = \lambda$}
+\begin{itemize}
+    \item \textbf{Ipotesi:} $\Ordinato(\lambda) = \text{true}$ (per definizione).
+    \item \textbf{Tesi:} $\Ordinato(\Ins(n, \lambda)) = \text{true}$.
+\end{itemize}
+Svolgiamo la Tesi:
+\begin{align*}
+\Ordinato(\Ins(n, \lambda)) &= \Ordinato(N(\lambda, n, \lambda)) && \text{(Def. C.B. Ins)} \\
+&= \Ordinato(\lambda) \land \Ordinato(\lambda) \land (n > \Max(\lambda)) \land (n < \Min(\lambda)) && \text{(Def. Ordinato)} \\
+&= \text{true} \land \text{true} \land (n > 0) \land (n < \infty) && \text{(Def. C.B. Max/Min)}
+\end{align*}
+L'espressione è $\text{true}$ (assumendo $n \ge 0$ e $\Max(\lambda)=0, \Min(\lambda)=\infty$). Il caso base è verificato.
+\
+\\
+\textbf{C.I. (Caso Induttivo): $t = N(t_1, m, t_2)$}
+\begin{itemize}
+    \item \textbf{Ipotesi Induttiva (I.H.):}
+    \begin{itemize}
+        \item $\Ordinato(t_1) \Rightarrow \Ordinato(\Ins(n, t_1)) = \text{true}$
+        \item $\Ordinato(t_2) \Rightarrow \Ordinato(\Ins(n, t_2)) = \text{true}$
+    \end{itemize}
+    \item \textbf{Assunzione:} $\Ordinato(t) = \Ordinato(N(t_1, m, t_2)) = \text{true}$.
+    Questo implica:
+    \begin{enumerate}
+        \item $\Ordinato(t_1) = \text{true}$
+        \item $\Ordinato(t_2) = \text{true}$
+        \item $m > \Max(t_1)$
+        \item $m < \Min(t_2)$
+    \end{enumerate}
+    \item \textbf{Tesi:} $\Ordinato(\Ins(n, t)) = \text{true}$.
+\end{itemize}
+Analizziamo i 3 casi della definizione induttiva di $\Ins(n, t)$:
+
+\textbf{Caso 1: $n < m$}
+\begin{align*}
+\Ordinato(\Ins(n, t)) &= \Ordinato(N(\Ins(n, t_1), m, t_2)) && \text{(Def. Ins)} \\
+&= \Ordinato(\Ins(n, t_1)) \land \Ordinato(t_2) \land (m > \Max(\Ins(n, t_1))) \land (m < \Min(t_2))
+\end{align*}
+Verifichiamo i 4 predicati:
+\begin{itemize}
+    \item[a)] $\Ordinato(\Ins(n, t_1))$: Vero. Per (1) $\Ordinato(t_1)=\text{true}$, e per I.H.
+    \item[b)] $\Ordinato(t_2)$: Vero. Per (2).
+    \item[c)] $m > \Max(\Ins(n, t_1))$: Vero. $\Max(\Ins(n, t_1)) = \max(\Max(t_1), n)$. Per (3) $m > \Max(t_1)$ e per l'ipotesi di caso $m > n$. Dunque $m$ è maggiore di entrambi.
+    \item[d)] $m < \Min(t_2)$: Vero. Per (4).
+\end{itemize}
+Essendo a, b, c, d veri, la tesi è verificata.
+
+\textbf{Caso 2: $n > m$}
+\begin{align*}
+\Ordinato(\Ins(n, t)) &= \Ordinato(N(t_1, m, \Ins(n, t_2))) && \text{(Def. Ins)} \\
+&= \Ordinato(t_1) \land \Ordinato(\Ins(n, t_2)) \land (m > \Max(t_1)) \land (m < \Min(\Ins(n, t_2)))
+\end{align*}
+Verifichiamo i 4 predicati:
+\begin{itemize}
+    \item[a)] $\Ordinato(t_1)$: Vero. Per (1).
+    \item[b)] $\Ordinato(\Ins(n, t_2))$: Vero. Per (2) $\Ordinato(t_2)=\text{true}$, e per I.H.
+    \item[c)] $m > \Max(t_1)$: Vero. Per (3).
+    \item[d)] $m < \Min(\Ins(n, t_2))$: Vero. $\Min(\Ins(n, t_2)) = \min(\Min(t_2), n)$. Per (4) $m < \Min(t_2)$ e per l'ipotesi di caso $m < n$. Dunque $m$ è minore di entrambi.
+\end{itemize}
+Essendo a, b, c, d veri, la tesi è verificata.
+
+\textbf{Caso 3: $n = m$}
+\begin{align*}
+\Ordinato(\Ins(n, t)) &= \Ordinato(N(t_1, m, t_2)) && \text{(Def. Ins, $n=m$)} \\
+&= \Ordinato(t)
+\end{align*}
+Questo è $\text{true}$ per l'Assunzione $\Ordinato(t) = \text{true}$.
+\end{proof}
+
+\section*{ESERCIZIO 6 (Aritmetica su \texttt{NTerm})}
+
+\begin{framed}
+\textit{Ricordando le definizioni induttive dell'insieme dei termini sintattici $\NTerm$ [...] e della funzione $\add$ [...] e della sua proprietà $\val(\add(x,y)) = \val(x) + \val(y)$ [...]}
+\begin{enumerate}
+    \item \textit{Sulla falsariga della definizione di $\add$ [...] definire per induzione la funzione $\mul: \NTerm \times \NTerm \to \NTerm$ [...] e dimostrare $\val(\mul(x, y)) = \val(x) \times \val(y)$.}
+    \item \textit{Sulla falsariga della definizione di $\add$ e $\mul$ [...] definire per induzione la funzione $\expo: \NTerm \times \NTerm \to \NTerm$ [...] e dimostrare $\val(\expo(x, y)) = \val(x)^{\val(y)}$.}
+    \item \textit{Calcolare $\val(\expo(\expo(Z, Z), S(Z)))$ e $\val(\expo(\expo(Z, S(Z)), Z))$, [...] E vero che $\val(\expo(x,y)) = \val(\expo(y,x))$? [...] (a) Quante sono le funzioni $j: \{1\} \to \emptyset$? (b) Quante sono le funzioni $f: \emptyset \to \{1\}$?}
+\end{enumerate}
+\end{framed}
+
+\begin{ragionamento}
+In questo esercizio, definiamo l'aritmetica sull'insieme $\NTerm$ (numeri naturali definiti induttivamente) usando il costruttore $S(x)$ (successore) e $0$ (zero).
+Definiamo `add` (addizione), `mul` (moltiplicazione) e `exp` (elevamento a potenza) e proviamo le loro proprietà rispetto all'interpretazione $\val(x)$.
+\end{ragionamento}
+
+\begin{definition}[add]
+$\add: \NTerm \times \NTerm \to \NTerm$
+\begin{itemize}
+    \item \textbf{C.B.:} $\add(0, y) = y$
+    \item \textbf{C.I.:} $\add(S(x), y) = S(\add(x, y))$
+\end{itemize}
+Proprietà $\val(\add(x, y)) = \val(x) + \val(y)$.
+\end{definition}
+
+
+\subsection*{6.1: Funzione \texttt{mul}}
+Definire $\mul: \NTerm \times \NTerm \to \NTerm$ e dimostrare $\val(\mul(x, y)) = \val(x) \times \val(y)$.
+
+\begin{sol}[Definizione \texttt{mul}]
+\begin{itemize}
+    \item \textbf{C.B.:} $\mul(0, y) = 0$
+    \item \textbf{C.I.:} $\mul(S(x), y) = \add(\mul(x, y), y)$
+\end{itemize}
+\end{sol}
+
+\begin{proof}[Dimostrazione (per induzione su $x$)]
+\
+\\
+\textbf{C.B. (Caso Base): $x = 0$}
+\begin{align*}
+\val(\mul(0, y)) &= \val(0) && \text{(Def. C.B. mul)} \\
+0 &= 0 \times \val(y) && \text{(Def. val)} \\
+0 &= 0 && \text{(Vero)}
+\end{align*}
+\
+\\
+\textbf{C.I. (Caso Induttivo): $x = S(x')$}
+\begin{itemize}
+    \item \textbf{I.H.:} $\val(\mul(x', y)) = \val(x') \times \val(y)$
+    \item \textbf{Tesi:} $\val(\mul(S(x'), y)) = \val(S(x')) \times \val(y)$
+\end{itemize}
+Svolgiamo la Tesi:
+\begin{align*}
+\val(\mul(S(x'), y)) &= \val(\add(\mul(x', y), y)) && \text{(Def. C.I. mul)} \\
+&= \val(\mul(x', y)) + \val(y) && \text{(Prop. val(add))} \\
+&= (\val(x') \times \val(y)) + \val(y) && \text{(I.H.)} \\
+&= (\val(x') + 1) \times \val(y) && \text{(Aritmetica)} \\
+&= \val(S(x')) \times \val(y) && \text{(Def. val(S))}
+\end{align*}
+\end{proof}
+
+
+\subsection*{6.2: Funzione \texttt{exp}}
+Definire $\expo: \NTerm \times \NTerm \to \NTerm$ e dimostrare $\val(\expo(x, y)) = \val(x)^{\val(y)}$.
+
+\begin{sol}[Definizione \texttt{exp}]
+\begin{itemize}
+    \item \textbf{C.B.:} $\expo(x, 0) = S(0)$ % (x^0 = 1)
+    \item \textbf{C.I.:} $\expo(x, S(y)) = \mul(\expo(x, y), x)$ % (x^(y+1) = x^y * x)
+\end{itemize}
+\end{sol}
+
+\begin{proof}[Dimostrazione (per induzione su $y$)]
+\
+\\
+\textbf{C.B. (Caso Base): $y = 0$}
+\begin{align*}
+\val(\expo(x, 0)) &= \val(S(0)) && \text{(Def. C.B. exp)} \\
+\val(x)^{\val(0)} &= 1 && \text{(Def. val)} \\
+\val(x)^0 &= 1 \\
+1 &= 1 && \text{(Vero, assumendo $x \neq 0$. $0^0=1$ è convenzione)}
+\end{align*}
+\
+\\
+\textbf{C.I. (Caso Induttivo): $y = S(y')$}
+\begin{itemize}
+    \item \textbf{I.H.:} $\val(\expo(x, y')) = \val(x)^{\val(y')}$
+    \item \textbf{Tesi:} $\val(\expo(x, S(y'))) = \val(x)^{\val(S(y'))}$
+\end{itemize}
+Svolgiamo la Tesi:
+\begin{align*}
+\val(\expo(x, S(y'))) &= \val(\mul(\expo(x, y'), x)) && \text{(Def. C.I. exp)} \\
+&= \val(\expo(x, y')) \times \val(x) && \text{(Prop. val(mul))} \\
+&= (\val(x)^{\val(y')}) \times \val(x) && \text{(I.H.)} \\
+&= \val(x)^{(\val(y') + 1)} && \text{(Aritmetica)} \\
+&= \val(x)^{\val(S(y'))} && \text{(Def. val(S))}
+\end{align*}
+\end{proof}
+
+
+\subsection*{6.3: Calcolo e Funzioni}
+Sia $Z = 0$ e $1 = S(0)$.
+\begin{enumerate}
+    \item Calcolare $\val(\expo(\expo(Z, Z), S(Z)))$ e $\val(\expo(\expo(Z, S(Z)), Z))$.
+    \item (a) Quante sono le funzioni $j: \{1\} \to \emptyset$? (b) Quante sono le funzioni $f: \emptyset \to \{1\}$?
+\end{enumerate}
+
+\begin{sol}
+
+\textbf{6.3.1 Calcolo:}
+\begin{itemize}
+    \item $\val(\expo(Z, Z)) = \val(\expo(0, 0)) = \val(0)^{\val(0)} = 0^0 = 1$
+    \item $\val(\expo(Z, S(Z))) = \val(\expo(0, S(0))) = \val(0)^{\val(S(0))} = 0^1 = 0$
+\end{itemize}
+Calcoliamo i due termini:
+\begin{align*}
+\val(\expo(\expo(Z, Z), S(Z))) &= \val(\expo(S(0), S(0))) && \text{(poiché $\expo(Z,Z) = S(0)$)} \\
+&= \val(S(0))^{\val(S(0))} = 1^1 = 1 \\
+\\
+\val(\expo(\expo(Z, S(Z)), Z)) &= \val(\expo(0, 0)) && \text{(poiché $\expo(Z,S(Z)) = 0$)} \\
+&= \val(0)^{\val(0)} = 0^0 = 1
+\end{align*}
+I due valori sono uguali (entrambi 1).
+
+
+
+\end{document}

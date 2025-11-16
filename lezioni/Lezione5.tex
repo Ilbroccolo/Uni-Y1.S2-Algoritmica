@@ -1,0 +1,149 @@
+% ===================================================================
+% FILE: Lezione5.tex
+% ===================================================================
+
+\part{Lezione 21 (06/11/2025) }
+
+\section{Paradigma Divide et Impera }
+Il paradigma "Divide et Impera" (Dividi e Conquista) è una tecnica per progettare algoritmi, tipicamente ricorsivi , che si articola in tre fasi:
+
+\begin{definition}[Paradigma Divide et Impera]
+\begin{enumerate}
+    \item \textbf{DIVIDE} : Il problema di dimensione $n$ viene suddiviso in $a$ sottoproblemi dello stesso tipo, ma di dimensione minore ($n/b$) . [cite: 98]
+    \item \textbf{IMPERA} : I sottoproblemi vengono risolti. Se sono abbastanza piccoli (casi base), vengono risolti direttamente. Altrimenti, vengono risolti ricorsivamente con la stessa tecnica . [cite: 99]
+    \item \textbf{COMBINE} : Le soluzioni degli $a$ sottoproblemi vengono combinate per ottenere la soluzione del problema originale . [cite: 100]
+\end{enumerate}
+\end{definition}
+
+\subsection{Diagramma Concettuale }
+\begin{center}
+\begin{tikzpicture}[
+    node distance=2cm and 1.5cm,
+    block/.style={draw, rectangle, minimum height=1cm, minimum width=1.5cm, text centered, font=\small},
+    dot/.style={node distance=1.5cm and 1cm}
+    ]
+  
+  \node[block] (P) {$P, n$ (Problema) }; [cite: 101]
+  \node[block] (P1) [below left of=P, yshift=-1cm] {$P_1, n_1$ }; [cite: 101]
+  \node (P_dots) [right=of P1, style=dot] {$\dots$};
+  \node[block] (Pa) [right=of P_dots, style=dot] {$P_a, n_a$ }; [cite: 102]
+  
+  \node[block] (S1) [below=of P1] {$S_1, n_1$ }; [cite: 103]
+  \node (S_dots) [right=of S1, style=dot] {$\dots$}; [cite: 103]
+  \node[block] (Sa) [right=of S_dots, style=dot] {$S_a, n_a$ }; [cite: 104]
+  \node[block] (S) [below right of=S_dots, yshift=-1cm] {$S, n$ (Soluzione) }; [cite: 105]
+  
+  \draw[->, thick] (P.south) -- (P1.north) node [midway, left, xshift=-5mm] {\textbf{DIVIDE} };
+  \draw[->, thick] (P.south) -- (P_dots.north);
+  \draw[->, thick] (P.south) -- (Pa.north); [cite: 106]
+  
+  \draw[->, thick, decorate, decoration={snake, segment length=8mm, amplitude=1mm}] (P1.south) -- (S1.north) node [midway, left, xshift=-5mm] {\textbf{"IMPERA"} };
+  \draw[->, thick, decorate, decoration={snake, segment length=8mm, amplitude=1mm}] (P_dots.south) -- (S_dots.north); [cite: 107]
+  \draw[->, thick, decorate, decoration={snake, segment length=8mm, amplitude=1mm}] (Pa.south) -- (Sa.north); [cite: 108]
+  
+  \draw[->, thick] (S1.south) -- (S.west);
+  \draw[->, thick] (S_dots.south) -- (S.north);
+  \draw[->, thick] (Sa.south) -- (S.east) node [midway, below, xshift=5mm, yshift=-5mm] {\textbf{COMBINE} }; [cite: 109, 110]
+\end{tikzpicture}
+\end{center}
+
+\section{Analisi Complessità D\&I}
+
+\begin{definition}[Analisi Complessità D\&I]
+Sia $T(n)$ il costo per risolvere un problema di dimensione $n$ .
+Sia $D(n)$ il costo della fase DIVIDE . 
+Sia $C(n)$ il costo della fase COMBINE . [cite: 112]
+L'equazione di ricorrenza generale è:
+$$ T(n) = \sum_{i=1}^{a} T(n_i) + D(n) + C(n) $$
+
+Caso particolare: \textbf{Divisione Bilanciata} .
+Il problema è diviso in $a$ sottoproblemi, ognuno di dimensione $n/b$ . [cite: 113]
+Sia $f(n) = D(n) + C(n)$ il costo di divide e combine. [cite: 114]
+$$ T(n) = aT(n/b) + f(n) $$ [cite: 115]
+\end{definition}
+
+
+\section{Esempio: Ricerca Binaria (D\&I) }
+
+\begin{example}[Ricerca Binaria: Setup]
+\begin{itemize}
+    \item \textbf{Input}: $A[p..r]$ ordinato, chiave $k$ . [cite: 116]
+    \item \textbf{Output}: Indice $i$ t.c. $A[i]=k$, o $-1$. [cite: 116]
+\end{itemize}
+\end{example}
+
+\begin{algorithmic}[1]
+\Procedure{BinarySearch}{A, p, r, k} 
+    \If{$p > r$} \Comment{Caso Base 1: array vuoto }
+        \State \Return $-1$
+    \EndIf
+    
+    \State $q = \lfloor (p+r)/2 \rfloor$ \Comment{DIVIDE }
+    
+    \If{$A[q] == k$} \Comment{IMPERA (Caso Base 2) }
+        \State \Return $q$
+    \ElsIf{$A[q] > k$} \Comment{IMPERA (Ricorsione) }
+        \State \Return \Call{BinarySearch}{A, p, q-1, k} [cite: 117]
+    \Else
+        \State \Return \Call{BinarySearch}{A, q+1, r, k} 
+    \EndIf
+    
+    \Comment{COMBINE: non necessario, costo $\Theta(1)$ }
+\EndProcedure
+\end{algorithmic}
+
+
+\begin{observation}[Analisi: Ricerca Binaria]
+\textbf{Analisi Ricorrenza BS: }
+C'è $a=1$ sottoproblema di dimensione $n/b = n/2$ . [cite: 118]
+$f(n) = D(n) + C(n) = \Theta(1) + \Theta(1) = \Theta(1)$ . [cite: 119]
+$$ T(n) = \begin{cases} \Theta(1) & \text{se } n \le 1 \\ T(n/2) + \Theta(1) & \text{se } n > 1 \end{cases} $$
+
+\textbf{Soluzione (Metodo Iterativo)} :
+$T(n) = T(n/2) + c$ 
+$T(n) = (T(n/4) + c) + c = T(n/4) + 2c$ 
+$T(n) = (T(n/8) + c) + 2c = T(n/8) + 3c$ 
+... dopo $i$ passi ...
+$T(n) = T(n/2^i) + i \cdot c$ 
+Ci si ferma al caso base quando $n/2^i = 1 \implies i = \log_2 n$ . [cite: 120]
+$T(n) = T(1) + c \cdot \log_2 n = \Theta(1) + \Theta(\log n) = \Theta(\log n)$ . [cite: 121]
+\end{observation}
+
+\section{Esempio: Minimo/Massimo (D\&I) }
+
+\begin{example}[Minimo/Massimo: Setup]
+\begin{itemize}
+    \item \textbf{Input}: $A[1..n]$ . [cite: 122]
+    \item \textbf{Output}: Coppia $\langle min, max \rangle$ di A . [cite: 123]
+\end{itemize}
+\end{example}
+
+\begin{algorithmic}[1]
+\Procedure{MinMax}{A, p, r} 
+    \If{$r - p \le 1$} \Comment{Caso Base: 1 o 2 elementi }
+        \If{$A[p] \le A[r]$}
+            \State \Return $\langle A[p], A[r] \rangle$ 
+        \Else
+            \State \Return $\langle A[r], A[p] \rangle$
+        \EndIf
+    \Else
+        \State $q = \lfloor (p+r)/2 \rfloor$ \Comment{DIVIDE}
+        \State $\langle min_1, max_1 \rangle = \Call{MinMax}{A, p, q}$ \Comment{IMPERA } [cite: 124]
+        \State $\langle min_2, max_2 \rangle = \Call{MinMax}{A, q+1, r}$ \Comment{IMPERA } [cite: 124]
+        \State $min = \min(min_1, min_2)$ \Comment{COMBINE }
+        \State $max = \max(max_1, max_2)$
+        \State \Return $\langle min, max \rangle$
+    \EndIf
+\EndProcedure
+\end{algorithmic}
+
+
+\begin{observation}[Analisi: Minimo/Massimo]
+\textbf{Analisi Ricorrenza MinMax:}
+$a=2$ sottoproblemi, $n/b = n/2$. [cite: 125]
+$f(n) = D(n) \text{ (cost.)} + C(n) \text{ (2 confr.)} = \Theta(1)$. [cite: 126]
+$$ T(n) = \begin{cases} \Theta(1) & \text{se } n \le 2 \\ 2T(n/2) + \Theta(1) & \text{se } n \ge 3 \end{cases} $$
+(Questa ricorrenza si risolve in $T(n) = \Theta(n)$). [cite: 127]
+\end{observation}
+
+\newpage

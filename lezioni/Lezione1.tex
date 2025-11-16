@@ -1,0 +1,133 @@
+% ===================================================================
+% FILE: Lezione1.tex
+% ===================================================================
+
+\part{Lezione 1(13/10/2025) }
+
+\section{Definizione di Algoritmo}
+Un algoritmo è una sequenza finita di operazioni elementari (passi) , univocamente determinata (non ambiguo) , che, se eseguita su un calcolatore, porta alla risoluzione di un problema . [cite: 160]
+\subsection{Modello RAM (Random Access Machine) }
+Nel modello RAM, si assume che le seguenti operazioni elementari abbiano costo "unitario" (costante) : [cite: 161]
+\begin{itemize}
+    \item \textbf{Operazioni aritmetiche}: +, -, *, /, \% 
+    \item \textbf{Operazioni di confronto}: $<, >, ==, !=$ 
+    \item \textbf{Operazioni logiche}: AND, OR, NOT 
+    \item \textbf{Operazioni di trasferimento}: load/store/assegnamento 
+    \item \textbf{Operazioni di controllo}: chiamata di funzione, RETURN 
+\end{itemize}
+
+\section{Analisi di Complessità}
+Si analizza il costo computazionale (Tempo o Spazio ) in funzione della dimensione dell'input, $n$ . [cite: 162]
+\begin{itemize}
+    \item \textbf{Complessità in Tempo $T(n)$}: Numero di operazioni elementari eseguite . [cite: 163]
+    \item \textbf{Complessità in Spazio $S(n)$}: Numero di celle di memoria utilizzate (oltre a quelle dell'input) . [cite: 164]
+\end{itemize}
+
+Ci si concentra sull' \textbf{ordine di grandezza} della funzione $T(n)$, ignorando costanti moltiplicative e termini di ordine inferiore . [cite: 165]
+Ad esempio, $T(n) = 3n + 2$ e $T(n) = 5n + \log n + 4$ sono entrambe considerate di complessità \textbf{Lineare} . [cite: 166] $T(n) = 8n^2$ è \textbf{Quadratica} . [cite: 166]
+
+\subsection{Caso Ottimo, Pessimo, Medio}
+\begin{itemize}
+    \item \textbf{Caso Ottimo} : L'istanza di input che richiede il minor tempo. [cite: 167]
+    \item \textbf{Caso Pessimo} : L'istanza di input che richiede il maggior tempo. [cite: 168]
+    \item \textbf{Caso Medio}: Complessità media su tutte le possibili istanze. [cite: 169]
+\end{itemize}
+Ci si concentra sul \textbf{caso pessimo} perché fornisce un limite superiore al costo: l'algoritmo non impiegherà mai più di $T(n)$ . [cite: 170]
+\section{Esempio 1: Minimo in Vettore}
+\begin{itemize}
+    \item \textbf{Input}: Array $A[1..n]$ di interi . [cite: 171]
+    \item \textbf{Output}: Il valore minimo contenuto in $A$ . [cite: 171]
+\end{itemize}
+
+% Questo ambiente ora funziona grazie ai pacchetti in main.tex
+\begin{algorithmic}[1]
+\Procedure{Minimo}{A, n} 
+    \State $min = A[1]$ \Comment{Costo costante $c_1$ }
+    \For{$i = 2 \to n$} \Comment{Eseguito $n-1$ volte }
+        \If{$A[i] < min$} \Comment{Costo $c_2$ }
+            \State $min = A[i]$ \Comment{Costo $c_3$ }
+        \EndIf
+    \EndFor
+    \State \Return $min$ \Comment{Costo costante $c_4$ }
+\EndProcedure
+\end{algorithmic}
+
+\textbf{Analisi:}
+Il costo totale è $T(n) = c_1 + (n-1)(c_2 \text{ (confronto)} + c_3 \text{ (assegn. caso pessimo)}) + c_4$ . [cite: 172]
+$T(n) = c'n + b$. [cite: 173]
+La complessità è \textbf{Lineare} , $T(n) \in \Theta(n)$, sia nel caso ottimo che in quello pessimo . [cite: 174]
+\section{Esempio 2: Cerca K }
+\begin{itemize}
+    \item \textbf{Input}: Array $A[1..n]$ di interi, $k$ intero . [cite: 175]
+    \item \textbf{Output}: $i$ tale che $A[i]=k$ , o $-1$ se $k \notin A$ . [cite: 176]
+\end{itemize}
+
+\begin{algorithmic}[1]
+\Procedure{Cerca-K}{A, n, k} 
+    \State $i = 1$ 
+    \State $trovato = \text{false}$ 
+    \While{(\textbf{not} $trovato$) \textbf{and} ($i \le n$)} 
+        \If{$A[i] == k$}
+            \State $trovato = \text{true}$ 
+        \Else
+            \State $i = i + 1$ 
+        \EndIf
+    \EndWhile
+    \If{$trovato$}
+        \State \Return $i$ [cite: 177]
+    \Else
+        \State \Return $-1$ 
+    \EndIf
+\EndProcedure
+\end{algorithmic}
+
+\textbf{Analisi:}
+\begin{itemize}
+    \item \textbf{Caso Ottimo}: $k = A[1]$ . Il ciclo `while` esegue 1 iterazione. $T(n) \in \Theta(1)$ (Costante) . [cite: 178]
+    \item \textbf{Caso Pessimo}: $k \notin A$ (o $k=A[n]$) . Il ciclo `while` esegue $n$ iterazioni. $T(n) \in \Theta(n)$ (Lineare) . [cite: 179, 180]
+\end{itemize}
+
+\section{Esempio 3: Minimo in Vettore Ordinato }
+\begin{itemize}
+    \item \textbf{Input}: Array $A[1..n]$ di interi, \textbf{ordinato} .
+    \item \textbf{Output}: Il valore minimo contenuto in $A$ .
+\end{itemize}
+
+\begin{algorithmic}[1]
+\Procedure{Minimo-Ordinato}{A, n} 
+    \State \Return $A[1]$ 
+\EndProcedure
+\end{algorithmic}
+\textbf{Analisi}: $T(n) \in \Theta(1)$ (Costante) . [cite: 182]
+\section{Esempio 4: Cerca K in Vettore Ordinato (Ricerca Binaria) }
+\begin{itemize}
+    \item \textbf{Input}: Array $A[1..n]$ di interi \textbf{ordinato}, $k$ intero . [cite: 183]
+    \item \textbf{Output}: $i$ tale che $A[i]=k$ , o $-1$ se $k \notin A$ . [cite: 184]
+\end{itemize}
+L'idea è di confrontare $k$ con l'elemento centrale $A[q]$ e dimezzare lo spazio di ricerca . [cite: 185]
+\begin{algorithmic}[1]
+\Procedure{BS-IT}{A, p, r, k} 
+    \If{($k < A[p]$) \textbf{or} ($k > A[r]$)} \Comment{Controllo opzionale}
+        \State \Return $-1$ 
+    \EndIf
+    \While{$p \le r$} 
+        \State $q = \lfloor (p+r)/2 \rfloor$ 
+        \If{$A[q] == k$}
+            \State \Return $q$ 
+        \ElsIf{$A[q] > k$}
+            \State $r = q - 1$ [cite: 186]
+        \Else
+            \State $p = q + 1$ 
+        \EndIf
+    \EndWhile
+    \State \Return $-1$ 
+\EndProcedure
+\end{algorithmic}
+
+\textbf{Analisi:}
+\begin{itemize}
+    \item \textbf{Caso Ottimo}: $k = A[q]$ al primo ciclo. $T(n) \in \Theta(1)$ (Costante) . [cite: 187]
+    \item \textbf{Caso Pessimo}: $k \notin A$. Il numero di iterazioni è $\log_2 n$ . $T(n) \in \Theta(\log n)$ (Logaritmica) . [cite: 188]
+\end{itemize}
+
+\newpage

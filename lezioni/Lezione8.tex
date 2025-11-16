@@ -1,0 +1,220 @@
+% ===================================================================
+% FILE: Lezione24.tex
+% ===================================================================
+
+\part{Lezione 24 (13/11/2025)}
+
+\section{Dimostrazione del Teorema Principale}
+L'obiettivo è risolvere la relazione di ricorrenza $T(n) = aT(n/b) + f(n)$.
+Si può derivare la formula generale usando l'albero di ricorsione o il metodo iterativo.
+\subsection{Metodo Iterativo (Derivazione della Formula)}
+Si espande la ricorrenza sostituendo $T(n)$ dentro sé stessa.
+% --- APPLICAZIONE STILE ---
+\begin{definition}[Formula Generale (Metodo Iterativo)]
+Partiamo dalla ricorrenza:
+\[ T(n) = aT(n/b) + f(n) \]
+Sostituiamo $T(n/b)$ nell'equazione:
+\[ T(n) = a \left[ aT(n/b^2) + f(n/b) \right] + f(n) = a^2 T(n/b^2) + af(n/b) + f(n) \]
+Sostituiamo $T(n/b^2)$ nell'equazione:
+\[ T(n) = a^2 \left[ aT(n/b^3) + f(n/b^2) \right] + af(n/b) + f(n) = a^3 T(n/b^3) + a^2 f(n/b^2) + af(n/b) + f(n) \]
+
+Dopo $i$ passi, la formula generale è:
+\[ T(n) = a^i T(n/b^i) + \sum_{j=0}^{i-1} a^j f(n/b^j) \]
+Ci si ferma al caso base quando la dimensione del problema è 1, cioè $n/b^i = 1$, che avviene quando $i = \log_b n$.
+Sostituendo $i = \log_b n$:
+\[ T(n) = a^{\log_b n} T(1) + \sum_{j=0}^{\log_b n - 1} a^j f(n/b^j) \]
+Usando l'identità $a^{\log_b n} = n^{\log_b a}$ (dimostrata sotto) e sapendo che $T(1) = \Theta(1)$, la formula finale del costo è:
+\[ T(n) = \Theta(n^{\log_b a}) + \sum_{j=0}^{\log_b n - 1} a^j f(n/b^j) \]
+Questo costo totale è la somma di due parti:
+\begin{itemize}
+    \item \textbf{$\Theta(n^{\log_b a})$}: Il costo per la soluzione dei casi base (le foglie dell'albero).
+    \item \textbf{$\sum a^j f(n/b^j)$}: Il costo totale del lavoro di "Divide" e "Combine" speso a tutti i livelli della ricorsione.
+\end{itemize}
+\end{definition}
+
+% --- APPLICAZIONE STILE ---
+\begin{observation}[Identità delle Foglie: $a^{\log_b n} = n^{\log_b a}$]
+\textbf{Dimostrazione:}
+Si parte da $a^{\log_b n}$.
+Si applica la proprietà $x = n^{\log_n x}$:
+\[ a^{\log_b n} = (n^{\log_n a})^{\log_b n} \]
+Si applica la formula del cambio di base $\log_n a = \frac{\log_b a}{\log_b n}$:
+\[ a^{\log_b n} = \left( n^{\frac{\log_b a}{\log_b n}} \right)^{\log_b n} \]
+Moltiplicando gli esponenti:
+\[ a^{\log_b n} = n^{\frac{\log_b a}{\log_b n} \cdot \log_b n} = n^{\log_b a} \]
+\end{observation}
+
+\subsection{Analisi dei Casi del Teorema}
+L'analisi consiste nel determinare quale dei due termini della formula $T(n) = \Theta(n^{\log_b a}) + \sum...$ domina.
+% --- APPLICAZIONE STILE ---
+\begin{definition}[Caso 1: $f(n)$ polinomialmente minore]
+\begin{itemize}
+    \item \textbf{Condizione:} $f(n) \in O(n^{\log_b a - \epsilon})$ per $\epsilon > 0$.
+    \item \textbf{Analisi:} La sommatoria $\sum_{j=0}^{\log_b n - 1} a^j f(n/b^j)$ può essere analizzata come una serie geometrica.
+    Sostituendo la condizione, si dimostra che la somma cresce più lentamente del primo termine (la ragione della serie è $r = b^\epsilon > 1$).
+    \item \textbf{Logica:} Il costo è dominato dal lavoro svolto nei casi base (le foglie).
+    \item \textbf{Soluzione:} $T(n) \in \Theta(n^{\log_b a})$.
+\end{itemize}
+\end{definition}
+
+% --- APPLICAZIONE STILE ---
+\begin{definition}[Caso 2: $f(n)$ bilanciato (caso $k=0$)]
+\begin{itemize}
+    \item \textbf{Condizione:} $f(n) = \Theta(n^{\log_b a})$.
+    \item \textbf{Analisi:} Partiamo dalla formula $T(n) = \Theta(n^{\log_b a}) + \sum_{j=0}^{\log_b n - 1} a^j f(n/b^j)$.
+    Sostituiamo la condizione $f(n/b^j) = \Theta((n/b^j)^{\log_b a})$ nella sommatoria:
+    \[ \sum_{j=0}^{\log_b n - 1} a^j \cdot \left(\frac{n}{b^j}\right)^{\log_b a} = \sum_{j=0}^{\log_b n - 1} a^j \cdot \frac{n^{\log_b a}}{(b^{\log_b a})^j} = \sum_{j=0}^{\log_b n - 1} a^j \cdot \frac{n^{\log_b a}}{a^j} \]
+    Semplificando $a^j$, otteniamo:
+    \[ \sum_{j=0}^{\log_b n - 1} n^{\log_b a} = n^{\log_b a} \sum_{j=0}^{\log_b n - 1} 1 = n^{\log_b a} \cdot (\log_b n) \]
+    \item \textbf{Logica:} Il costo del lavoro extra è bilanciato con il costo delle foglie.
+    Il costo totale è il costo di un livello ($n^{\log_b a}$) moltiplicato per il numero di livelli ($\log n$).
+    \item \textbf{Soluzione:} $T(n) = \Theta(n^{\log_b a}) + \Theta(n^{\log_b a} \cdot \log n) = \Theta(n^{\log_b a} \cdot \log n)$.
+\end{itemize}
+\end{definition}
+
+% --- INIZIO GRAFICO RICOSTRUITO ---
+\begin{figure}[h!]
+\centering
+\begin{tikzpicture}[
+    level distance=2cm, 
+    sibling distance=4cm,
+    level 1/.style={sibling distance=5cm},
+    level 2/.style={sibling distance=2.5cm},
+    level 3/.style={sibling distance=1.5cm, font=\small},
+    level 4/.style={font=\tiny},
+    every node/.style={align=center}
+]
+
+% --- L'ALBERO ---
+% Livello 0 (Radice)
+\node (root) {$cn^2$}
+    % Livello 1
+    child { node (l1_1) {$c(\frac{n}{4})^2$}
+        % Livello 2
+        child { node (l2_1) {$c(\frac{n}{16})^2$} 
+            % Livello 3 (Puntini)
+            child { node[draw=none] (l3_1) {$\vdots$} 
+                % Livello 4 (Foglie)
+                child { node (l4_1) {$T(1)$} }
+            }
+        }
+        child { node (l2_2) {$c(\frac{n}{16})^2$} 
+             child { node[draw=none] (l3_2) {$\vdots$} 
+                child { node (l4_2) {$T(1)$} }
+            }
+        }
+        child { node (l2_3) {$c(\frac{n}{16})^2$} 
+            child { node[draw=none] (l3_3) {$\vdots$} 
+                child { node (l4_3) {$T(1)$} }
+            }
+        }
+    }
+    child { node (l1_2) {$c(\frac{n}{4})^2$}
+        child { node (l2_4) {$c(\frac{n}{16})^2$} 
+            child { node[draw=none] (l3_4) {$\vdots$} 
+                child { node (l4_4) {$T(1)$} }
+            }
+        }
+        child { node (l2_5) {$c(\frac{n}{16})^2$} 
+            child { node[draw=none] (l3_5) {$\vdots$} 
+                child { node (l4_5) {$T(1)$} }
+            }
+        }
+        child { node (l2_6) {$c(\frac{n}{16})^2$} 
+             child { node[draw=none] (l3_6) {$\vdots$} 
+                child { node (l4_6) {$T(1)$} }
+            }
+        }
+    }
+    child { node (l1_3) {$c(\frac{n}{4})^2$}
+        child { node (l2_7) {$c(\frac{n}{16})^2$} 
+            child { node[draw=none] (l3_7) {$\vdots$} 
+                 child { node (l4_7) {$T(1)$} }
+            }
+        }
+        child { node (l2_8) {$c(\frac{n}{16})^2$} 
+            child { node[draw=none] (l3_8) {$\vdots$} 
+                child { node (l4_8) {$T(1)$} }
+            }
+        }
+        child { node (l2_9) {$c(\frac{n}{16})^2$} 
+            child { node[draw=none] (l3_9) {$\vdots$} 
+                child { node (l4_9) {$T(1)$} }
+            }
+        }
+    };
+% --- PUNTINI CENTRALI TRA LE FOGLIE ---
+\node[right=of l4_5, node distance=1.5cm, draw=none] (dots_mid) {$\dots$};
+\node[right=of l4_6, node distance=1.5cm, draw=none] (dots_mid2) {$\dots$};
+
+% --- ANNOTAZIONI A DESTRA (COSTI PER LIVELLO) ---
+\node[right=of root, node distance=6cm, draw=none] (cost0) {$cn^2$};
+\node[right=of l1_3, node distance=3.5cm, draw=none] (cost1) {$\frac{3}{16} cn^2$};
+\node[right=of l2_9, node distance=2.5cm, draw=none] (cost2) {$(\frac{3}{16})^2 cn^2$};
+\node[below=of cost2, draw=none, node distance=1cm] (cost_dots) {$\vdots$};
+
+\draw[dotted, thick] (root.east) -- (cost0.west);
+\draw[dotted, thick] (l1_3.east) -- (cost1.west);
+\draw[dotted, thick] (l2_9.east) -- (cost2.west);
+
+% --- ANNOTAZIONI IN BASSO (COSTO FOGLIE E CONTEGGIO) ---
+\node[below=of l4_5, node distance=1.5cm, draw=none] (leaves_cost) {$\Theta(n^{\log_4 3})$};
+\draw [decorate, decoration={brace, amplitude=10pt, mirror}] (l4_1.south west) -- (l4_9.south east) 
+    node [midway, below, yshift=-10pt] {$n^{\log_4 3}$ foglie};
+% --- ANNOTAZIONE A SINISTRA (ALTEZZA) ---
+\draw[<->, thick] (root.north west) ++ (-6.5cm, 0.5cm) -- (l4_1.south west) ++ (-1.5cm, -0.5cm)
+    node [midway, left, xshift=-5pt] {$\log_4 n$};
+% --- TOTALE ---
+\node[below=of leaves_cost, node distance=1.5cm, right=of leaves_cost, xshift=6cm, draw=none, font=\Large] (total) {Totale: $O(n^2)$};
+\end{tikzpicture}
+\caption{Visualizzazione dell'albero di ricorsione per $T(n) = 3T(n/4) + cn^2$.
+Questo è un esempio del \textbf{Caso 3} del Master Theorem, dove il costo è dominato dalla radice (root).}
+\label{fig:master-tree-case3}
+\end{figure}
+% --- FINE GRAFICO ---
+
+
+\section{Esercizio (Compitino 24-25)}
+Analizzare la complessità di un algoritmo la cui struttura (semplificata) è la seguente, ipotizzando diversi costi per il lavoro $f(n)$.
+% --- APPLICAZIONE STILE ---
+\begin{example}[Analisi Algoritmo Ricorsivo]
+Dato il seguente algoritmo:
+\begin{algorithmic}[1]
+\Procedure{ALGO}{A, p, r}
+    \If{$p < r$}
+        \State $q = \lfloor (p+r)/2 \rfloor$
+        \State \Call{ALGO}{A, p, q} \Comment{Costo $T(n/2)$}
+        \State \Call{ALGO}{A, q+1, r} \Comment{Costo $T(n/2)$}
+        \State \Call{ALGO}{A, p, q} \Comment{Costo $T(n/2)$}
+        \State \Call{ALGO}{A, q+1, r} \Comment{Costo $T(n/2)$}
+        \State ... (Lavoro extra con costo $f(n)$) ...
+     \EndIf
+\EndProcedure
+\end{algorithmic}
+
+L'algoritmo fa $a=4$ chiamate ricorsive su sottoproblemi di dimensione $n/2$ (quindi $b=2$).
+% --- APPLICAZIONE STILE ---
+\begin{observation}[Caso Pessimo: $f(n) = n^2$]
+La relazione di ricorrenza è: $T(n) = 4T(n/2) + n^2$.
+\begin{itemize}
+    \item $a = 4$, $b = 2$.
+    \item \textbf{Spartiacque:} $n^{\log_b a} = n^{\log_2 4} = n^2$.
+    \item \textbf{Confronto:} $f(n) = n^2$ è uguale allo spartiacque.
+    \item Siamo nel \textbf{Caso 2} (con $k=0$).
+    \item \textbf{Soluzione:} $T(n) = \Theta(n^{\log_b a} \cdot \log n) = \Theta(n^2 \cdot \log n)$.
+\end{itemize}
+\end{observation}
+
+% --- APPLICAZIONE STILE ---
+\begin{observation}[Caso Ottimo (ipotetico): $f(n) = n$]
+La relazione di ricorrenza è: $T(n) = 4T(n/2) + n$.
+\begin{itemize}
+    \item $a = 4$, $b = 2$. \textbf{Spartiacque:} $n^2$.
+    \item \textbf{Confronto:} $f(n) = n$ è polinomialmente minore di $n^2$ (poiché $n = O(n^{2-\epsilon})$ per $\epsilon=1$).
+    \item Siamo nel \textbf{Caso 1}.
+    \item \textbf{Soluzione:} $T(n) = \Theta(n^{\log_b a}) = \Theta(n^2)$.
+\end{itemize}
+\end{observation}
+
+\end{example}
+\newpage

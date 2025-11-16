@@ -1,0 +1,180 @@
+
+\usepackage{tikz}
+\usepackage{pgfplots}
+
+% Impostazioni per TikZ
+\usetikzlibrary{
+    arrows.meta,     % Per frecce migliori
+    positioning,     % Per posizionare i nodi
+    shapes.geometric,% Per forme
+    calc             % Per calcoli sulle coordinate
+}
+
+% Impostazioni per PGFPlots (per il grafico delle funzioni)
+\pgfplotsset{compat=1.18}
+
+\begin{document}
+
+
+
+\begin{figure}[h!]
+\centering
+\begin{tikzpicture}[
+    cell/.style={rectangle, draw=black, minimum width=1.5cm, minimum height=1cm, font=\Large},
+    idx/.style={font=\tiny, below=0.1cm of #1},
+    arr/.style={-Straight S[length=3mm], line width=1.5pt},
+    code/.style={font=\small\ttfamily, anchor=west}
+    ]
+    
+    % Array
+    \node[cell] (c1) at (0, 0) {8};
+    \node[cell] (c2) at (1.5, 0) {3};
+    \node[cell] (c3) at (3, 0) {5};
+    \node[cell] (c4) at (4.5, 0) {2};
+    \node[cell] (c5) at (6, 0) {7};
+    
+    % Indici array
+    \node[idx=c1] {A[1]};
+    \node[idx=c2] {A[2]};
+    \node[idx=c3] {A[3]};
+    \node[idx=c4] {A[4]};
+    \node[idx=c5] {A[5]};
+
+    % Variabile Min
+    \node[cell, fill=blue!10] (min) at (0, -2.5) {?};
+    \node[left=0.2cm of min, font=\Large] {$min = $};
+    
+    % Stato 1: Inizializzazione
+    \node[code] (s1) at (3, -1.5) {1. \Procedure{Minimo}{A
+\usepackage{tikz}
+\usepackage{pgfplots}
+
+% Impostazioni per TikZ
+\usetikzlibrary{
+    arrows.meta,     % Per frecce migliori
+    positioning,     % Per posizionare i nodi
+    shapes.geometric,% Per forme
+    calc             % Per calcoli sulle coordinate
+}
+
+% Impostazioni per PGFPlots (per il grafico delle funzioni)
+\pgfplotsset{compat=1.18}
+
+\begin{document}
+
+
+
+\begin{figure}[h!]
+\centering
+\begin{tikzpicture}[
+    cell/.style={rectangle, draw=black, minimum width=1.5cm, minimum height=1cm, font=\Large},
+    idx/.style={font=\tiny, below=0.1cm of #1},
+    arr/.style={-Straight S[length=3mm], line width=1.5pt},
+    code/.style={font=\small\ttfamily, anchor=west}
+    ]
+    
+    % Array
+    \node[cell] (c1) at (0, 0) {8};
+    \node[cell] (c2) at (1.5, 0) {3};
+    \node[cell] (c3) at (3, 0) {5};
+    \node[cell] (c4) at (4.5, 0) {2};
+    \node[cell] (c5) at (6, 0) {7};
+    
+    % Indici array
+    \node[idx=c1] {A[1]};
+    \node[idx=c2] {A[2]};
+    \node[idx=c3] {A[3]};
+    \node[idx=c4] {A[4]};
+    \node[idx=c5] {A[5]};
+
+    % Variabile Min
+    \node[cell, fill=blue!10] (min) at (0, -2.5) {?};
+    \node[left=0.2cm of min, font=\Large] {$min = $};
+    
+    % Stato 1: Inizializzazione
+    \node[code] (s1) at (3, -1.5) {1. \Procedure{Minimo}{A, 5}};
+    \node[code] (s2) at (3, -2)   {2. \ \ $min = A[1]$};
+    \draw[arr, blue!80!black] (s2.west) |- (min.east);
+    \node[cell, fill=blue!10] (min1) at (0, -2.5) {8};
+    
+    % Stato 2: i = 2
+    \node[code] (s3) at (3, -2.5) {3. \ \ \textbf{for} $i=2 \to 5$};
+    \node[code] (s4) at (3, -3)   {4. \ \ \ \ \textbf{if} $A[2] < min$ (3 < 8) $\to$ \textbf{true}};
+    \node[code] (s5) at (3, -3.5) {5. \ \ \ \ \ \ $min = A[2]$};
+    \draw[arr, green!60!black] (s3.west) .. controls +(west:1) and +(north:1) .. (c2.north);
+    \node[above=0.2cm of c2, font=\Large\bfseries] {$i$};
+    \draw[arr, blue!80!black] (s5.west) |- (min.east);
+    \node[cell, fill=blue!10] (min2) at (0, -2.5) {3};
+    
+    % Stato 3: i = 3
+    \node[code] (s6) at (3, -4)   {6. \ \ \ \ \textbf{if} $A[3] < min$ (5 < 3) $\to$ \textbf{false}};
+    \draw[arr, green!60!black, dashed] (s6.west) .. controls +(west:1) and +(north:1) .. (c3.north);
+    
+    % Stato 4: i = 4
+    \node[code] (s7) at (3, -4.5) {7. \ \ \ \ \textbf{if} $A[4] < min$ (2 < 3) $\to$ \textbf{true}};
+    \node[code] (s8) at (3, -5)   {8. \ \ \ \ \ \ $min = A[4]$};
+    \draw[arr, green!60!black] (s7.west) .. controls +(west:1) and +(north:1) .. (c4.north);
+    \draw[arr, blue!80!black] (s8.west) |- (min.east);
+    \node[cell, fill=blue!10] (min3) at (0, -2.5) {2};
+
+    % Stato 5: i = 5
+    \node[code] (s9) at (3, -5.5) {9. \ \ \ \ \textbf{if} $A[5] < min$ (7 < 2) $\to$ \textbf{false}};
+    \draw[arr, green!60!black, dashed] (s9.west) .. controls +(west:1) and +(north:1) .. (c5.north);
+    
+    % Stato 6: Ritorno
+    \node[code] (s10) at (3, -6) {10.\ \ \textbf{end for}};
+    \node[code] (s11) at (3, -6.5) {11.\ \textbf{Return} $min$};
+    \node[cell, draw=red, line width=1.5pt] at (0, -2.5) {2};
+    \draw[arr, red] (s11.west) |- (min.east);
+
+\end{tikzpicture}
+\caption{Tracciamento dell'algoritmo \texttt{Minimo}. La variabile \texttt{min} (blu) viene aggiornata solo quando \texttt{A[i]} (puntato dalla freccia verde) è più piccolo.}
+\label{fig:minimo}
+\end{figure}
+
+\end{document}
+
+
+, 5}};
+    \node[code] (s2) at (3, -2)   {2. \ \ $min = A[1]$};
+    \draw[arr, blue!80!black] (s2.west) |- (min.east);
+    \node[cell, fill=blue!10] (min1) at (0, -2.5) {8};
+    
+    % Stato 2: i = 2
+    \node[code] (s3) at (3, -2.5) {3. \ \ \textbf{for} $i=2 \to 5$};
+    \node[code] (s4) at (3, -3)   {4. \ \ \ \ \textbf{if} $A[2] < min$ (3 < 8) $\to$ \textbf{true}};
+    \node[code] (s5) at (3, -3.5) {5. \ \ \ \ \ \ $min = A[2]$};
+    \draw[arr, green!60!black] (s3.west) .. controls +(west:1) and +(north:1) .. (c2.north);
+    \node[above=0.2cm of c2, font=\Large\bfseries] {$i$};
+    \draw[arr, blue!80!black] (s5.west) |- (min.east);
+    \node[cell, fill=blue!10] (min2) at (0, -2.5) {3};
+    
+    % Stato 3: i = 3
+    \node[code] (s6) at (3, -4)   {6. \ \ \ \ \textbf{if} $A[3] < min$ (5 < 3) $\to$ \textbf{false}};
+    \draw[arr, green!60!black, dashed] (s6.west) .. controls +(west:1) and +(north:1) .. (c3.north);
+    
+    % Stato 4: i = 4
+    \node[code] (s7) at (3, -4.5) {7. \ \ \ \ \textbf{if} $A[4] < min$ (2 < 3) $\to$ \textbf{true}};
+    \node[code] (s8) at (3, -5)   {8. \ \ \ \ \ \ $min = A[4]$};
+    \draw[arr, green!60!black] (s7.west) .. controls +(west:1) and +(north:1) .. (c4.north);
+    \draw[arr, blue!80!black] (s8.west) |- (min.east);
+    \node[cell, fill=blue!10] (min3) at (0, -2.5) {2};
+
+    % Stato 5: i = 5
+    \node[code] (s9) at (3, -5.5) {9. \ \ \ \ \textbf{if} $A[5] < min$ (7 < 2) $\to$ \textbf{false}};
+    \draw[arr, green!60!black, dashed] (s9.west) .. controls +(west:1) and +(north:1) .. (c5.north);
+    
+    % Stato 6: Ritorno
+    \node[code] (s10) at (3, -6) {10.\ \ \textbf{end for}};
+    \node[code] (s11) at (3, -6.5) {11.\ \textbf{Return} $min$};
+    \node[cell, draw=red, line width=1.5pt] at (0, -2.5) {2};
+    \draw[arr, red] (s11.west) |- (min.east);
+
+\end{tikzpicture}
+\caption{Tracciamento dell'algoritmo \texttt{Minimo}. La variabile \texttt{min} (blu) viene aggiornata solo quando \texttt{A[i]} (puntato dalla freccia verde) è più piccolo.}
+\label{fig:minimo}
+\end{figure}
+
+\end{document}
+
+

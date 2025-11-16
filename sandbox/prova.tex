@@ -1,0 +1,465 @@
+\documentclass[12pt,a4paper]{article}
+
+% --- PAZCHETTI DI BASE E LINGUA ---
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[italian]{babel}
+\usepackage{lmodern} % Font moderno
+
+% --- LAYOUT E GRAFICA ---
+\usepackage[margin=2.5cm]{geometry} % Margini
+\usepackage{xcolor} % Per i colori
+\usepackage{graphicx}
+\usepackage{float} % Per [H]
+\usepackage{caption} % Per didascalie
+\usepackage[hidelinks]{hyperref} % Link cliccabili (ma non visibili)
+
+% --- MATEMATICA E ALGORITMI ---
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{algorithm}
+\usepackage{algpseudocode} % Per lo pseudocodice
+
+% --- PAZCHETTI PER I GRAFICI (TikZ e PGFPlots) ---
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.17} % Imposta versione di pgfplots
+
+% --- DEFINIZIONE COLORI PASTELLO ---
+\definecolor{pastelyellow}{HTML}{FCF7DE}
+\definecolor{pastelgreen}{HTML}{DEFDE0}
+\definecolor{pastelred}{HTML}{FDE0E0}
+\definecolor{pastelsalmon}{HTML}{FDDEDF}
+\definecolor{pastelblue}{HTML}{DEF3FD}
+\definecolor{pastelpurple}{HTML}{E0DEFd}
+\definecolor{textdark}{HTML}{333333}
+\definecolor{bordergray}{HTML}{AAAAAA}
+
+% --- STILI GLOBALI PER TIKZ ---
+\tikzset{
+    % Stile per le celle dell'array
+    cell/.style={
+        draw=bordergray, 
+        rounded corners=3pt, 
+        minimum size=1cm, 
+        font=\sffamily\color{textdark}, 
+        fill=gray!10
+    },
+    % Stili per evidenziare
+    cell_check/.style={cell, fill=pastelyellow},
+    cell_found/.style={cell, fill=pastelgreen},
+    cell_current/.style={cell, fill=pastelsalmon},
+    cell_discard/.style={cell, fill=gray!20, draw=gray!40},
+    % Stile per i nodi dell'albero
+    tree_node/.style={
+        draw=bordergray, 
+        circle, 
+        fill=pastelblue, 
+        font=\sffamily\color{textdark},
+        minimum size=8mm
+    },
+    tree_found/.style={tree_node, fill=pastelgreen},
+    % Stili per le frecce
+    arrow/.style={-Latex, thick, draw=bordergray},
+    arrow_path/.style={-Latex, very thick, draw=pastelsalmon}
+}
+
+
+% --- INIZIO DOCUMENTO ---
+\begin{document}
+
+\title{Lezione 11: Algoritmi e Complessità\thanks{Documento generato e rivisto, unendo appunti e visualizzazioni.}}
+\author{13 Ottobre 2025}
+\date{}
+\maketitle
+
+\tableofcontents
+\newpage
+
+\section{Definizione di Algoritmo}
+[cite_start]Un algoritmo è una sequenza finita di operazioni elementari (passi), univocamente determinata (non ambiguo), che, se eseguita su un calcolatore, porta alla risoluzione di un problema[cite: 1].
+
+\subsection{Modello RAM (Random Access Machine)}
+[cite_start]Nel modello RAM, si assume che le seguenti operazioni elementari abbiano costo "unitario" (costante)[cite: 2]:
+\begin{itemize}
+    [cite_start]\item \textbf{Operazioni aritmetiche}: +, -, *, /, \% [cite: 2]
+    [cite_start]\item \textbf{Operazioni di confronto}: $<, >, ==, !=$ [cite: 2]
+    [cite_start]\item \textbf{Operazioni logiche}: AND, OR, NOT [cite: 2]
+    [cite_start]\item \textbf{Operazioni di trasferimento}: load/store/assegnamento [cite: 2]
+    [cite_start]\item \textbf{Operazioni di controllo}: chiamata di funzione, RETURN [cite: 2]
+\end{itemize}
+
+\section{Analisi di Complessità}
+[cite_start]Si analizza il costo computazionale (Tempo o Spazio) in funzione della dimensione dell'input, $n$[cite: 3, 4].
+\begin{itemize}
+    [cite_start]\item \textbf{Complessità in Tempo $T(n)$}: Numero di operazioni elementari eseguite[cite: 3].
+    [cite_start]\item \textbf{Complessità in Spazio $S(n)$}: Numero di celle di memoria utilizzate (oltre a quelle dell'input)[cite: 4].
+\end{itemize}
+
+[cite_start]Ci si concentra sull'\textbf{ordine di grandezza} della funzione $T(n)$, ignorando costanti moltiplicative e termini di ordine inferiore[cite: 5].
+[cite_start]Ad esempio, $T(n) = 3n + 2$ e $T(n) = 5n + \log n + 4$ sono entrambe considerate di complessità \textbf{Lineare}[cite: 6]. [cite_start]$T(n) = 8n^2$ è \textbf{Quadratica}[cite: 7].
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+    \begin{axis}[
+        width=12cm, height=8cm,
+        axis lines=left,
+        xlabel=$n$ (Dimensione input),
+        ylabel=Operazioni (Costo),
+        xmin=0, xmax=50,
+        ymin=0, ymax=60,
+        legend pos=north west,
+        samples=100,
+        domain=1:50, % Dominio da 1 per log(n)
+        grid=major,
+        grid style={dashed, gray!40}
+    ]
+        
+    \addplot [very thick, color=pastelpurple] {1} node[right, pos=0.8, font=\small] {$O(1)$};
+    \addlegendentry{Costante $O(1)$}
+    
+    \addplot [very thick, color=pastelblue] {log2(x)} node[right, pos=0.9, font=\small] {$O(\log n)$};
+    \addlegendentry{Logaritmica $O(\log n)$}
+    
+    \addplot [very thick, color=pastelgreen] {x} node[right, pos=0.9, font=\small] {$O(n)$};
+    \addlegendentry{Lineare $O(n)$}
+    
+    \addplot [very thick, color=pastelsalmon, domain=0:8] {x^2} node[right, pos=1, font=\small] {$O(n^2)$};
+    \addlegendentry{Quadratica $O(n^2)$}
+    
+    \end{saxis}
+    \end{tikzpicture}
+    \caption{Confronto grafico degli ordini di grandezza}
+\end{figure}
+
+\subsection{Caso Ottimo, Pessimo, Medio}
+\begin{itemize}
+    [cite_start]\item \textbf{Caso Ottimo}: L'istanza di input che richiede il minor tempo[cite: 8].
+    [cite_start]\item \textbf{Caso Pessimo}: L'istanza di input che richiede il maggior tempo[cite: 9].
+    [cite_start]\item \textbf{Caso Medio}: Complessità media su tutte le possibili istanze[cite: 10].
+\end{itemize}
+[cite_start]Ci si concentra sul \textbf{caso pessimo} perché fornisce un limite superiore al costo: l'algoritmo non impiegherà mai più di $T(n)$[cite: 11].
+
+\newpage % Separatore per gli esempi
+
+%---------------------------------------------------------
+\section{Esempio 1: Minimo in Vettore}
+%---------------------------------------------------------
+\begin{itemize}
+    [cite_start]\item \textbf{Input}: Array $A[1..n]$ di interi[cite: 12].
+    [cite_start]\item \textbf{Output}: Il valore minimo contenuto in $A$[cite: 12].
+\end{itemize}
+
+\begin{algorithmic}[1]
+\Procedure{Minimo}{A, n} 
+    \State $min = A[1]$ \Comment{Costo costante $c_1$}
+    \For{$i = 2 \to n$} \Comment{Eseguito $n-1$ volte}
+        \If{$A[i] < min$} \Comment{Costo $c_2$}
+            \State $min = A[i]$ \Comment{Costo $c_3$}
+        \EndIf
+    \EndFor
+    \State \Return $min$ \Comment{Costo costante $c_4$}
+\EndProcedure
+\end{algorithmic}
+
+\textbf{Analisi:}
+[cite_start]Il costo totale è $T(n) = c_1 + (n-1)(c_2 \text{ (confronto)} + c_3 \text{ (assegn. caso pessimo)}) + c_4$[cite: 13].
+[cite_start]La complessità è \textbf{Lineare}, $T(n) \in \Theta(n)$, sia nel caso ottimo che in quello pessimo[cite: 14].
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[scale=0.9]
+\node[anchor=west] at (0, 1.5) {Array:};
+\foreach \i/\val [count=\x from 0] in {7,2,9,1,5,8,3} {
+    \node[cell] at (\x*1.2, 0) (cell-\x) {\val};
+    \node at (\x*1.2, -0.7) {\tiny A[\x+1]};
+}
+
+% Passo 1: i=2
+\begin{scope}[yshift=-3cm]
+\node[anchor=west] at (-2, 0) {\textbf{i=2}: $min=7$. $A[2]=2 < 7$ \textbf{$\to$ Nuovo min=2}};
+\foreach \i/\val [count=\x from 0] in {7,2,9,1,5,8,3} {
+    \pgfmathtruncatemacro{\idx}{\x+1}
+    \ifthenelse{\idx=1}{\def\style{cell_current}}{
+        \ifthenelse{\idx=2}{\def\style{cell_found}}{\def\style{cell}}
+    }
+    \node[\style] at (\x*1.2, 0) (cell-\x) {\val};
+}
+\end{scope}
+
+% Passo 2: i=3
+\begin{scope}[yshift=-6cm]
+\node[anchor=west] at (-2, 0) {\textbf{i=3}: $min=2$. $A[3]=9 > 2$};
+\foreach \i/\val [count=\x from 0] in {7,2,9,1,5,8,3} {
+    \pgfmathtruncatemacro{\idx}{\x+1}
+    \ifthenelse{\idx=2}{\def\style{cell_current}}{
+        \ifthenelse{\idx=3}{\def\style{cell_check}}{\def\style{cell}}
+    }
+    \node[\style] at (\x*1.2, 0) (cell-\x) {\val};
+}
+\end{scope}
+
+% Passo 3: i=4
+\begin{scope}[yshift=-9cm]
+\node[anchor=west] at (-2, 0) {\textbf{i=4}: $min=2$. $A[4]=1 < 2$ \textbf{$\to$ Nuovo min=1}};
+\foreach \i/\val [count=\x from 0] in {7,2,9,1,5,8,3} {
+    \pgfmathtruncatemacro{\idx}{\x+1}
+    \ifthenelse{\idx=2}{\def\style{cell_current}}{
+        \ifthenelse{\idx=4}{\def\style{cell_found}}{\def\style{cell}}
+    }
+    \node[\style] at (\x*1.2, 0) (cell-\x) {\val};
+}
+\end{scope}
+
+% ... (saltiamo i=5, i=6, i=7 per brevità) ...
+
+% Passo finale
+\begin{scope}[yshift=-12cm]
+\node[anchor=west] at (-2, 0) {\textbf{Fine}: $min=1$.};
+\foreach \i/\val [count=\x from 0] in {7,2,9,1,5,8,3} {
+    \pgfmathtruncatemacro{\idx}{\x+1}
+    \ifthenelse{\idx=4}{\def\style{cell_current}}{\def\style{cell}}
+    \node[\style] at (\x*1.2, 0) (cell-\x) {\val};
+}
+\end{scope}
+\end{tikzpicture}
+\caption{Visualizzazione dell'algoritmo di ricerca del minimo}
+\end{figure}
+
+\newpage
+%---------------------------------------------------------
+\section{Esempio 2: Cerca K (Ricerca Sequenziale)}
+%---------------------------------------------------------
+\begin{itemize}
+    [cite_start]\item \textbf{Input}: Array $A[1..n]$ di interi, $k$ intero[cite: 16].
+    [cite_start]\item \textbf{Output}: $i$ tale che $A[i]=k$, o $-1$ se $k \notin A$[cite: 17].
+\end{itemize}
+
+\begin{algorithmic}[1]
+\Procedure{Cerca-K}{A, n, k} 
+    \State $i = 1$ 
+    \State $trovato = \text{false}$ 
+    \While{(\textbf{not} $trovato$) \textbf{and} ($i \le n$)} 
+        \If{$A[i] == k$}
+            \State $trovato = \text{true}$ 
+        \Else
+            \State $i = i + 1$ 
+        \EndIf
+    \EndWhile
+    \If{$trovato$}
+        [cite_start]\State \Return $i$ [cite: 18]
+    \Else
+        \State \Return $-1$ 
+    \EndIf
+\EndProcedure
+\end{algorithmic}
+
+\textbf{Analisi:}
+\begin{itemize}
+    \item \textbf{Caso Ottimo}: $k = A[1]$. Il ciclo `while` esegue 1 iterazione. [cite_start]$T(n) \in \Theta(1)$ (Costante)[cite: 19].
+    \item \textbf{Caso Pessimo}: $k \notin A$ (o $k=A[n]$). Il ciclo `while` esegue $n$ iterazioni. [cite_start]$T(n) \in \Theta(n)$ (Lineare)[cite: 20, 21].
+\end{itemize}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[scale=0.9]
+\node[anchor=west] at (0, 1.5) {Array (Cerchiamo k=5):};
+\foreach \i/\val [count=\x from 0] in {4,7,2,9,5,1,8} {
+    \node[cell] at (\x*1.2, 0) (cell-\x) {\val};
+    \node at (\x*1.2, -0.7) {\tiny A[\x+1]};
+}
+
+\begin{scope}[yshift=-3cm]
+\node[anchor=west] at (-1, 0) {\textbf{i=1}: $A[1]=4 \neq 5$};
+\foreach \i/\val [count=\x from 0] in {4,7,2,9,5,1,8} {
+    \pgfmathtruncatemacro{\idx}{\x+1}
+    \ifthenelse{\idx=1}{\def\style{cell_check}}{\def\style{cell}}
+    \node[\style] at (\x*1.2, 0) (cell-\x) {\val};
+}
+\end{scope}
+
+\begin{scope}[yshift=-6cm]
+\node[anchor=west] at (-1, 0) {\textbf{i=2}: $A[2]=7 \neq 5$};
+\foreach \i/\val [count=\x from 0] in {4,7,2,9,5,1,8} {
+    \pgfmathtruncatemacro{\idx}{\x+1}
+    \ifthenelse{\idx=2}{\def\style{cell_check}}{\def\style{cell}}
+    \node[\style] at (\x*1.2, 0) (cell-\x) {\val};
+}
+\end{scope}
+
+\begin{scope}[yshift=-9cm]
+\node[anchor=west] at (-1, 0) {\textbf{i=3}: $A[3]=2 \neq 5$};
+\foreach \i/\val [count=\x from 0] in {4,7,2,9,5,1,8} {
+    \pgfmathtruncatemacro{\idx}{\x+1}
+    \ifthenelse{\idx=3}{\def\style{cell_check}}{\def\style{cell}}
+    \node[\style] at (\x*1.2, 0) (cell-\x) {\val};
+}
+\end{scope}
+
+\begin{scope}[yshift=-12cm]
+\node[anchor=west] at (-1, 0) {\textbf{i=4}: $A[4]=9 \neq 5$};
+\foreach \i/\val [count=\x from 0] in {4,7,2,9,5,1,8} {
+    \pgfmathtruncatemacro{\idx}{\x+1}
+    \ifthenelse{\idx=4}{\def\style{cell_check}}{\def\style{cell}}
+    \node[\style] at (\x*1.2, 0) (cell-\x) {\val};
+}
+\end{scope}
+
+\begin{scope}[yshift=-15cm]
+\node[anchor=west] at (-1, 0) {\textbf{i=5}: $A[5]=5 = 5$ \textbf{$\to$ TROVATO!}};
+\foreach \i/\val [count=\x from 0] in {4,7,2,9,5,1,8} {
+    \pgfmathtruncatemacro{\idx}{\x+1}
+    \ifthenelse{\idx=5}{\def\style{cell_found}}{\def\style{cell}}
+    \node[\style] at (\x*1.2, 0) (cell-\x) {\val};
+}
+\end{scope}
+\end{tikzpicture}
+\caption{Visualizzazione dell'algoritmo di ricerca sequenziale}
+\end{figure}
+
+\newpage
+%---------------------------------------------------------
+\section{Esempio 3: Minimo in Vettore Ordinato}
+%---------------------------------------------------------
+\begin{itemize}
+    [cite_start]\item \textbf{Input}: Array $A[1..n]$ di interi, \textbf{ordinato}[cite: 22].
+    [cite_start]\item \textbf{Output}: Il valore minimo contenuto in $A$[cite: 22].
+\end{itemize}
+
+\begin{algorithmic}[1]
+\Procedure{Minimo-Ordinato}{A, n} 
+    \State \Return $A[1]$ 
+\EndProcedure
+\end{algorithmic}
+[cite_start]\textbf{Analisi}: $T(n) \in \Theta(1)$ (Costante)[cite: 23].
+
+\vspace{1cm}
+\hrule
+\vspace{1cm}
+
+%---------------------------------------------------------
+\section{Esempio 4: Cerca K in Vettore Ordinato (Ricerca Binaria)}
+%---------------------------------------------------------
+\begin{itemize}
+    [cite_start]\item \textbf{Input}: Array $A[1..n]$ di interi \textbf{ordinato}, $k$ intero[cite: 24].
+    [cite_start]\item \textbf{Output}: $i$ tale che $A[i]=k$, o $-1$ se $k \notin A$[cite: 25].
+\end{itemize}
+[cite_start]L'idea è di confrontare $k$ con l'elemento centrale $A[q]$ e dimezzare lo spazio di ricerca[cite: 26].
+
+\begin{algorithmic}[1]
+\Procedure{BS-IT}{A, p, r, k} 
+    \While{$p \le r$} 
+        \State $q = \lfloor (p+r)/2 \rfloor$ 
+        \If{$A[q] == k$}
+            \State \Return $q$ 
+        \ElsIf{$A[q] > k$}
+            [cite_start]\State $r = q - 1$ [cite: 27]
+        \Else
+            \State $p = q + 1$ 
+        \EndIf
+    \EndWhile
+    \State \Return $-1$ 
+\EndProcedure
+\end{algorithmic}
+
+\textbf{Analisi:}
+\begin{itemize}
+    \item \textbf{Caso Ottimo}: $k = A[q]$ al primo ciclo. [cite_start]$T(n) \in \Theta(1)$ (Costante)[cite: 28].
+    \item \textbf{Caso Pessimo}: $k \notin A$. Il numero di iterazioni è $\log_2 n$. [cite_start]$T(n) \in \Theta(\log n)$ (Logaritmica)[cite: 29].
+\end{itemize}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[scale=0.9]
+\node[anchor=west] at (0, 1.5) {Array ordinato (Cerchiamo k=9):};
+\foreach \i/\val [count=\x from 0] in {1,3,5,7,9,11,13} {
+    \node[cell] at (\x*1.2, 0) (cell-\x) {\val};
+    \node at (\x*1.2, -0.7) {\tiny A[\x+1]};
+}
+
+% Passo 1
+\begin{scope}[yshift=-3cm]
+\node[anchor=west] at (-2.5, 0) {\textbf{Passo 1}: $p=1, r=7, q=4$. $A[4]=7 < 9 \to$ Cerca a destra};
+% Array
+\foreach \i/\val [count=\x from 0] in {1,3,5,7,9,11,13} {
+    \pgfmathtruncatemacro{\idx}{\x+1}
+    \ifthenelse{\idx<4}{\def\style{cell_discard}}{
+        \ifthenelse{\idx=4}{\def\style{cell_check}}{\def\style{cell}}
+    }
+    \node[\style] at (\x*1.2, 0) (cell-\x) {\val};
+}
+% Sottolineo
+\draw[thick, pastelpurple] (4*1.2, -1.2) -- (6*1.2, -1.2) node[midway, below, font=\small] {p=5, r=7};
+\end{scope}
+
+% Passo 2
+\begin{scope}[yshift=-6cm]
+\node[anchor=west] at (-2.5, 0) {\textbf{Passo 2}: $p=5, r=7, q=6$. $A[6]=11 > 9 \to$ Cerca a sinistra};
+% Array
+\foreach \i/\val [count=\x from 0] in {1,3,5,7,9,11,13} {
+    \pgfmathtruncatemacro{\idx}{\x+1}
+    \ifthenelse{\idx<5 \OR \idx>7}{\def\style{cell_discard}}{
+        \ifthenelse{\idx=6}{\def\style{cell_check}}{
+            \ifthenelse{\idx=7}{\def\style{cell_discard}}{\def\style{cell}}
+        }
+    }
+    \node[\style] at (\x*1.2, 0) (cell-\x) {\val};
+}
+% Sottolineo
+\draw[thick, pastelpurple] (4*1.2, -1.2) -- (4*1.2, -1.2) node[midway, below, font=\small] {p=5, r=5};
+\end{scope}
+
+% Passo 3
+\begin{scope}[yshift=-9cm]
+\node[anchor=west] at (-2.5, 0) {\textbf{Passo 3}: $p=5, r=5, q=5$. $A[5]=9 = 9 \to$ \textbf{TROVATO!}};
+% Array
+\foreach \i/\val [count=\x from 0] in {1,3,5,7,9,11,13} {
+    \pgfmathtruncatemacro{\idx}{\x+1}
+    \ifthenelse{\idx=5}{\def\style{cell_found}}{\def\style{cell_discard}}
+    \node[\style] at (\x*1.2, 0) (cell-\x) {\val};
+}
+\end{scope}
+
+% Albero di decisione
+\begin{scope}[yshift=-13cm]
+\node at (4*1.2, 1) {Albero di decisione:};
+% Nodi
+\node[tree_node] (root) at (3*1.2, 0) {A[4]=7};
+\node[tree_node] (l) at (1*1.2, -2) {A[2]=3};
+\node[tree_node] (r) at (5*1.2, -2) {A[6]=11};
+\node[tree_node] (ll) at (0*1.2, -4) {A[1]=1};
+\node[tree_node] (lr) at (2*1.2, -4) {A[3]=5};
+\node[tree_node, tree_found] (rl) at (4*1.2, -4) {A[5]=9}; % Trovato
+\node[tree_node] (rr) at (6*1.2, -4) {A[7]=13};
+% Frecce
+\draw[arrow] (root) -- (l) node[midway, above left, font=\tiny] {$<7$};
+\draw[arrow] (root) -- (r) node[midway, above right, font=\tiny] {$>7$};
+\draw[arrow] (l) -- (ll) node[midway, above left, font=\tiny] {$<3$};
+\draw[arrow] (l) -- (lr) node[midway, above right, font=\tiny] {$>3$};
+\draw[arrow] (r) -- (rl) node[midway, above left, font=\tiny] {$<11$};
+\draw[arrow] (r) -- (rr) node[midway, above right, font=\tiny] {$>11$};
+% Percorso
+\draw[arrow_path] (root) -- (r);
+\draw[arrow_path] (r) -- (rl);
+\end{scope}
+
+\end{tikzpicture}
+\caption{Visualizzazione dell'algoritmo di ricerca binaria (passi e albero)}
+\end{figure}
+
+
+\newpage
+\section*{Legenda Colori Visualizzazioni}
+La seguente legenda si applica ai colori pastello usati nelle figure di questo documento.
+
+\begin{itemize}
+    \item \fcolorbox{bordergray}{pastelsalmon}{\phantom{spazio}} \textbf{Minimo Corrente / Pointer}: Elemento usato come riferimento (es. `min` attuale).
+    \item \fcolorbox{bordergray}{pastelyellow}{\phantom{spazio}} \textbf{Elemento Confrontato}: Elemento in fase di ispezione (es. `A[i]`, `A[q]`).
+    \item \fcolorbox{bordergray}{pastelgreen}{\phantom{spazio}} \textbf{Trovato / Nuovo Minimo}: Elemento che soddisfa la condizione (trovato, o un nuovo minimo).
+    \item \fcolorbox{bordergray}{gray!20}{\phantom{spazio}} \textbf{Scartato}: Porzione dell'array non più considerata (es. nella ricerca binaria).
+    \item \fcolorbox{bordergray}{pastelblue}{\phantom{spazio}} \textbf{Nodo Albero}: Elemento nell'albero di decisione della ricerca binaria.
+\end{itemize}
+
+\end{document}

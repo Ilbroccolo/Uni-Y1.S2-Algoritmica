@@ -1,0 +1,270 @@
+% ===================================================================
+% FILE: Esercitazione.tex
+% (Basato su Esercitazione20ott.pdf)
+% ===================================================================
+
+\part{Esercitazione (20/10)}
+
+\begin{example}[Esercizio 1: Correttezza SelectionSort]
+Discutere la correttezza del SelectionSort utilizzando l'invariante di ciclo indicata a lezione.
+\end{example}
+
+\begin{dimostrazione}[Soluzione Esercizio 1]
+\textbf{Invariante:} Prima dell'esecuzione della $j$-esima iterazione del `for` esterno ($0 \le j \le n-2$):
+\begin{enumerate}
+    \item Il segmento di array $a[0...j-1]$ è ordinato.
+    \item Il segmento $a[0...j-1]$ contiene i $j$ elementi più piccoli di $a$.
+\end{enumerate}
+
+\subparagraph{Inizializzazione}
+Prima della prima iterazione, $j=0$. Il segmento di array $a[0...-1]$ è vuoto. Un array vuoto è banalmente ordinato e contiene 0 elementi, che soddisfa l'invariante.
+
+\subparagraph{Conservazione}
+Assumiamo che l'invariante sia vero prima della $j$-esima iterazione.
+Nella $j$-esima iterazione, viene selezionato l'elemento minimo in $a[j...n-1]$ e viene scambiato (portato) in posizione $j$.
+Il segmento $a[0...j]$ risulta dunque ordinato (perché $a[0...j-1]$ conteneva i $j$ minimi ordinati, e $a[j]$ ora contiene il $(j+1)$-esimo minimo).
+Il segmento $a[0...j]$ contiene i $j+1$ elementi più piccoli di $a$.
+L'incremento di $j$ per la successiva iterazione (che diventa $j+1$) preserva l'invariante di ciclo (l'invariante sarà vero per $a[0...j]$).
+
+\subparagraph{Conclusione}
+Esaminiamo cosa accade quando il ciclo termina. Dopo l'incremento, $j = n-1$. L'invariante (applicato a $j=n-1$) diventa:
+"Il segmento $a[0...j-1] = a[0...n-2]$ è ordinato e contiene gli $n-1$ elementi più piccoli dell'intero array."
+Di conseguenza, in posizione $n-1$ è rimasto l'elemento massimo. L'array $a$ è ordinato.
+\end{dimostrazione}
+
+
+\begin{example}[Esercizio 2: Analisi Costo]
+Analizzare il costo in tempo degli algoritmi discussi a lezione utilizzando la notazione asintotica.
+\end{example}
+
+\begin{observation}[Soluzione Esercizio 2: Analisi]
+\textbf{MAX(v)}
+\begin{algorithmic}[1]
+    \Procedure{MAX}{v}
+        \State $m = v[0]$
+        \State $n = v.length$
+        \For{$i = 1 \to n-1$}
+            \If{$m < v[i]$}
+                \State $m = v[i]$
+            \EndIf
+        \EndFor
+        \State \Return $m$
+    \EndProcedure
+\end{algorithmic}
+\textbf{Analisi:} $T(n) = O(1) \text{ (init)} + O(n) \text{ (ciclo)} + O(1) \text{ (return)} = O(n)$.
+
+\textbf{Ricerca Sequenziale(a, k)}
+\begin{algorithmic}[1]
+    \Procedure{RicercaSequenziale}{a, k}
+        \State $pos = -1$
+        \State $i = 0$
+        \While{($i < a.length$) \textbf{and} ($pos == -1$)}
+            \If{$a[i] == k$}
+                \State $pos = i$
+            \EndIf
+            \State $i = i + 1$
+        \EndWhile
+        \State \Return $pos$
+    \EndProcedure
+\end{algorithmic}
+\textbf{Analisi:} $T(n) = O(1) \text{ (init)} + O(n) \text{ (ciclo, caso pessimo)} = O(n)$.
+
+\textbf{Ricerca Binaria(v, k)}
+\begin{algorithmic}[1]
+    \Procedure{RicercaBinaria}{v, k}
+        \State $n = v.length$
+        \State $sx = 0$, $dx = n-1$, $pos = -1$
+        \While{($sx \le dx$) \textbf{and} ($pos == -1$)}
+            \State $cx = \lfloor (sx + dx) / 2 \rfloor$
+            \If{$v[cx] == k$}
+                \State $pos = cx$
+            \ElsIf{$v[cx] < k$}
+                \State $sx = cx + 1$
+            \Else
+                \State $dx = cx - 1$
+            \EndIf
+        \EndWhile
+        \State \Return $pos$
+    \EndProcedure
+\end{algorithmic}
+\textbf{Analisi:} Il costo del corpo del `while` è $O(1)$. Il ciclo viene eseguito $O(\log_2 n)$ volte.
+$T(n) = O(1) + O(\log n) = O(\log n)$.
+
+\textbf{Insertion Sort(a)}
+\begin{algorithmic}[1]
+    \Procedure{InsertionSort}{a}
+        \State $n = a.length$
+        \For{$j = 1 \to n-1$}
+            \State $key = a[j]$
+            \State $i = j - 1$
+            \While{($i \ge 0$) \textbf{and} ($a[i] > key$)}
+                \State $a[i+1] = a[i]$
+                \State $i = i - 1$
+            \EndWhile
+            \State $a[i+1] = key$
+        \EndFor
+    \EndProcedure
+\end{algorithmic}
+\textbf{Analisi:} Il ciclo esterno si ripete $n-1$ volte ($O(n)$). Il ciclo interno `while`, nel caso pessimo, si ripete $O(j)$ volte, che è $O(n)$.
+$T(n) = O(n) \times O(n) = O(n^2)$.
+
+\textbf{Selection Sort(a)}
+\begin{algorithmic}[1]
+    \Procedure{SelectionSort}{a}
+        \State $n = a.length$
+        \For{$j = 0 \to n-2$}
+            \State $minimo = j$
+            \For{$i = j+1 \to n-1$}
+                \If{$a[i] < a[minimo]$}
+                    \State $minimo = i$
+                \EndIf
+            \EndFor
+            \State \Call{Swap}{a[j], a[minimo]}
+        \EndFor
+    \EndProcedure
+\end{algorithmic}
+\textbf{Analisi:} $T(n) = \sum_{j=0}^{n-2} \Theta(n-j) = \Theta(n^2)$.
+\end{observation}
+
+
+\begin{example}[Esercizio 3: Elemento Mancante]
+Sia $a$ un array non ordinato di dimensione $n$, che contiene tutti gli interi compresi tra $1$ e $n+1$ ad eccezione di uno di essi. Si vuole stabilire l'elemento mancante.
+Indicare se è possibile o meno risolvere il problema con le seguenti complessità:
+\begin{itemize}
+    \item Tempo $O(n^2)$, Spazio $O(1)$
+    \item Tempo $O(n)$, Spazio $O(n)$
+    \item Tempo $O(n)$, Spazio $O(1)$
+    \item Tempo $O(\log n)$, Spazio $O(n)$
+\end{itemize}
+\end{example}
+
+
+\begin{example}[Esercizio 4: Array Ordinato (Non Crescente)]
+Progettare un algoritmo che verifica se un array $a$ di $n$ interi è ordinato in ordine non crescente e analizzarne la complessità (numero di confronti e costo in tempo).
+
+\begin{algorithmic}[1]
+    \Procedure{IsOrdinatoNonCrescente}{a}
+        \State $n = a.length$
+        \State $ordinato = \text{true}$
+        \If{$n > 1$}
+            \State $i = 0$
+            \While{($i < n-1$) \textbf{and} $ordinato$}
+                \If{$a[i] < a[i+1]$}
+                    \State $ordinato = \text{false}$
+                \Else
+                    \State $i = i + 1$
+                \EndIf
+            \EndWhile
+        \EndIf
+        \State \Return $ordinato$
+    \EndProcedure
+\end{algorithmic}
+\textbf{Analisi:} $T(n) = O(n)$. Nel caso pessimo (array ordinato) esegue $n-1$ confronti. Nel caso ottimo (primi due elementi non ordinati) esegue 1 confronto, $O(1)$.
+\end{example}
+
+
+\begin{example}[Esercizio 5: Array 0 e 1]
+Progettare un algoritmo efficiente per determinare se un array ordinato di $n$ interi, contenente solo 0 e 1, contiene più 0 di 1. Analizzare la complessità dell'algoritmo trovato.
+
+\begin{algorithmic}[1]
+    \Procedure{PileOchei}{a}
+        \State $n = a.length$
+        \If{$a[ \lfloor n/2 \rfloor ] == 0$}
+            \State \Return "Più 0"
+        \Else
+            \State \Return "Più 1 (o pari)"
+        \EndIf
+    \EndProcedure
+\end{algorithmic}
+\textbf{Analisi:} $T(n) = O(1)$. Controllando l'elemento mediano, si sa immediatamente quale dei due valori è in maggioranza (o se sono pari).
+\end{example}
+
+
+\begin{example}[Esercizio 6: Elementi Comuni (Non Ordinati)]
+Dati due array $a$ e $b$, di $n$ e $m$ interi distinti, progettare un algoritmo per determinare il numero di elementi comuni di $a$ e $b$.
+\end{example}
+
+
+\begin{example}[Esercizio 7: Elementi Comuni (Ordinati)]
+Dati due array ordinati $a$ e $b$, di $n$ e $m$ interi distinti, progettare un algoritmo per determinare il numero di elementi comuni di $a$ e $b$.
+\end{example}
+
+
+\begin{example}[Esercizio 8: Somma K (Ordinato)]
+Dato un array ordinato di $n$ interi positivi, progettare un algoritmo efficiente per verificare se esistono due elementi nell'array la cui somma è $k$.
+\end{example}
+
+
+\begin{example}[Esercizio 9: Ordinare Array 0/1 in loco]
+Progettare un algoritmo per ordinare in loco un array $a$ di $n$ interi, il cui valore può essere solo 0 o 1. L'algoritmo deve richiedere tempo lineare nel caso pessimo e può solo scambiare elementi. In particolare, non può usare contatori. Dimostrare la correttezza.
+
+\begin{observation}[Strategia Esercizio 9]
+Manteniamo tre regioni nell'array $a$, usando due indici $i$ e $j$:
+\begin{itemize}
+    \item $a[0...i]$: Regione contenente solo 0.
+    \item $a[i+1...j-1]$: Regione contenente solo 1.
+    \item $a[j...n-1]$: Regione da esaminare (?).
+\end{itemize}
+All'inizio (array tutto "?"), $i = -1$ e $j = 0$.
+Si scorre l'array con $j$:
+\begin{itemize}
+    \item \textbf{Se $a[j] == 1$:} L'elemento è già nella regione corretta (quella degli 1). Si incrementa solo $j$ (facendo crescere la seconda regione).
+    \item \textbf{Se $a[j] == 0$:} L'elemento $a[j]$ (uno 0) deve andare nella prima regione. Si incrementa $i$ (che ora punta al primo '1') e si scambia $a[i]$ con $a[j]$.
+\end{itemize}
+\end{observation}
+
+\begin{algorithmic}[1]
+    \Procedure{Ordina01}{a}
+        \State $n = a.length$
+        \State $i = -1$
+        \For{$j = 0 \to n-1$}
+            \If{$a[j] == 0$}
+                \State $i = i + 1$
+                \State \Call{Swap}{a[i], a[j]}
+            \EndIf
+        \EndFor
+    \EndProcedure
+\end{algorithmic}
+\textbf{Analisi:} $T(n) = \Theta(n)$, perché esegue un singolo ciclo for.
+
+\begin{dimostrazione}[Correttezza Ordina01]
+\textbf{Invariante:} All'inizio di ogni iterazione $j$-esima (per $0 \le j \le n-1$):
+\begin{itemize}
+    \item Per ogni $k$ t.c. $0 \le k \le i$, vale $a[k] == 0$.
+    \item Per ogni $k$ t.c. $i+1 \le k \le j-1$, vale $a[k] == 1$.
+\end{itemize}
+\subparagraph{Inizializzazione}
+Prima della prima iterazione, $j=0$ e $i=-1$. Le due regioni ($a[0...-1]$ e $a[0...-1]$) sono vuote. L'invariante è banalmente vero.
+\subparagraph{Conservazione}
+Assumiamo l'invariante vero per $j$.
+\begin{itemize}
+    \item \textbf{Caso $a[j] == 1$:} $i$ non cambia. La regione $a[0...i]$ (solo 0) è invariata. La regione $a[i+1...j]$ ora include il nuovo '1', preservando l'invariante per la prossima iterazione $j+1$.
+    \item \textbf{Caso $a[j] == 0$:} Si incrementa $i$. $a[i]$ (che era il primo '1') viene scambiato con $a[j]$ (che è '0'). Ora $a[0...i]$ contiene solo '0'. $a[i+1...j]$ contiene solo '1'. L'invariante è preservato per $j+1$.
+\end{itemize}
+\subparagraph{Conclusione}
+All'uscita del ciclo for, $j=n$. L'invariante vale per $j=n$:
+\begin{itemize}
+    \item $a[0...i]$ contiene solo 0.
+    \item $a[i+1...n-1]$ contiene solo 1.
+\end{itemize}
+L'array è ordinato.
+\end{dimostrazione}
+\end{example}
+
+
+\begin{example}[Esercizio 10: Ordinare Funzioni]
+Ordinare le seguenti funzioni per tasso di crescita:
+$(\sqrt{2})^{\log_2 n}$, $n^2 \log^2 n$, $n \log n$, $2^n$, $2^{2^n}$, 19, $\pi^n$, $3^{n-2}$, $(\log n)^n$, $n \log n$ (duplicato)
+\end{example}
+
+
+\begin{example}[Esercizio 11: Dimostrazioni $\Theta$]
+Dimostrare che:
+\begin{itemize}
+    \item $3n^2 - 2n - 1 \in \Theta(n^2)$
+    \item $2^{n+1} \in \Theta(2^n)$
+    \item $2^{2n} \notin \Theta(2^n)$
+\end{itemize}
+\end{example}
+
+\newpage

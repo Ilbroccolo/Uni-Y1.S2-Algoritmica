@@ -1,0 +1,236 @@
+\documentclass[a4paper, 12pt]{article}
+
+% Pacchetti standard
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[italian]{babel}
+\usepackage{geometry}
+\geometry{a4paper, margin=1in}
+
+% Pacchetti matematici
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{mathtools} % Per 'cases*'
+
+% Definizioni di Teoremi e Ambienti
+\newtheorem{exercise}{Esercizio}
+\newtheorem{theorem}{Teorema}
+\theoremstyle{definition}
+\newtheorem*{definition}{Definizione}
+
+% Stile per le dimostrazioni
+\renewcommand{\qedsymbol}{$\blacksquare$}
+
+% Abbreviazioni comode per le funzioni
+\DeclareMathOperator{\len}{len}
+\DeclareMathOperator{\app}{app}
+\DeclareMathOperator{\rev}{rev}
+\DeclareMathOperator{\Max}{Max}
+\DeclareMathOperator{\Min}{Min}
+\DeclareMathOperator{\Ordinato}{Ordinato}
+\DeclareMathOperator{\Ins}{Ins}
+
+% Abbreviazioni per i tipi
+\newcommand{\LA}{\text{LA}}
+\newcommand{\BTN}{\text{BTN}}
+\newcommand{\N}{\mathbb{N}}
+
+\title{Fondamenti di Informatica - Esercitazione 4}
+\author{}
+\date{24 Novembre} % Dalla nota
+
+\begin{document}
+
+\maketitle
+
+\section*{Esercitazione 4}
+
+\subsection*{Esercizio 1: \texttt{len(app)}}
+\begin{exercise}
+Dimostrare che $\forall e_1, e_2 \in \LA, \len(\app(e_1, e_2)) = \len(e_1) + \len(e_2)$.
+\end{exercise}
+
+\begin{proof}[Dimostrazione (per induzione su $e_1$)]
+\
+\\
+\textbf{C.B. (Caso Base): $e_1 = []$}
+\begin{align*}
+\len(\app([], e_2)) &= \len(e_2) && \text{(Def. C.B. app)} \\
+&= \len(e_2) + 0 && \text{(Calcolo)} \\
+&= \len(e_2) + \len([]) && \text{(Def. C.B. len)}
+\end{align*}
+\
+\\
+\textbf{C.I. (Caso Induttivo): $e_1 = (a:e'_1)$}
+\begin{align*}
+\len(\app(a:e'_1, e_2)) &= \len(a: \app(e'_1, e_2)) && \text{(Def. C.I. app)} \\
+&= \len(\app(e'_1, e_2)) + 1 && \text{(Def. C.I. len)} \\
+&= (\len(e'_1) + \len(e_2)) + 1 && \text{(Ipotesi Induttiva)} \\
+&= (\len(e'_1) + 1) + \len(e_2) && \text{(Prop. Associativa)} \\
+&= \len(a:e'_1) + \len(e_2) && \text{(Def. C.I. len)}
+\end{align*}
+\end{proof}
+
+
+\subsection*{Esercizio 2: \texttt{len(rev)}}
+\begin{exercise}
+Dimostrare che $\forall e \in \LA, \len(\rev(e)) = \len(e)$.
+\end{exercise}
+
+\begin{proof}[Dimostrazione (per induzione su $e$)]
+\
+\\
+\textbf{C.B. (Caso Base): $e = []$}
+\begin{align*}
+\len(\rev([])) &= \len([]) && \text{(Def. C.B. rev)}
+\end{align*}
+\
+\\
+\textbf{C.I. (Caso Induttivo): $e = (a:e')$}
+\begin{align*}
+\len(\rev(a:e')) &= \len(\app(\rev(e'), [a])) && \text{(Def. C.I. rev)} \\
+&= \len(\rev(e')) + \len([a]) && \text{(Da Esercizio 1)} \\
+&= \len(e') + \len([a]) && \text{(Ipotesi Induttiva)} \\
+&= \len(e') + 1 && \text{(Calcolo, $\len([a])=1$)} \\
+&= \len(a:e') && \text{(Def. C.I. len)}
+\end{align*}
+\end{proof}
+
+
+\section*{Esercizi su Alberi Binari ($BTN$)}
+
+\subsection*{Esercizio 3: Definizione \texttt{Max} su $BTN$}
+\begin{definition}[Max]
+Definiamo la funzione $\Max: \BTN \to \N \cup \{0\}$.
+\begin{itemize}
+    \item \textbf{C.B.:} $\Max(\lambda) = 0$
+    \item \textbf{C.I.:} $\Max(N(t_1, n, t_2)) = \max(n, \Max(t_1), \Max(t_2))$
+\end{itemize}
+\end{definition}
+
+
+\subsection*{Esercizio 4: Definizione \texttt{Min} su $BTN$}
+\begin{definition}[Min]
+Definiamo la funzione $\Min: \BTN \to \N \cup \{\infty\}$.
+\begin{itemize}
+    \item \textbf{C.B.:} $\Min(\lambda) = \infty$
+    \item \textbf{C.I.:} $\Min(N(t_1, n, t_2)) = \min(n, \Min(t_1), \Min(t_2))$
+\end{itemize}
+\end{definition}
+
+
+\subsection*{Esercizio 5: Traccia \texttt{Ordinato}}
+Traccia dell'esecuzione di $\Ordinato(t_1)$ dove $t_1 = N(t_2, 8, t_3)$, $t_2 = N(N(\lambda, 1, \lambda), 5, N(\lambda, \dots, \lambda))$, ecc.
+\begin{align*}
+\Ordinato(t_1) &= \Ordinato(N(t_2, 8, t_3)) \\
+&= \Ordinato(t_2) \land \Ordinato(t_3) \land (8 > \Max(t_2)) \land (8 < \Min(t_3)) \\
+&= \Ordinato(N(N(\lambda, 1, \lambda), 5, N(\lambda, 5, t_4))) \land \dots \\
+&= (\Ordinato(N(\lambda, 1, \lambda)) \land \Ordinato(N(\lambda, 5, t_4)) \land \dots) \land \dots \\
+&= (t \land \Ordinato(N(\lambda, 5, t_4))) \land \dots \\
+&= (t \land (\Ordinato(\lambda) \land \Ordinato(t_4) \land \dots)) \land \dots \\
+&= t \land (t \land (t \land f)) \land \dots \\
+&= f
+\end{align*}
+*(Nota: la traccia nelle note scritte a mano è una semplificazione che arriva alla conclusione 'f' (false))*
+
+
+\subsection*{Esercizio 6: Definizione \texttt{Ins}}
+\begin{definition}[Ins]
+Definiamo la funzione $\Ins: \N \times \BTN \to \BTN$.
+\begin{itemize}
+    \item \textbf{C.B.:} $\Ins(n, \lambda) = N(\lambda, n, \lambda)$
+    \item \textbf{C.I.:}
+    $\Ins(n, N(t_1, m, t_2)) = \begin{cases*}
+        N(\Ins(n, t_1), m, t_2) & se $n < m$ \\
+        N(t_1, m, \Ins(n, t_2)) & se $n > m$ \\
+        N(t_1, m, t_2) & altrimenti (se $n = m$)
+        \end{cases*}$
+\end{itemize}
+\end{definition}
+
+
+\subsection*{Esercizio 7: Dimostrazione \texttt{Ordinato(Ins(n,t))}}
+\begin{theorem}
+$\forall n \in \N, t \in \BTN$. Se $\Ordinato(t) = \text{true}$, allora $\Ordinato(\Ins(n,t)) = \text{true}$.
+\end{theorem}
+
+\begin{proof}[Dimostrazione (per induzione strutturale su $t$)]
+Definiamo $\Ordinato(N(t_1, m, t_2)) = \Ordinato(t_1) \land \Ordinato(t_2) \land (m > \Max(t_1)) \land (m < \Min(t_2))$.
+\
+\\
+\textbf{C.B. (Caso Base): $t = \lambda$}
+\begin{itemize}
+    \item \textbf{Ipotesi:} $\Ordinato(\lambda) = \text{true}$ (per definizione).
+    \item \textbf{Tesi:} $\Ordinato(\Ins(n, \lambda)) = \text{true}$.
+\end{itemize}
+Svolgiamo la Tesi:
+\begin{align*}
+\Ordinato(\Ins(n, \lambda)) &= \Ordinato(N(\lambda, n, \lambda)) && \text{(Def. C.B. Ins)} \\
+&= \Ordinato(\lambda) \land \Ordinato(\lambda) \land (n > \Max(\lambda)) \land (n < \Min(\lambda)) && \text{(Def. C.I. Ordinato)} \\
+&= \text{true} \land \text{true} \land (n > 0) \land (n < \infty) && \text{(Def. C.B. Max/Min)}
+\end{align*}
+L'espressione è $\text{true}$ per ogni $n \in \N$ (assumendo $n \ge 0$, e $n > 0$ se $n \neq 0$, o $\text{Max}(\lambda) = -\infty$). Assumendo $n \in \N$ e $\Max(\lambda)=0$ come da Esercizio 3, la proprietà vale per $n>0$. Se $n=0$, $(0>0)$ è falso. Per far valere la prova per $n=0$, dovremmo definire $\Max(\lambda)=-\infty$ o $m \ge \Max(t_1)$.
+Seguendo la nota manoscritta, $t \land t \land (m > n) \land \dots = t$, assumiamo che le definizioni di Max/Min siano consistenti (es. $\Max(\lambda)=0, \Min(\lambda)=\infty$ e $n \in \mathbb{N}^+$).
+Il caso base è verificato.
+\
+\\
+\textbf{C.I. (Caso Induttivo): $t = N(t_1, m, t_2)$}
+\begin{itemize}
+    \item \textbf{Ipotesi Induttiva (I.H.):}
+    \begin{itemize}
+        \item $\Ordinato(t_1) \Rightarrow \Ordinato(\Ins(n, t_1))$
+        \item $\Ordinato(t_2) \Rightarrow \Ordinato(\Ins(n, t_2))$
+    \end{itemize}
+    \item \textbf{Assunzione:} $\Ordinato(t) = \Ordinato(N(t_1, m, t_2)) = \text{true}$.
+    Questo implica:
+    \begin{enumerate}
+        \item $\Ordinato(t_1) = \text{true}$
+        \item $\Ordinato(t_2) = \text{true}$
+        \item $m > \Max(t_1)$
+        \item $m < \Min(t_2)$
+    \end{enumerate}
+    \item \textbf{Tesi:} $\Ordinato(\Ins(n, t)) = \Ordinato(\Ins(n, N(t_1, m, t_2))) = \text{true}$.
+\end{itemize}
+Analizziamo i 3 casi della definizione induttiva di $\Ins(n, t)$:
+
+\textbf{Caso 1: $n < m$}
+\begin{align*}
+\Ordinato(\Ins(n, t)) &= \Ordinato(N(\Ins(n, t_1), m, t_2)) && \text{(Def. Ins)} \\
+&= \Ordinato(\Ins(n, t_1)) \land \Ordinato(t_2) \land (m > \Max(\Ins(n, t_1))) \land (m < \Min(t_2)) && \text{(Def. Ordinato)}
+\end{align*}
+Verifichiamo i 4 predicati:
+\begin{itemize}
+    \item[a)] $\Ordinato(\Ins(n, t_1))$: Vero. Per (1) $\Ordinato(t_1)=\text{true}$, e per I.H.
+    \item[b)] $\Ordinato(t_2)$: Vero. Per (2).
+    \item[c)] $m > \Max(\Ins(n, t_1))$: Vero. L'albero $\Ins(n, t_1)$ contiene gli elementi di $t_1$ più $n$. Quindi $\Max(\Ins(n, t_1)) = \max(\Max(t_1), n)$. Per (3) $m > \Max(t_1)$ e per l'ipotesi di caso $m > n$. Dunque $m$ è maggiore di entrambi.
+    \item[d)] $m < \Min(t_2)$: Vero. Per (4).
+\end{itemize}
+Essendo a, b, c, d veri, la tesi è verificata.
+
+\textbf{Caso 2: $n > m$}
+\begin{align*}
+\Ordinato(\Ins(n, t)) &= \Ordinato(N(t_1, m, \Ins(n, t_2))) && \text{(Def. Ins)} \\
+&= \Ordinato(t_1) \land \Ordinato(\Ins(n, t_2)) \land (m > \Max(t_1)) \land (m < \Min(\Ins(n, t_2))) && \text{(Def. Ordinato)}
+\end{align*}
+Verifichiamo i 4 predicati:
+\begin{itemize}
+    \item[a)] $\Ordinato(t_1)$: Vero. Per (1).
+    \item[b)] $\Ordinato(\Ins(n, t_2))$: Vero. Per (2) $\Ordinato(t_2)=\text{true}$, e per I.H.
+    \item[c)] $m > \Max(t_1)$: Vero. Per (3).
+    \item[d)] $m < \Min(\Ins(n, t_2))$: Vero. L'albero $\Ins(n, t_2)$ contiene gli elementi di $t_2$ più $n$. Quindi $\Min(\Ins(n, t_2)) = \min(\Min(t_2), n)$. Per (4) $m < \Min(t_2)$ e per l'ipotesi di caso $m < n$. Dunque $m$ è minore di entrambi.
+\end{itemize}
+Essendo a, b, c, d veri, la tesi è verificata.
+
+\textbf{Caso 3: $n = m$}
+\begin{align*}
+\Ordinato(\Ins(n, t)) &= \Ordinato(N(t_1, m, t_2)) && \text{(Def. Ins, $n=m$)} \\
+&= \Ordinato(t)
+\end{align*}
+Questo è $\text{true}$ per l'Assunzione $\Ordinato(t) = \text{true}$.
+
+In tutti i casi, la tesi è verificata.
+\end{proof}
+
+\end{document}
