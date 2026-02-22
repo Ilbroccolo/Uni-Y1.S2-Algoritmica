@@ -1,0 +1,136 @@
+% ===================================================================
+% FILE: Lezione25.tex
+% ===================================================================
+
+\part{Lezione 25 (17/11/2025)}
+
+\section{Esercizio su Teorema Master (Confronto Asintotico)}
+
+Consideriamo due algoritmi caratterizzati dalle seguenti ricorrenze:
+\begin{itemize}
+    \item[(A)] $T(n) = 7 T\left(\frac{n}{2}\right) + n^2$
+    \item[(A')] $T'(n) = a T'\left(\frac{n}{4}\right) + n^2$
+\end{itemize}
+
+\textbf{Domanda:} Qual è il più grande valore di $a$ per cui $T'$ è asintoticamente più veloce di $T$?
+
+\subsection{Costo in Tempo di A}
+Analizziamo $T(n) = 7 T(n/2) + n^2$ con il Teorema Master.
+\begin{itemize}
+    \item $a=7, b=2, f(n)=n^2$.
+    \item Calcoliamo lo spartiacque: $n^{\log_b a} = n^{\log_2 7} \approx n^{2.8}$.
+    \item Confrontiamo con $f(n)$: $n^2 = O(n^{\log_2 7 - \epsilon})$ (con $\epsilon \approx 0.8$).
+    \item Siamo nel \textbf{Caso 1}.
+\end{itemize}
+\[ T(n) = \Theta(n^{\log_2 7}) \]
+
+\subsection{Costo in Tempo di A'}
+Analizziamo $T'(n) = a T'(n/4) + n^2$.
+\begin{itemize}
+    \item $a=a, b=4, f(n)=n^2$.
+    \item Spartiacque: $n^{\log_4 a}$.
+\end{itemize}
+Dobbiamo confrontare $\log_4 a$ con l'esponente di $f(n)$ (che è 2). Ci sono 3 casi possibili per $a$:
+
+\begin{enumerate}
+    \item \textbf{Caso 3 ($\log_4 a < 2 \iff a < 16$):}
+    La forzante $n^2$ domina. $T'(n) = \Theta(n^2)$.
+    Verifica condizione regolarità: $a(n/4)^2 \le c n^2 \implies a/16 \le c$. Vera per $a < 16$.
+    In questo caso $T'(n) = \Theta(n^2)$, che è sicuramente più veloce di $\Theta(n^{2.8})$.
+
+    \item \textbf{Caso 2 ($\log_4 a = 2 \iff a = 16$):}
+    Equilibrio. $T'(n) = \Theta(n^2 \log n)$.
+    Anche questo è più veloce di $\Theta(n^{2.8})$.
+
+    \item \textbf{Caso 1 ($\log_4 a > 2 \iff a > 16$):}
+    Le foglie dominano. $T'(n) = \Theta(n^{\log_4 a})$.
+    Affinché $T'$ sia più veloce di $T$, deve valere:
+    \[ n^{\log_4 a} < n^{\log_2 7} \implies \log_4 a < \log_2 7 \]
+    Usando il cambio di base ($\log_4 a = \frac{\log_2 a}{2}$):
+    \[ \frac{\log_2 a}{2} < \log_2 7 \implies \log_2 a < 2 \log_2 7 \implies \log_2 a < \log_2 49 \implies a < 49 \]
+\end{enumerate}
+
+\textbf{Soluzione:} $A'$ è più veloce di $A$ per $a < 49$. Il valore intero massimo è \textbf{48}.
+
+\section{Analisi di Algoritmi (Esercizi Vari)}
+
+\subsection{Esercizio "Mistero"}
+\begin{algorithmic}[1]
+    \Procedure{Mistero}{n}
+        \If{$n < 10$} \Return 1 \EndIf
+        \State $x = \Call{Mistero}{\lfloor n/4 \rfloor} + \Call{Mistero}{\lfloor n/4 \rfloor}$ \Comment{2 chiamate ricorsive}
+        \State $L=1$
+        \While{$i < n$} \Comment{Ciclo esterno}
+            \State $j=1$
+            \While{$j < n$} \Comment{Ciclo interno}
+                \State...
+                \State $j = j+1$
+            \EndWhile
+            \State $i = i \cdot 3$
+        \EndWhile
+        \State $y = \Call{Mistero}{\lfloor n/4 \rfloor}$ \Comment{1 chiamata ricorsiva}
+        \State \Return $x+y$
+    \EndProcedure
+    \end{algorithmic}
+
+\begin{explanation}{Analisi Ricorsiva}
+La funzione combina chiamate ricorsive e cicli annidati:
+\begin{itemize}
+    \item \textbf{Ricorsione}: 3 chiamate su dimensione $n/4$ ($x$ ne fa 2, $y$ ne fa 1). $T(n) = 3T(n/4) + f(n)$.
+    \item \textbf{Costo locale ($f(n)$)}: I cicli annidati. Il ciclo interno lavora su $j$, l'esterno su $i$ che cresce esponenzialmente ($3^k$).
+\end{itemize}
+\end{explanation}
+
+    \textbf{Analisi:}
+    \begin{itemize}
+        \item Chiamate ricorsive: 3 chiamate su $n/4$. Quindi $a=3, b=4$.
+        \item Costo f(n): Il ciclo interno è $\Theta(n)$, quello esterno è logaritmico? (Dagli appunti sembra indicato come $\Theta(n \log n)$).
+        \item Ricorrenza: $T(n) = 3T(n/4) + \Theta(n \log n)$.
+        \item Master Theorem:
+        \begin{itemize}
+            \item $n^{\log_4 3} \approx n^{0.79}$.
+            \item $f(n) = n \log n$ è polinomialmente maggiore ($n^1 > n^{0.79}$).
+            \item \textbf{Caso 3}.
+        \end{itemize}
+        \item Soluzione: $T(n) = \Theta(n \log n)$.
+    \end{itemize}
+
+    \subsection{Algo 1 (Radice Quadrata)}
+    \begin{itemize}
+        \item Ricorrenza data: $T(n) = 2T(n/4) + \sqrt{n}$.
+        \item $a=2, b=4 \implies n^{\log_4 2} = n^{0.5} = \sqrt{n}$.
+        \item $f(n) = \sqrt{n}$.
+        \item Siamo nel \textbf{Caso 2} (uguali).
+        \item Soluzione: $T(n) = \Theta(\sqrt{n} \log n)$.
+    \end{itemize}
+
+    \subsection{Algo 2 (Somma Ricorsiva)}
+    \begin{itemize}
+        \item Divide l'array in due parti ($p, q$ e $q+1, r$).
+        \item Fa 2 chiamate ricorsive: $a=2, b=2$.
+        \item Costo di combinazione (somma): $\Theta(1)$.
+        \item Ricorrenza: $T(n) = 2T(n/2) + \Theta(1)$.
+        \item Master Theorem: $n^{\log_2 2} = n^1$. $f(n) = n^0$.
+        \item \textbf{Caso 1}.
+        \item Soluzione: $T(n) = \Theta(n)$.
+    \end{itemize}
+
+    \subsection{Confronto Finale}
+    Confrontiamo:
+    \begin{enumerate}
+        \item $T_A(n) = 9T(n/3) + 2n^2$.
+        \item $T_{A'}(n) = 3T(n/2) + n^2 \log^2 n$.
+    \end{enumerate}
+
+    \textbf{Analisi A:}
+    $a=9, b=3 \implies n^{\log_3 9} = n^2$. $f(n) = 2n^2$.
+    Caso 2. $T_A(n) = \Theta(n^2 \log n)$.
+
+    \textbf{Analisi A':}
+    $a=3, b=2 \implies n^{\log_2 3} \approx n^{1.58}$. $f(n) = n^2 \log^2 n$.
+    $f(n)$ è maggiore dello spartiacque. Caso 3.
+    $T_{A'}(n) = \Theta(n^2 \log^2 n)$.
+
+    \textbf{Conclusione:} $T_A$ è asintoticamente migliore (più veloce) di $T_{A'}$.
+
+    \newpage

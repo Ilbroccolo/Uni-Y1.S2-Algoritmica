@@ -1,0 +1,259 @@
+% FILE: Lezione19.tex
+% ===================================================================
+
+\part{Lezione 19: Alberi Binari (Approfondimenti)}
+
+% ============================================================
+% SEZIONE 1: NODO CENTRALE
+% ============================================================
+\section{Il Nodo Centrale}
+
+Questa sezione analizza un problema specifico sugli Alberi Binari (AB).
+
+\begin{concept}{Definizione: Nodo Centrale}
+Dato un Albero Binario (AB) $T$, un nodo $u$ non vuoto è detto \textbf{CENTRALE} se:
+\begin{center}
+    \textit{La dimensione del sottoalbero di cui $u$ è radice (numero di nodi)}
+    
+    \textbf{È PARI A}
+    
+    \textit{La somma delle chiavi dei nodi che appartengono al percorso dalla radice dell'albero al nodo $u$ stesso.}
+\end{center}
+\end{concept}
+
+\subsection{Algoritmo Risolutivo}
+Il problema richiede di progettare un algoritmo che stampi le chiavi di tutti i nodi centrali.
+
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}[
+  level distance=1.2cm,
+  sibling distance=1.5cm,
+  every node/.style={circle, draw=gray, fill=white, minimum size=6mm},
+  central/.style={circle, draw=paletteRegalia, fill=paletteLenurple!30, very thick},
+  path/.style={draw=paletteIndigo, line width=1.5pt, dashed}
+]
+  % Rappresentazione concettuale
+  \node (root) {R}
+    child { node {.} }
+    child { node (u_padre) {.}
+      child { node[central] (u) {u}
+        child { node {.} }
+        child { node {.} 
+            child { node {.} }
+        }
+      }
+      child { node {.} }
+    };
+  \draw[path, ->] (root) -- (u_padre);
+  \draw[path, ->] (u_padre) -- (u);
+  
+  \node[right=3cm of root, text width=5cm, align=left, color=paletteIndigo] {
+    \textbf{Concetto Visivo:}\\
+    Percorso (Tratteggiato) vs\\
+    Sottoalbero (Sotto $u$).
+  };
+\end{tikzpicture}
+\caption{Rappresentazione logica del Nodo Centrale}
+\end{figure}
+
+\begin{codebox}{Pseudocodice: CENTRALI(u, SUM)}
+\textbf{Idea:} Usiamo una visita \textit{posticipata} (post-order). La funzione restituisce la dimensione del sottoalbero al chiamante, ma internamente verifica la condizione di centralità usando il parametro accumulatore \texttt{SUM}.
+
+\begin{algorithmic}[1]
+\Function{Centrali}{$u, SUM$}
+    \If{$u == \text{nil}$} \Comment{Caso Base: Albero vuoto}
+        \State \Return 0
+    \EndIf
+    
+    \State \textcolor{paletteIndigo}{\textbf{Visita Ricorsiva (Posticipata)}}
+    \State $dim_{sx} \gets \Call{Centrali}{u.left, SUM + u.key}$
+    \State $dim_{dx} \gets \Call{Centrali}{u.right, SUM + u.key}$
+    
+    \State \textcolor{paletteIndigo}{\textbf{Calcolo Dimensione Locale}}
+    \State $dim_u \gets dim_{sx} + dim_{dx} + 1$
+    
+    \State \textcolor{paletteIndigo}{\textbf{Verifica Condizione}}
+    \If{$dim_u == (SUM + u.key)$}
+        \State \Call{Print}{u.key} \Comment{Stampa il nodo centrale}
+    \EndIf
+    
+    \State \Return $dim_u$ \Comment{Restituisce la dimensione al padre}
+\EndFunction
+\end{algorithmic}
+\end{codebox}
+
+\newpage
+
+% ============================================================
+% SEZIONE 2: VISITE DEGLI ALBERI
+% ============================================================
+\section{Visite degli Alberi}
+Analisi delle visite (Anticipata, Simmetrica, Posticipata) su un albero specifico tratto dagli appunti.
+
+\subsection{Albero di Esempio e Tracce}
+Ricostruzione dell'albero basata sulle tracce delle visite presenti nel manoscritto (Pag. 4).
+
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}[
+  level distance=1.5cm,
+  sibling distance=2.5cm,
+  every node/.style={circle, draw=paletteIndigo, fill=white, thick, minimum size=8mm, drop shadow},
+  edge from parent/.style={draw=black, thick, ->}
+]
+  % Radice 7
+  \node {7}
+    child { node {2}
+      child { node {8}
+        child { node {1} }
+        child[missing] % Nodo invisibile per bilanciare
+      }
+      child { node {4} }
+    }
+    child { node {5}
+      child { node {6} }
+      child { node {9}
+        child { node {3} }
+        child[missing]
+      }
+    };
+\end{tikzpicture}
+\caption{\textbf{Struttura dell'Albero}: Radice 7, Figli 2 e 5.}
+\end{figure}
+
+\begin{description}
+    \item[\textcolor{paletteIndigo}{1. Visita Anticipata (Pre-Order)}] \hfill \\
+    Ordine: Radice $\to$ Sinistra $\to$ Destra. \\
+    \textbf{Sequenza:} $7, 2, 8, 1, 4, 5, 6, 9, 3$
+
+    \item[\textcolor{paletteIndigo}{2. Visita Simmetrica (In-Order)}] \hfill \\
+    Ordine: Sinistra $\to$ Radice $\to$ Destra. \\
+    \textbf{Sequenza:} $1, 8, 2, 4, 7, 6, 5, 3, 9$
+
+    \item[\textcolor{paletteIndigo}{3. Visita Posticipata (Post-Order)}] \hfill \\
+    Ordine: Sinistra $\to$ Destra $\to$ Radice. \\
+    \textbf{Sequenza:} $1, 8, 4, 2, 6, 3, 9, 5, 7$
+\end{description}
+
+\vspace{1cm}
+
+% ============================================================
+% SEZIONE 3: CONTA FOGLIE
+% ============================================================
+\section{Conteggio Foglie}
+
+Algoritmo ricorsivo per contare le foglie di un albero binario.
+
+\begin{codebox}{Pseudocodice: CONTAFOGLIE(u)}
+\begin{algorithmic}[1]
+\Function{ContaFoglie}{$u$}
+    \If{$u == \text{nil}$} \Comment{Albero vuoto}
+        \State \Return 0
+    \EndIf
+    
+    \Comment{È una foglia se entrambi i figli sono nil}
+    \If{$(u.left == \text{nil}) \land (u.right == \text{nil})$}
+        \State \Return 1
+    \EndIf
+    
+    \Comment{Passo Ricorsivo: somma foglie sx + foglie dx}
+    \State \Return \Call{ContaFoglie}{u.left} + \Call{ContaFoglie}{u.right}
+\EndFunction
+\end{algorithmic}
+\end{codebox}
+
+\begin{concept}{Analisi Complessità}
+$$T(n) = O(n)$$
+L'algoritmo visita ogni nodo esattamente una volta. La relazione è $n = l + r$ (nodi totali = foglie + nodi interni).
+\end{concept}
+
+\newpage
+
+% ============================================================
+% SEZIONE 4: ALBERO COMPLETO
+% ============================================================
+\section{Verifica Albero Completo}
+
+L'algoritmo seguente verifica se un albero è "Completo" secondo la definizione data negli appunti (ogni nodo deve avere 0 o 2 figli). In letteratura questo è spesso noto come \textit{Albero Strettamente Binario}.
+
+\begin{codebox}{Pseudocodice: COMPLETO(u)}
+Restituisce \texttt{TRUE} se la proprietà è verificata, \texttt{FALSE} altrimenti.
+
+\begin{algorithmic}[1]
+\Function{Completo}{$u$}
+    \If{$u == \text{nil}$} \Comment{Vuoto è completo}
+        \State \Return \textbf{true}
+    \EndIf
+    
+    \Comment{Se foglia, ok}
+    \If{$(u.left == \text{nil}) \land (u.right == \text{nil})$}
+        \State \Return \textbf{true}
+    \EndIf
+    
+    \Comment{Controllo figli spaiati (XOR logico)}
+    \If{$(u.left == \text{nil}) \neq (u.right == \text{nil})$}
+        \State \Return \textbf{false} \Comment{Ha un solo figlio}
+    \EndIf
+    
+    \State \Return \Call{Completo}{u.left} $\land$ \Call{Completo}{u.right}
+\EndFunction
+\end{algorithmic}
+\end{codebox}
+
+\vspace{1cm}
+
+% ============================================================
+% SEZIONE 5: ESERCIZI D'ESAME
+% ============================================================
+\section{Esercizi (Vecchio Compitino)}
+
+\subsection{Problema: Chiave Doppia del Padre}
+\textbf{Testo:} Scrivere un algoritmo che restituisca il numero delle foglie la cui chiave è il doppio di quella del genitore ($u.key == 2 \cdot u.p.key$).
+
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}[
+  level distance=1.5cm,
+  sibling distance=3cm,
+  every node/.style={circle, draw=paletteIndigo, fill=white, thick, minimum size=10mm, drop shadow},
+  match/.style={circle, draw=green!60!black, fill=green!10, very thick}
+]
+  % Esempio visuale basato su Pagina 7
+  \node {2}
+    child { node {7}
+      child { node {1} }
+      child { node[match, label=below:\small{$14=2\times7$}] {14} } 
+    }
+    child { node {6}
+      child { node {3} }
+      child { node {8} 
+         child { node[match, label=below:\small{$16=2\times8$}] {16} }
+         child[missing]
+      }
+    };
+\end{tikzpicture}
+\caption{Esempio: Nodi foglia (evidenziati) che soddisfano la condizione.}
+\end{figure}
+
+\begin{codebox}{Soluzione: CONTA(u)}
+\begin{algorithmic}[1]
+\Function{Conta}{$u$}
+    \If{$u == \text{nil}$} \State \Return 0 \EndIf
+    
+    \If{$(u.left == \text{nil}) \land (u.right == \text{nil})$} \Comment{Se è foglia}
+        \If{$(u.p \neq \text{nil}) \land (u.key == 2 * u.p.key)$}
+            \State \Return 1
+        \Else
+            \State \Return 0
+        \EndIf
+    \EndIf
+    
+    \State \Return \Call{Conta}{u.left} + \Call{Conta}{u.right}
+\EndFunction
+\end{algorithmic}
+\end{codebox}
+
+\subsection{Problema: Stampa Chiave e Profondità}
+Progettare un algoritmo che stampi chiave e profondità di ciascun nodo.
+Si suggerisce una visita anticipata passando la profondità come parametro incrementale: `Stampa(u.left, depth+1)`.

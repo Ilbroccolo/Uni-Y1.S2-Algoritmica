@@ -1,0 +1,252 @@
+% ===================================================================
+% FILE: Lezione15.tex
+% ===================================================================
+
+\part{Lezione 29/1 - 3/2: Pile e Code}
+
+\section{Pile e Code: Insiemi Dinamici}
+Sono insiemi dinamici in cui l'elemento rimosso dall'operazione di cancellazione, o inserito dall'operazione di inserimento, è \textbf{PREDETERMINATO}.
+
+\begin{definition}[Organizzazione Logica]
+    \begin{itemize}
+        \item \textbf{PILA (Stack)}: Politica \textbf{LIFO} (Last In First Out).
+        \item \textbf{CODA (Queue)}: Politica \textbf{FIFO} (First In First Out).
+    \end{itemize}
+    \textbf{Implementazione}: ARRAY o LISTE.
+\end{definition}
+
+\section{Pile (Stacks)}
+
+Le operazioni possibili (Query e Modifica) sono:
+\begin{itemize}
+    \item \texttt{ISEMPTY}: dice se la pila è vuota.
+    \item \texttt{TOP}: lettura dell'elemento in cima alla pila (immutata).
+    \item \texttt{PUSH}: inserimento (in cima).
+    \item \texttt{POP}: cancellazione (dalla cima).
+\end{itemize}
+
+\subsection{Implementazione su Array}
+
+
+\begin{algorithmic}[1]
+    \Procedure{IsEmpty}{PILA, top}
+        \If{$top < 1$} \Return \textbf{TRUE}
+        \Else \Return \textbf{FALSE}
+        \EndIf
+        \Comment{Complessità Costante $\Theta(1)$}
+    \EndProcedure
+    \Statex
+    \Procedure{Top}{PILA, top}
+        \If{\Call{IsEmpty}{PILA, top}} \Return \textbf{error}
+        \Else \Return $PILA[top]$
+        \EndIf
+    \EndProcedure
+    \Statex
+    \Procedure{Push}{PILA, top, x}
+        \State $top \gets top + 1$
+        \If{$top > PILA.length$} \Return \textbf{error}
+        \Else \State $PILA[top] \gets x$
+        \EndIf
+    \EndProcedure
+    \Statex
+    \Procedure{Pop}{PILA, top}
+        \If{\Call{IsEmpty}{PILA, top}} \Return \textbf{error}
+        \Else
+            \State $x \gets PILA[top]$
+            \State $top \gets top - 1$
+            \Return $x$
+        \EndIf
+        \Comment{Complessità Costante $\Theta(1)$}
+    \EndProcedure
+\end{algorithmic}
+
+\begin{explanation}{Gestione Stack (Array)}
+Tutte le operazioni lavorano sull'indice \texttt{top} in tempo costante $\Theta(1)$.
+\begin{itemize}
+    \item \textbf{Push}: Prima incrementa, poi scrive (Prefix).
+    \item \textbf{Pop}: Legge, poi decrementa (Postfix logico).
+\end{itemize}
+\end{explanation}
+
+
+\begin{center}
+    \begin{tikzpicture}[
+        element/.style={draw=paletteIndigo, fill=white, minimum width=1.5cm, minimum height=0.8cm, font=\small},
+        stack/.style={draw=paletteIndigo, thick, minimum width=1.7cm, minimum height=4cm}
+    ]
+        % Stack Container
+        \draw[thick, draw=paletteIndigo] (0,0) -- (0,4) (2,4) -- (2,0) -- (0,0);
+        
+        % Elements
+        \node[element] at (1, 0.4) {Elemento 1};
+        \node[element] at (1, 1.2) {Elemento 2};
+        \node[element] at (1, 2.0) {Elemento 3};
+        
+        % Top Pointer
+        \draw[->, thick, paletteRegalia] (3, 2.0) -- (2.1, 2.0) node[right, at start] {\texttt{top}};
+        
+        % Labels
+        \node[below, paletteWenge] at (1,-0.2) {Stack (LIFO)};
+        \node[above, paletteRegalia] at (1, 4.2) {PUSH $\downarrow$ / POP $\uparrow$};
+    \end{tikzpicture}
+\end{center}
+
+\subsection{Implementazione su Lista}
+
+\begin{algorithmic}[1]
+    \Procedure{IsEmpty}{topEl}
+        \If{$topEl == \textbf{nil}$} \Return \textbf{TRUE}
+        \Else \Return \textbf{FALSE}
+        \EndIf
+    \EndProcedure
+    \Statex
+    \Procedure{Top}{topEl}
+        \If{\Call{IsEmpty}{topEl}} \Return \textbf{error}
+        \Else \Return $topEl.key$
+        \EndIf
+    \EndProcedure
+    \Statex
+    \Procedure{Push}{topEl, x}
+        \State $x.next \gets topEl$
+        \State $topEl \gets x$
+    \EndProcedure
+    \Statex
+    \Procedure{Pop}{topEl}
+        \If{\Call{IsEmpty}{topEl}} \Return \textbf{error}
+        \EndIf
+        \State $VAL \gets topEl.key$
+        \State $topEl \gets topEl.next$
+        \Return $VAL$
+    \EndProcedure
+\end{algorithmic}
+
+\begin{explanation}{Gestione Stack (Lista)}
+Le operazioni avvengono sempre sulla \textbf{testa} della lista (\texttt{topEl}):
+\begin{itemize}
+    \item \textbf{Push}: \texttt{x.next = topEl; topEl = x} (Inserimento in testa).
+    \item \textbf{Pop}: \texttt{topEl = topEl.next} (Rimozione in testa).
+\end{itemize}
+\end{explanation}
+
+\textbf{Complessità}: Sempre Costante.
+
+\newpage
+\section{Code (Queues)}
+
+\subsection{Possibili Query e Operazioni}
+\begin{itemize}
+    \item \texttt{ISFULL} (ARRAY ONLY).
+    \item \texttt{ISEMPTY}: dice se la coda è vuota.
+    \item \texttt{FIRST}: lettura dell'elemento in testa alla coda (immutata).
+    \item \texttt{ENQUEUE}: inserimento.
+    \item \texttt{DEQUEUE}: cancellazione.
+\end{itemize}
+
+\subsection{Implementazione su Array (Gestione Circolare)}
+\begin{itemize}
+    \item \texttt{head}: indice dell'elemento in testa.
+    \item \texttt{tail}: indice della locazione in cui inserire il prossimo elemento.
+\end{itemize}
+
+\begin{center}
+    \begin{tikzpicture}[scale=0.8]
+        % Circular Array
+        \foreach \i in {1,...,8} {
+            \draw[thick, draw=paletteIndigo, fill=white] ( {45*(\i-1)}:2cm ) arc ({45*(\i-1)}:{45*\i}:2cm) -- ({45*\i}:3cm) arc ({45*\i}:{45*(\i-1)}:3cm) -- cycle;
+            \node at ({45*(\i-0.5)}:2.5cm) {$Q[\i]$};
+        }
+        
+        % Pointers
+        \draw[->, ultra thick, paletteRegalia] (0:3.5cm) -- (0:3.1cm) node[right, at start] {\texttt{head}};
+        \draw[->, ultra thick, paletteLenurple] (135:3.5cm) -- (135:3.1cm) node[left, at start] {\texttt{tail}};
+    \end{tikzpicture}
+\end{center}
+
+
+\begin{algorithmic}[1]
+    \Function{IsEmpty}{A, head, tail}
+        \Return $(head == tail)$
+    \EndFunction
+    \Statex
+    \Function{IsFull}{A, head, tail}
+        \Return $(head == tail + 1)$
+        \Comment{N.B. array circolare}
+    \EndFunction
+    \Statex
+    \Function{First}{A, head, tail}
+        \If{\Call{IsEmpty}{A, head, tail}} \Return \textbf{error}
+        \Else \Return $A[head]$
+        \EndIf
+    \EndFunction
+    \Statex
+    \Procedure{Enqueue}{A, head, tail, x}
+        \If{\Call{IsFull}{A, head, tail}} \Return \textbf{error}
+        \EndIf
+        \State $A[tail] \gets x$
+        \State $tail \gets (tail + 1) \% A.length$
+        \Comment{$\Theta(1)$}
+    \EndProcedure
+    \Statex
+    \Procedure{Dequeue}{A, head, tail}
+        \If{\Call{IsEmpty}{A, head, tail}} \Return \textbf{error}
+        \EndIf
+        \State $x \gets A[head]$
+        \State $head \gets (head + 1) \% A.length$
+        \Return $x$
+        \Comment{$\Theta(1)$}
+    \EndProcedure
+\end{algorithmic}
+
+\begin{explanation}{Coda Circolare}
+L'array "si morde la coda" grazie all'operatore modulo:
+$$ next\_idx = (curr\_idx + 1) \% capacity $$
+Questo evita di dover shiftare gli elementi dopo una Dequeue.
+\end{explanation}
+
+
+\subsection{Implementazione su Lista}
+
+
+\begin{algorithmic}[1]
+    \Function{IsEmpty}{head}
+        \Return $(head == \textbf{nil})$
+    \EndFunction
+    \Statex
+    \Function{First}{head}
+        \If{\Call{IsEmpty}{head}} \Return \textbf{error}
+        \Else \Return $head.key$
+        \EndIf
+    \EndFunction
+    \Statex
+    \Procedure{Enqueue}{head, tail, x}
+        \If{\Call{IsEmpty}{head}}
+            \State $head \gets x$
+        \Else
+            \State $tail.next \gets x$
+        \EndIf
+        \State $tail \gets x$
+        \State $x.next \gets \textbf{nil}$
+    \EndProcedure
+    \Statex
+    \Procedure{Dequeue}{head, tail}
+        \If{\Call{IsEmpty}{head}} \Return \textbf{error}
+        \EndIf
+        \State $VAL \gets head.key$
+        \If{$head == tail$}
+            \State $tail \gets \textbf{nil}$
+        \EndIf
+        \State $head \gets head.next$
+        \Return $VAL$
+        \Comment{$\Theta(1)$}
+    \EndProcedure
+\end{algorithmic}
+
+\begin{explanation}{Coda su Lista}
+\begin{itemize}
+    \item \textbf{Enqueue}: Avviene su \texttt{tail}. Necessario aggiornare il puntatore \texttt{next} della vecchia coda e spostare \texttt{tail}.
+    \item \textbf{Dequeue}: Avviene su \texttt{head}. Caso speciale: se la coda diventa vuota, bisogna mettere a NULL anche \texttt{tail}.
+\end{itemize}
+\end{explanation}
+
+
+\textbf{Entrambe Complessità Costante}.

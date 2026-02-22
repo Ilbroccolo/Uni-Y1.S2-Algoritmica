@@ -78,27 +78,27 @@
 \newpage
 
 \section{Definizione di Algoritmo}
-[cite_start]Un algoritmo è una sequenza finita di operazioni elementari (passi), univocamente determinata (non ambiguo), che, se eseguita su un calcolatore, porta alla risoluzione di un problema[cite: 1].
+Un algoritmo è una sequenza finita di operazioni elementari (passi), univocamente determinata (non ambiguo), che, se eseguita su un calcolatore, porta alla risoluzione di un problema.
 
 \subsection{Modello RAM (Random Access Machine)}
-[cite_start]Nel modello RAM, si assume che le seguenti operazioni elementari abbiano costo "unitario" (costante)[cite: 2]:
+Nel modello RAM, si assume che le seguenti operazioni elementari abbiano costo "unitario" (costante):
 \begin{itemize}
-    [cite_start]\item \textbf{Operazioni aritmetiche}: +, -, *, /, \% [cite: 2]
-    [cite_start]\item \textbf{Operazioni di confronto}: $<, >, ==, !=$ [cite: 2]
-    [cite_start]\item \textbf{Operazioni logiche}: AND, OR, NOT [cite: 2]
-    [cite_start]\item \textbf{Operazioni di trasferimento}: load/store/assegnamento [cite: 2]
-    [cite_start]\item \textbf{Operazioni di controllo}: chiamata di funzione, RETURN [cite: 2]
+    \item \textbf{Operazioni aritmetiche}: +, -, *, /, \% 
+    \item \textbf{Operazioni di confronto}: $<, >, ==, !=$ 
+    \item \textbf{Operazioni logiche}: AND, OR, NOT 
+    \item \textbf{Operazioni di trasferimento}: load/store/assegnamento 
+    \item \textbf{Operazioni di controllo}: chiamata di funzione, RETURN 
 \end{itemize}
 
 \section{Analisi di Complessità}
-[cite_start]Si analizza il costo computazionale (Tempo o Spazio) in funzione della dimensione dell'input, $n$[cite: 3, 4].
+Si analizza il costo computazionale (Tempo o Spazio) in funzione della dimensione dell'input, $n$.
 \begin{itemize}
-    [cite_start]\item \textbf{Complessità in Tempo $T(n)$}: Numero di operazioni elementari eseguite[cite: 3].
-    [cite_start]\item \textbf{Complessità in Spazio $S(n)$}: Numero di celle di memoria utilizzate (oltre a quelle dell'input)[cite: 4].
+    \item \textbf{Complessità in Tempo $T(n)$}: Numero di operazioni elementari eseguite.
+    \item \textbf{Complessità in Spazio $S(n)$}: Numero di celle di memoria utilizzate (oltre a quelle dell'input).
 \end{itemize}
 
-[cite_start]Ci si concentra sull'\textbf{ordine di grandezza} della funzione $T(n)$, ignorando costanti moltiplicative e termini di ordine inferiore[cite: 5].
-[cite_start]Ad esempio, $T(n) = 3n + 2$ e $T(n) = 5n + \log n + 4$ sono entrambe considerate di complessità \textbf{Lineare}[cite: 6]. [cite_start]$T(n) = 8n^2$ è \textbf{Quadratica}[cite: 7].
+Ci si concentra sull'\textbf{ordine di grandezza} della funzione $T(n)$, ignorando costanti moltiplicative e termini di ordine inferiore.
+Ad esempio, $T(n) = 3n + 2$ e $T(n) = 5n + \log n + 4$ sono entrambe considerate di complessità \textbf{Lineare}. $T(n) = 8n^2$ è \textbf{Quadratica}.
 
 \begin{figure}[H]
     \centering
@@ -136,11 +136,11 @@
 
 \subsection{Caso Ottimo, Pessimo, Medio}
 \begin{itemize}
-    [cite_start]\item \textbf{Caso Ottimo}: L'istanza di input che richiede il minor tempo[cite: 8].
-    [cite_start]\item \textbf{Caso Pessimo}: L'istanza di input che richiede il maggior tempo[cite: 9].
-    [cite_start]\item \textbf{Caso Medio}: Complessità media su tutte le possibili istanze[cite: 10].
+    \item \textbf{Caso Ottimo}: L'istanza di input che richiede il minor tempo.
+    \item \textbf{Caso Pessimo}: L'istanza di input che richiede il maggior tempo.
+    \item \textbf{Caso Medio}: Complessità media su tutte le possibili istanze.
 \end{itemize}
-[cite_start]Ci si concentra sul \textbf{caso pessimo} perché fornisce un limite superiore al costo: l'algoritmo non impiegherà mai più di $T(n)$[cite: 11].
+Ci si concentra sul \textbf{caso pessimo} perché fornisce un limite superiore al costo: l'algoritmo non impiegherà mai più di $T(n)$.
 
 \newpage % Separatore per gli esempi
 
@@ -148,8 +148,8 @@
 \section{Esempio 1: Minimo in Vettore}
 %---------------------------------------------------------
 \begin{itemize}
-    [cite_start]\item \textbf{Input}: Array $A[1..n]$ di interi[cite: 12].
-    [cite_start]\item \textbf{Output}: Il valore minimo contenuto in $A$[cite: 12].
+    \item \textbf{Input}: Array $A[1..n]$ di interi.
+    \item \textbf{Output}: Il valore minimo contenuto in $A$.
 \end{itemize}
 
 \begin{algorithmic}[1]
@@ -165,8 +165,8 @@
 \end{algorithmic}
 
 \textbf{Analisi:}
-[cite_start]Il costo totale è $T(n) = c_1 + (n-1)(c_2 \text{ (confronto)} + c_3 \text{ (assegn. caso pessimo)}) + c_4$[cite: 13].
-[cite_start]La complessità è \textbf{Lineare}, $T(n) \in \Theta(n)$, sia nel caso ottimo che in quello pessimo[cite: 14].
+Il costo totale è $T(n) = c_1 + (n-1)(c_2 \text{ (confronto)} + c_3 \text{ (assegn. caso pessimo)}) + c_4$.
+La complessità è \textbf{Lineare}, $T(n) \in \Theta(n)$, sia nel caso ottimo che in quello pessimo.
 
 \begin{figure}[H]
 \centering
@@ -233,8 +233,8 @@
 \section{Esempio 2: Cerca K (Ricerca Sequenziale)}
 %---------------------------------------------------------
 \begin{itemize}
-    [cite_start]\item \textbf{Input}: Array $A[1..n]$ di interi, $k$ intero[cite: 16].
-    [cite_start]\item \textbf{Output}: $i$ tale che $A[i]=k$, o $-1$ se $k \notin A$[cite: 17].
+    \item \textbf{Input}: Array $A[1..n]$ di interi, $k$ intero.
+    \item \textbf{Output}: $i$ tale che $A[i]=k$, o $-1$ se $k \notin A$.
 \end{itemize}
 
 \begin{algorithmic}[1]
@@ -249,7 +249,7 @@
         \EndIf
     \EndWhile
     \If{$trovato$}
-        [cite_start]\State \Return $i$ [cite: 18]
+        \State \Return $i$ 
     \Else
         \State \Return $-1$ 
     \EndIf
@@ -258,8 +258,8 @@
 
 \textbf{Analisi:}
 \begin{itemize}
-    \item \textbf{Caso Ottimo}: $k = A[1]$. Il ciclo `while` esegue 1 iterazione. [cite_start]$T(n) \in \Theta(1)$ (Costante)[cite: 19].
-    \item \textbf{Caso Pessimo}: $k \notin A$ (o $k=A[n]$). Il ciclo `while` esegue $n$ iterazioni. [cite_start]$T(n) \in \Theta(n)$ (Lineare)[cite: 20, 21].
+    \item \textbf{Caso Ottimo}: $k = A[1]$. Il ciclo `while` esegue 1 iterazione. $T(n) \in \Theta(1)$ (Costante).
+    \item \textbf{Caso Pessimo}: $k \notin A$ (o $k=A[n]$). Il ciclo `while` esegue $n$ iterazioni. $T(n) \in \Theta(n)$ (Lineare).
 \end{itemize}
 
 \begin{figure}[H]
@@ -324,8 +324,8 @@
 \section{Esempio 3: Minimo in Vettore Ordinato}
 %---------------------------------------------------------
 \begin{itemize}
-    [cite_start]\item \textbf{Input}: Array $A[1..n]$ di interi, \textbf{ordinato}[cite: 22].
-    [cite_start]\item \textbf{Output}: Il valore minimo contenuto in $A$[cite: 22].
+    \item \textbf{Input}: Array $A[1..n]$ di interi, \textbf{ordinato}.
+    \item \textbf{Output}: Il valore minimo contenuto in $A$.
 \end{itemize}
 
 \begin{algorithmic}[1]
@@ -333,7 +333,7 @@
     \State \Return $A[1]$ 
 \EndProcedure
 \end{algorithmic}
-[cite_start]\textbf{Analisi}: $T(n) \in \Theta(1)$ (Costante)[cite: 23].
+\textbf{Analisi}: $T(n) \in \Theta(1)$ (Costante).
 
 \vspace{1cm}
 \hrule
@@ -343,10 +343,10 @@
 \section{Esempio 4: Cerca K in Vettore Ordinato (Ricerca Binaria)}
 %---------------------------------------------------------
 \begin{itemize}
-    [cite_start]\item \textbf{Input}: Array $A[1..n]$ di interi \textbf{ordinato}, $k$ intero[cite: 24].
-    [cite_start]\item \textbf{Output}: $i$ tale che $A[i]=k$, o $-1$ se $k \notin A$[cite: 25].
+    \item \textbf{Input}: Array $A[1..n]$ di interi \textbf{ordinato}, $k$ intero.
+    \item \textbf{Output}: $i$ tale che $A[i]=k$, o $-1$ se $k \notin A$.
 \end{itemize}
-[cite_start]L'idea è di confrontare $k$ con l'elemento centrale $A[q]$ e dimezzare lo spazio di ricerca[cite: 26].
+L'idea è di confrontare $k$ con l'elemento centrale $A[q]$ e dimezzare lo spazio di ricerca.
 
 \begin{algorithmic}[1]
 \Procedure{BS-IT}{A, p, r, k} 
@@ -355,7 +355,7 @@
         \If{$A[q] == k$}
             \State \Return $q$ 
         \ElsIf{$A[q] > k$}
-            [cite_start]\State $r = q - 1$ [cite: 27]
+            \State $r = q - 1$ 
         \Else
             \State $p = q + 1$ 
         \EndIf
@@ -366,8 +366,8 @@
 
 \textbf{Analisi:}
 \begin{itemize}
-    \item \textbf{Caso Ottimo}: $k = A[q]$ al primo ciclo. [cite_start]$T(n) \in \Theta(1)$ (Costante)[cite: 28].
-    \item \textbf{Caso Pessimo}: $k \notin A$. Il numero di iterazioni è $\log_2 n$. [cite_start]$T(n) \in \Theta(\log n)$ (Logaritmica)[cite: 29].
+    \item \textbf{Caso Ottimo}: $k = A[q]$ al primo ciclo. $T(n) \in \Theta(1)$ (Costante).
+    \item \textbf{Caso Pessimo}: $k \notin A$. Il numero di iterazioni è $\log_2 n$. $T(n) \in \Theta(\log n)$ (Logaritmica).
 \end{itemize}
 
 \begin{figure}[H]

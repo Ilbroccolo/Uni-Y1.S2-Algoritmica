@@ -1,0 +1,173 @@
+% ===================================================================
+% FILE: Precizazione1.tex
+% ===================================================================
+
+\part*{Lezione 9 (20/10/2025) }
+
+\section*{Esercitazione Master's Theorem}
+\subsection*{Domande}
+
+\begin{itemize}
+    \item[(A)] $T(n) = 7 T(n/2) + n^2 \quad \forall n \ge n_0$
+    \item[(A')] $T'(n) = a T(n/4) + n^2 \quad \forall n \ge n_0'$
+\end{itemize}
+
+\paragraph{Domanda (A):} Qual è il più grande valore di $a$ per cui $T'$ è asintoticamente $<$ (\emph{minore del}) valore di $T$?
+
+\paragraph{Domanda (A'):} Qual è il più grande valore di $a$ per cui $T'$ è asintoticamente uguale al valore di $T$?
+
+\subsection*{Introduzione all'esercizio}
+\paragraph{In questa parte dell'esercizio abbiamo come scopo riportare in una forma adeguata i nostri valori}
+\subsubsection*{Costo in tempo di A}
+\[ T(n) = 7 T(n/2) + n^2 \]
+\begin{itemize}
+    \item $a=7, b=2, f(n)=n^2$
+    \item $\log_b a \implies \log_2 7$
+    \item $f(n) = n^2 \in O(n^{\log_2 7 - \epsilon})$
+    \item $0 < \epsilon \le \log_2 7 - 2$
+    \item $1^\circ \text{ CASO} \implies T(n) = \Theta(n^{\log_2 7})$ \quad (\emph{circa $n^{2.8...}$})
+\end{itemize}
+
+\subsubsection*{Costo in tempo di A'}
+\[ T'(n) = a T(n/4) + n^2 \]
+\begin{itemize}
+    \item $a=a, b=4, f(n)=n^2$
+    \item $\log_b a \implies \log_4 a$
+    \item Quale caso del Teorema?
+    \begin{itemize}
+        \item Ramo 1: $\log_4 a < 2 \implies a < 16$ \quad (\emph{Caso 3?})
+        \item Ramo 2: $\log_4 a = 2 \implies a = 16$ \quad (\emph{Caso 2?})
+        \item Ramo 3: $\log_4 a > 2 \implies a > 16$ \quad (\emph{Caso 1})
+    \end{itemize}
+\end{itemize}
+
+\section*{Logica per risolvere}
+L'obiettivo è usare il Teorema Master per risolvere le ricorrenze. Il teorema si applica a ricorrenze della forma:
+Si calcola il valore critico $\log_b a$ e lo si confronta con l'esponente di $f(n)$ (supponendo $f(n) = n^k$).
+
+\subsection*{Step 1: Analisi di T(n) (Ricorrenza A)}
+La prima ricorrenza è $T(n) = 7 T(n/2) + n^2$.
+\begin{itemize}
+    \item \textbf{Identificazione parametri:}
+    \begin{itemize}
+        \item $a=7$
+        \item $b=2$
+        \item $f(n) = n^2$
+    \end{itemize}
+    \item \textbf{Calcolo esponente critico:}
+    \begin{itemize}
+        \item Calcoliamo $\log_b a = \log_2 7$.
+        \item Sappiamo che $2^2 = 4$ e $2^3 = 8$, quindi $\log_2 7$ è un numero tra 2 e 3 (circa 2.81).
+    \end{itemize}
+    \item \textbf{Confronto e applicazione Teorema Master:}
+    \begin{itemize}
+        \item Confrontiamo $f(n) = n^2$ con $n^{\log_b a} = n^{\log_2 7}$.
+        \item Poiché $2 < \log_2 7$, $f(n)$ è polinomialmente più piccola di $n^{\log_b a}$.
+        \item Questo corrisponde al \textbf{Caso 1} del Teorema Master: $f(n) = O(n^{\log_b a - \epsilon})$, dove $\epsilon = \log_2 7 - 2 > 0$.
+        \item La soluzione è quindi $T(n) = \Theta(n^{\log_b a})$.
+    \end{itemize}
+\end{itemize}
+
+\begin{quote}
+    \textbf{Risultato per T(n): $T(n) = \Theta(n^{\log_2 7})$}
+\end{quote}
+
+\subsection*{Step 2: Analisi di T'(n) (Ricorrenza A')}
+La seconda ricorrenza è $T'(n) = a T(n/4) + n^2$.
+\begin{itemize}
+    \item \textbf{Identificazione parametri:}
+    \begin{itemize}
+        \item $a = a$ (sconosciuto)
+        \item $b = 4$
+        \item $f(n) = n^2$
+    \end{itemize}
+    \item \textbf{Calcolo esponente critico:}
+    \begin{itemize}
+        \item L'esponente critico è $\log_b a = \log_4 a$.
+    \end{itemize}
+    \item \textbf{Confronto e applicazione Teorema Master:}
+    \begin{itemize}
+        \item Dobbiamo confrontare $\log_4 a$ con l'esponente di $f(n)$, che è 2.
+        \item Questo crea tre scenari possibili:
+        \item \textbf{Scenario 1 (Caso 1 del Teorema): $\log_4 a > 2$}
+        \begin{itemize}
+            \item Questo succede quando $a > 4^2$, cioè $a > 16$.
+            \item La soluzione è dominata dalla ricorsione: $T'(n) = \Theta(n^{\log_4 a})$.
+        \end{itemize}
+        \item \textbf{Scenario 2 (Caso 2 del Teorema): $\log_4 a = 2$}
+        \begin{itemize}
+            \item Questo succede quando $a = 4^2$, cioè $a = 16$.
+            \item La soluzione è: $T'(n) = \Theta(n^{\log_b a} \log n) = \Theta(n^2 \log n)$.
+        \end{itemize}
+        \item \textbf{Scenario 3 (Caso 3 del Teorema): $\log_4 a < 2$}
+        \begin{itemize}
+            \item Questo succede quando $a < 16$.
+            \item La soluzione è dominata dal costo $f(n)$: $T'(n) = \Theta(n^2)$ (assumendo la condizione di regolarità, che è soddisfatta).
+        \end{itemize}
+    \end{itemize}
+\end{itemize}
+
+\hrule
+
+\subsection*{Step 3: Risposta alle Domande}
+Ora usiamo i risultati degli Step 1 e 2 per rispondere alle domande.
+
+\paragraph{Domanda (A'): Trovare $a$ t.c. $T'(n)$ è uguale a $T(n)$}
+Vogliamo trovare il più grande $a$ per cui $T'(n)$ è asintoticamente uguale a $T(n)$.
+
+Controlliamo quale dei nostri 3 scenari per $T'(n)$ può soddisfare questa uguaglianza:
+\begin{itemize}
+    \item \textbf{Se $a > 16$ (Scenario 1):} $T'(n) = \Theta(n^{\log_4 a})$.
+    \begin{itemize}
+        \item Dobbiamo avere $\Theta(n^{\log_4 a}) = \Theta(n^{\log_2 7})$.
+        \item Questo richiede che gli esponenti siano uguali: $\log_4 a = \log_2 7$.
+        \item Risolviamo per $a$ (usando il cambio di base: $\log_4 a = \frac{\log_2 a}{\log_2 4} = \frac{\log_2 a}{2}$):
+        \[ \frac{\log_2 a}{2} = \log_2 7 \]
+        \[ \log_2 a = 2 \log_2 7 \]
+        \[ \log_2 a = \log_2 (7^2) \]
+        \[ a = 49 \]
+        \item Questo valore $a=49$ è coerente con la condizione $a > 16$.
+    \end{itemize}
+    \item \textbf{Se $a = 16$ (Scenario 2):} $T'(n) = \Theta(n^2 \log n)$.
+    \begin{itemize}
+        \item $n^2 \log n$ non è asintoticamente uguale a $n^{\log_2 7}$ (che è $\approx n^{2.81}$).
+    \end{itemize}
+    \item \textbf{Se $a < 16$ (Scenario 3):} $T'(n) = \Theta(n^2)$.
+    \begin{itemize}
+        \item $n^2$ non è asintoticamente uguale a $n^{\log_2 7}$.
+    \end{itemize}
+\end{itemize}
+\textbf{Risposta (A'):} L'unico valore (e quindi il più grande) per cui $T'(n)$ è asintoticamente uguale a $T(n)$ è $a = 49$.
+
+\paragraph{Domanda (A): Trovare $a$ t.c. $T'(n)$ è minore di $T(n)$}
+Vogliamo trovare il più grande $a$ per cui $T'(n)$ è asintoticamente minore di $T(n)$ (cioè $T'(n) = o(T(n))$).
+
+Controlliamo di nuovo i nostri 3 scenari:
+\begin{itemize}
+    \item \textbf{Se $a > 16$ (Scenario 1):} $T'(n) = \Theta(n^{\log_4 a})$.
+    \begin{itemize}
+        \item Vogliamo $n^{\log_4 a} = o(n^{\log_2 7})$.
+        \item Questo è vero se l'esponente $\log_4 a$ è strettamente minore di $\log_2 7$.
+        \item $\log_4 a < \log_2 7 \implies a < 49$ (dal calcolo precedente).
+        \item Questo scenario è valido per l'intervallo $16 < a < 49$.
+    \end{itemize}
+    \item \textbf{Se $a = 16$ (Scenario 2):} $T'(n) = \Theta(n^2 \log n)$.
+    \begin{itemize}
+        \item Vogliamo $n^2 \log n = o(n^{\log_2 7})$.
+        \item Poiché $2 < \log_2 7 \approx 2.81$, $n^2 \log n$ cresce più lentamente di $n^{\log_2 7}$. L'affermazione è vera.
+        \item Quindi $a = 16$ è una soluzione.
+    \end{itemize}
+    \item \textbf{Se $a < 16$ (Scenario 3):} $T'(n) = \Theta(n^2)$.
+    \begin{itemize}
+        \item Vogliamo $n^2 = o(n^{\log_2 7})$.
+        \item Poiché $2 < \log_2 7$, $n^2$ cresce più lentamente di $n^{\log_2 7}$. L'affermazione è vera.
+        \item Questo scenario è valido per $1 \le a < 16$.
+    \end{itemize}
+\end{itemize}
+Unendo tutti i casi validi, $T'(n)$ è asintoticamente minore di $T(n)$ per ogni $a$ nell'intervallo $1 \le a < 49$.
+
+\textbf{Risposta (A):} La domanda chiede il più grande valore di $a$. Se $a$ può essere un numero reale, non esiste un "più grande" valore (il limite è 49). Se si intende il più grande valore intero, la risposta è $a = 48$.
+
+\textbf{Ricorda bene} che $\log n$ va sempre più veloce di qualsiasi polinomio di $n$. Se dovessimo cercare qualcosa, $\log n$ va più veloce di qualunque polinomio di $n$.
+
+\newpage

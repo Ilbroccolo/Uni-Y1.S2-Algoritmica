@@ -1,0 +1,245 @@
+\documentclass[a4paper,11pt]{article}
+
+% ===================================================================
+% TEMPLATE: "La Bibbia" Style (5-Color Palette)
+% ===================================================================
+
+% --- Pacchetti Fondamentali ---
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[italian]{babel}
+\usepackage{geometry}
+\geometry{top=2.5cm, bottom=2.5cm, left=2.5cm, right=2.5cm}
+
+% --- Font Moderni ---
+\usepackage{lmodern}
+\usepackage{helvet}
+\renewcommand{\familydefault}{\sfdefault} % Usa sans-serif per tutto il documento
+
+% --- Colori e Grafica ---
+\usepackage{xcolor}
+\usepackage{tikz}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{graphicx}
+\usepackage{wrapfig}
+\usepackage{caption}
+\usepackage{subcaption}
+
+% --- Pacchetti Utility ---
+\usepackage{multicol}
+\usepackage{soul}
+\usepackage{enumitem}
+\usepackage{lipsum}
+\usepackage{mwe}
+\usepackage{multirow}
+\usetikzlibrary{shapes, arrows.meta, positioning, chains, fit, calc, matrix, trees, backgrounds, decorations.pathmorphing, decorations.pathreplacing, snakes}
+
+% ===================================================================
+% DEFINIZIONE COLORI (Palette Personalizzata)
+% ===================================================================
+\definecolor{paletteIndigo}{HTML}{2D1E64}   % Dark Backgrounds / Sidebar
+\definecolor{paletteRegalia}{HTML}{592F83}  % Primary Brand / Headers / Frames
+\definecolor{paletteLenurple}{HTML}{B795D7} % Secondary Accent (Light Purple)
+\definecolor{paletteLavender}{HTML}{EADCFA} % Box Backgrounds
+\definecolor{paletteWenge}{HTML}{69525D}    % Text / Details
+
+% --- Mapping Colors to Layout ---
+\colorlet{mainOrange}{paletteRegalia}       % Sections / Main Theme (was Orange)
+\colorlet{jsYellow}{paletteLenurple}        % Accents (was Yellow/Gold)
+\colorlet{jsDark}{paletteIndigo}            % Sidebar / Dark Elements
+\colorlet{codeBg}{paletteLavender}          % Box Backgrounds
+\colorlet{niceBlue}{paletteRegalia}         % Concept Box Frames
+\colorlet{textGray}{paletteWenge}           % Meta Text
+
+% --- Altri colori utili ---
+\definecolor{codeBlue}{HTML}{0000FF}
+\definecolor{codePink}{HTML}{800080}
+\definecolor{codeGreen}{HTML}{008000}
+
+% ===================================================================
+% COMANDO COPERTINA (TikZ)
+% ===================================================================
+\newcommand{\customcover}[2]{
+    \begin{titlepage}
+    \thispagestyle{empty}
+    \begin{tikzpicture}[remember picture, overlay]
+        
+        % 1. Sfondo Laterale (Indigo)
+        \fill[jsDark] (current page.north west) rectangle ($(current page.south west) + (4cm,0)$);
+        
+        % 2. Linea Accento (Lenurple)
+        \draw[jsYellow, line width=4pt] ($(current page.north west) + (4.2cm,-2cm)$) -- ($(current page.south west) + (4.2cm,2cm)$);
+        
+        % 3. Contenuto Testuale
+        \node[anchor=north west, inner sep=0, text width=14cm, align=flush left] at ($(current page.north west) + (6cm,-5cm)$) {
+            
+                {\fontsize{18}{22}\selectfont \textcolor{textGray}{Università di Pisa}}\\[0.2cm]
+                {\fontsize{16}{20}\selectfont \textcolor{textGray}{Corso di Laurea in Informatica}}\\[2cm]
+                
+                {\fontsize{60}{70}\selectfont \textbf{\textcolor{jsDark}{LA BIBBIA Di }}}\\[0.5cm]
+                {\fontsize{35}{45}\selectfont \textbf{\textcolor{black}{PROGRAMMAZIONE}}}\\[0.2cm]
+                {\fontsize{35}{45}\selectfont \textbf{\textcolor{black}{ED ALGORITMICA}}}\\[1.5cm]
+                
+                % Linea divisoria
+                \textcolor{jsYellow}{\rule{8cm}{4pt}}\\[1cm]
+                
+                {\Large \textbf{#1}}\\[0.2cm]
+                {\large \textit{#2}}\\[1.5cm]
+                
+                {\large Docenti titolari:}\\[0.2cm]
+                {\Large \textbf{[Nome Docente]}}\\[2cm]
+                
+                \textbf{\large Autore del riassunto:}\\
+                {\large [Tuo Nome]}\\[2cm]
+                
+                \vfill
+                {\large \textbf{Anno Accademico 2024 - 2025}}
+        };
+        
+        % Badge P&A
+        \node[anchor=south east] at ($(current page.south east) + (-2cm, 2cm)$) {
+            \tikz\draw[fill=jsYellow, draw=none] (0,0) rectangle (2,2) node[midway, black, font=\bfseries\huge] {P\&A};
+        };
+
+    \end{tikzpicture}
+    \end{titlepage}
+    \clearpage
+}
+
+% ===================================================================
+% AMBIENTI PERSONALIZZATI (TColorBox)
+% ===================================================================
+\usepackage[most]{tcolorbox}
+\usepackage{listings}
+\usepackage{titlesec}
+\usepackage[pdfusetitle, bookmarksopen=true, bookmarksnumbered=true]{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=mainOrange,
+    citecolor=niceBlue,
+    urlcolor=niceBlue,
+    linktoc=all
+}
+
+% Format Titoli
+\titleformat{\section}
+{\color{mainOrange}\normalfont\Large\bfseries}
+{\color{mainOrange}\thesection}{1em}{}[\color{mainOrange}\hrule height 1pt]
+
+\titleformat{\subsection}
+{\color{mainOrange}\normalfont\large\bfseries}
+{\color{mainOrange}\thesubsection}{1em}{}
+
+% 1. Box Codice JS/Generico
+\newtcblisting{jsbox}[1][]{
+  colback=codeBg,
+  colframe=gray!50,
+  listing only,
+  listing options={
+    basicstyle=\ttfamily\small,
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    breaklines=true,
+    columns=fullflexible
+  },
+  title={\textbf{Codice}},
+  coltitle=black,
+  fonttitle=\bfseries\ttfamily,
+  enhanced,
+  attach boxed title to top right={yshift=-3mm, xshift=-3mm},
+  boxed title style={colback=jsYellow},
+  #1
+}
+
+% 2. Box Concetti/Definizioni (Blu/Viola)
+\newtcolorbox{concept}[1]{
+  colback=niceBlue!5,
+  colframe=niceBlue,
+  title={#1},
+  fonttitle=\bfseries,
+  sharp corners=downhill,
+  enhanced,
+  drop shadow
+}
+
+% 3. Box Algoritmi (Pseudocodice)
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{etoolbox}
+
+\newtcolorbox{algobox}{
+  colback=codeBg,
+  colframe=mainOrange,
+  title={\textbf{Algoritmo}},
+  coltitle=white,
+  fonttitle=\bfseries\ttfamily,
+  enhanced,
+  attach boxed title to top left={yshift=-3mm, xshift=3mm},
+  boxed title style={colback=mainOrange},
+  drop shadow
+}
+\BeforeBeginEnvironment{algorithmic}{\begin{algobox}}
+\AfterEndEnvironment{algorithmic}{\end{algobox}}
+
+% Mappatura Ambienti Scientifici
+\newenvironment{definition}[1][Definizione]{\begin{concept}{#1}}{\end{concept}}
+\newenvironment{theorem}[1][Teorema]{\begin{concept}{#1}}{\end{concept}}
+\newenvironment{example}[1][Esempio]{\begin{concept}{#1}}{\end{concept}}
+\newenvironment{observation}[1][Osservazione]{\begin{concept}{#1}}{\end{concept}}
+
+% ===================================================================
+% INIZIO DOCUMENTO
+% ===================================================================
+\begin{document}
+
+% 1. Copertina
+\customcover{Titolo Del Documento}{Sottotitolo o Lezione}
+
+% 2. Indice
+\tableofcontents
+\newpage
+
+% 3. Contenuto Esempio
+\section{Introduzione al Template}
+Questo template utilizza lo stile "La Bibbia" con la palette personalizzata:
+\begin{itemize}
+    \item \textbf{Indigo} (\texttt{paletteIndigo}): Sidebar e Sfondi scuri.
+    \item \textbf{Regalia} (\texttt{paletteRegalia}): Titoli e Bordi primari.
+    \item \textbf{Lenurple} (\texttt{paletteLenurple}): Accenti.
+    \item \textbf{Lavender} (\texttt{paletteLavender}): Sfondi box.
+\end{itemize}
+
+\subsection{Esempio Algoritmo}
+Ecco come appare un blocco di pseudocodice:
+
+\begin{algorithmic}[1]
+    \Procedure{Build-Heap}{A}
+        \State $heap\_size \gets length(A)$
+        \For{$i \gets \lfloor length(A)/2 \rfloor$ \textbf{downto} 1}
+            \State \Call{Max-Heapify}{A, i}
+        \EndFor
+    \EndProcedure
+\end{algorithmic}
+
+\subsection{Esempio Definizione}
+\begin{definition}[Concetto Chiave]
+    Questa è una definizione incapsulata nel box \texttt{concept}.
+    Lo sfondo è \texttt{paletteLavender} (chiarissimo) e il bordo è \texttt{paletteRegalia}.
+\end{definition}
+
+\section{Grafica TikZ}
+Esempio di grafico con lo stile \textit{Indigo/White}:
+
+\begin{center}
+    \begin{tikzpicture}[
+        node style/.style={draw=paletteIndigo, fill=white, circle, thick, minimum size=8mm}
+    ]
+        \node[node style] (A) at (0,0) {A};
+        \node[node style] (B) at (2,0) {B};
+        \draw[->, thick, paletteRegalia] (A) -- (B) node[midway, above, font=\small] {Edge};
+    \end{tikzpicture}
+\end{center}
+
+\end{document}

@@ -1,0 +1,69 @@
+% =======================================================
+% FILE: errori-comuni-complessita.tex
+% DA INCLUDERE NEL MAIN DOCUMENT
+% =======================================================
+
+\section{Errori Comuni da Evitare nell'Analisi}
+
+Questa sezione riassume gli errori più frequenti che si possono commettere nell'analisi della complessità e nell'uso della notazione asintotica.
+
+\subsection{Errore nel Calcolo della Complessità Totale}
+Uno degli errori più comuni riguarda la combinazione delle complessità quando diverse fasi di un algoritmo vengono eseguite in sequenza.
+
+\subsubsection{Moltiplicare Invece di Sommare}
+L'errore comune consiste nel \textbf{moltiplicare} le complessità delle diverse fasi, anziché \textbf{sommarle}, quando queste sono eseguite in sequenza.
+
+\begin{example}[Errore di Moltiplicazione]
+    Si consideri un algoritmo composto da tre fasi eseguite consecutivamente:
+    \begin{enumerate}
+        \item Fase 1: $O(n^2)$
+        \item Fase 2: $O(n \log n)$
+        \item Fase 3: $O(n)$
+    \end{enumerate}
+    \textbf{Calcolo Errato}: Complessità totale $\neq O(n^2) \cdot O(n \log n) \cdot O(n) = O(n^4 \log n)$.
+\end{example}
+
+\begin{observation}[Regola Fondamentale]
+    Quando le operazioni sono eseguite \textbf{in sequenza} (l'una dopo l'altra), il tempo totale è la somma dei tempi. La complessità finale è data dal termine dominante (quello con l'ordine di grandezza maggiore):
+    $$ T_{totale}(n) = T_1(n) + T_2(n) + T_3(n) $$
+    \textbf{Calcolo Corretto}:
+    $$ O(n^2) + O(n \log n) + O(n) = \mathbf{O(n^2)} $$
+    La moltiplicazione delle complessità si applica unicamente quando le operazioni sono \textbf{annidate} (es. un ciclo iterativo interno a un altro ciclo).
+\end{observation}
+
+\subsection{Imprecisioni Terminologiche sulle Strutture Dati}
+
+\subsubsection{Definire un Array "Disordinato"}
+È un errore usare l'aggettivo "disordinato" per descrivere lo stato di una struttura dati (come un array). La caratteristica dell'ordine è una proprietà booleana.
+
+\begin{note}
+    Non si deve dire che l'array è "disordinato".
+    Si deve dire che l'array \textbf{non è ordinato}.
+\end{note}
+
+\subsection{Errori di Definizione sulle Notazioni Asintotiche (\texorpdfstring{$\mathbf{O}, \mathbf{\Theta}, \mathbf{\Omega}$}{O, Theta, Omega})}
+Le notazioni asintotiche (O-grande, Theta, Omega) non definiscono un'uguaglianza tra funzioni, ma una \textbf{relazione di limitazione} del tasso di crescita asintotico.
+
+\subsubsection{Confondere l'Appartenenza con l'Eguaglianza}
+\begin{note}
+    È un errore affermare che $\Theta = \text{equazione}$ (es. $\Theta = n^2$). La notazione non è un'equazione in senso stretto e non rappresenta una singola funzione.
+\end{note}
+La scrittura $f(n) = O(g(n))$ non indica un'uguaglianza, ma significa che la funzione $f(n)$ \textbf{appartiene all'insieme} delle funzioni che crescono al più come $g(n)$ (a meno di una costante per $n$ sufficientemente grande).
+
+\begin{definition}[Sintesi Notazioni]
+    Sia $g(n)$ una funzione di riferimento.
+    \begin{itemize}
+        \item $\mathbf{O(g(n))}$ (\textbf{O-grande}): Indica il \textbf{limite superiore} (Worst Case). Una funzione $f(n)$ è $O(g(n))$ se $f(n)$ cresce al più velocemente di $g(n)$.
+        \item $\mathbf{\Omega(g(n))}$ (\textbf{Omega}): Indica il \textbf{limite inferiore} (Best Case). Una funzione $f(n)$ è $\Omega(g(n))$ se $f(n)$ cresce almeno tanto velocemente quanto $g(n)$.
+        \item $\mathbf{\Theta(g(n))}$ (\textbf{Theta}): Indica l'\textbf{ordine esatto} (Average Case o limite sia superiore che inferiore). Una funzione $f(n)$ è $\Theta(g(n))$ se $f(n)$ cresce esattamente con lo stesso tasso di $g(n)$.
+    \end{itemize}
+\end{definition}
+
+\subsubsection{Errore nella Spiegazione dei Simboli}
+È un errore comune spiegare in modo confuso o invertito le limitazioni date dalle tre notazioni.
+
+\begin{observation}
+    Quando si spiega $f(n) = O(g(n))$, non significa che $f(n)$ sia limitata da $g(n)$ nel senso di una frazione con un risultato specifico. Significa che esiste una costante positiva $c$ e un $n_0$ tali che:
+    $$ 0 \leq f(n) \leq c \cdot g(n) \quad \forall n \geq n_0 $$
+    La definizione richiede che $f(n)$ sia \textbf{asintoticamente dominata} da $g(n)$, a meno di un fattore costante.
+\end{observation}

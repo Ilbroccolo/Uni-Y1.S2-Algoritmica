@@ -1,174 +1,364 @@
-% ===================================================================
-% PREAMBOLO MIGLIORATO (A.A. 2024-2025)
-% (Versione corretta e unificata)
-% ===================================================================
-\documentclass[12pt, a4paper]{article}
+\documentclass[a4paper,11pt]{article}
 
-% ---- 1. IMPOSTAZIONI FONDAMENTALI (Lingua, Encoding, Font) ----
+% ===================================================================
+% NUOVO STILE: "La Bibbia" (Light Theme + Orange + JS Aesthetics)
+% ===================================================================
+
+% --- Pacchetti Fondamentali ---
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
-\usepackage[english, italian]{babel}
+\usepackage[italian]{babel}
+\usepackage{geometry}
+\geometry{top=2.5cm, bottom=2.5cm, left=2.5cm, right=2.5cm}
+
+% --- Font Moderni ---
 \usepackage{lmodern}
+\usepackage{helvet}
+\renewcommand{\familydefault}{\sfdefault} % Usa sans-serif per tutto il documento
 
-% ---- 2. LAYOUT E GEOMETRIA ----
-\usepackage[a4paper,top=2cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
-
-% ---- 3. PACCHETTI MATEMATICI E SIMBOLI ----
-\usepackage{amsmath}
-\usepackage{amssymb}
-\usepackage{amsfonts}
-
-% ---- 4. GRAFICA, FIGURE E COLORI ----
-\usepackage{graphicx}
-\graphicspath{ {./images/} }
-\usepackage{caption}
-\usepackage{subcaption}
-\usepackage{wrapfig}
-\usepackage[dvipsnames,svgnames]{xcolor} 
-\usepackage{tikz} %%% AGGIUNTO: Pacchetto fondamentale per i grafici
-\usetikzlibrary{arrows.meta, positioning, shapes.geometric, calc, decorations.pathmorphing, snakes} %%% AGGIUNTO: Librerie per i grafici
+% --- Colori e Grafica ---
+\usepackage{xcolor}
 \usepackage{tikz}
-\usetikzlibrary{arrows.meta, positioning, shapes.geometric, calc, decorations.pathmorphing, snakes}
+\usepackage{amssymb}
+\usepackage{amsmath} % Aggiunto per supporto matematico
+\usepackage{amsthm}  % Aggiunto per proof e teoremi
 
-% ---- 5. LINK E RIFERIMENTI (MIGLIORAMENTO GRAFICO) ----
+\usepackage{graphicx} % Aggiunto per immagini
+\usepackage{wrapfig}  % Aggiunto per compatibilità
+\usepackage{caption} 
+\usepackage{subcaption}
+
+% --- Pacchetti Utility (Compatibilità Vecchio Testo) ---
+\usepackage{multicol}
+\usepackage{soul}
+\usepackage{enumitem}
+\usepackage{lipsum}
+\usepackage{mwe}
+\usepackage{multirow}
+\usetikzlibrary{shapes, arrows.meta, positioning, chains, fit, calc, matrix, trees, backgrounds, decorations.pathmorphing, decorations.pathreplacing, snakes}
+
+% --- Definizione Colori (Custom 5-Color Palette)
+\definecolor{paletteIndigo}{HTML}{2D1E64}   % Dark Backgrounds
+\definecolor{paletteRegalia}{HTML}{592F83}  % Primary Brand / Headers
+\definecolor{paletteLenurple}{HTML}{B795D7} % Secondary Accent (Light Purple)
+\definecolor{paletteLavender}{HTML}{EADCFA} % Box Backgrounds
+\definecolor{paletteWenge}{HTML}{69525D}    % Text / Details
+
+% --- Mapping Colors to Layout ---
+\colorlet{mainOrange}{paletteRegalia}       % Sections / Main Theme
+\colorlet{jsYellow}{paletteLenurple}        % Accents (Replacing Gold/Yellow)
+\colorlet{jsDark}{paletteIndigo}            % Sidebar / Dark Elements
+\colorlet{codeBg}{white}          % Box Backgrounds (White as requested)
+\colorlet{niceBlue}{paletteRegalia}         % Concept Box Frames
+\colorlet{textGray}{paletteWenge}           % Meta Text
+\colorlet{tsBlue}{paletteRegalia}           % Misc Blue elements
+
+\definecolor{codeBlue}{HTML}{0000FF}
+\definecolor{codePink}{HTML}{800080}
+\definecolor{codeGreen}{HTML}{008000}
+% --- Colori Legacy (Compatibilità) ---
+\definecolor{codegray}{named}{white}
+\definecolor{commentpurple}{rgb}{0.5,0,0.5}
+\definecolor{stringred}{rgb}{0.8,0,0}
+
+% --- COMANDO COPERTINA (Pure TikZ - Left Aligned) ---
+\newcommand{\customcover}[2]{
+    \begin{titlepage}
+    \thispagestyle{empty}
+    \begin{tikzpicture}[remember picture, overlay]
+        
+        % 1. Sfondo Laterale (Indigo)
+        \fill[jsDark] (current page.north west) rectangle ($(current page.south west) + (4cm,0)$);
+        
+        % 2. Linea Accento (Lenurple)
+        \draw[jsYellow, line width=4pt] ($(current page.north west) + (4.2cm,-2cm)$) -- ($(current page.south west) + (4.2cm,2cm)$);
+        
+        % 3. Contenuto Testuale (ALLINEATO A SINISTRA)
+        \node[anchor=north west, inner sep=0, text width=14cm, align=flush left] at ($(current page.north west) + (6cm,-5cm)$) {
+            
+                {\fontsize{18}{22}\selectfont \textcolor{textGray}{Università di Pisa}}\\[0.2cm]
+                {\fontsize{16}{20}\selectfont \textcolor{textGray}{Corso di Laurea in Informatica}}\\[2cm]
+                
+                {\fontsize{60}{70}\selectfont \textbf{\textcolor{jsDark}{LA BIBBIA Di }}}\\[0.5cm]
+                %{\fontsize{35}{45}\selectfont \textbf{\textcolor{black}{DI}}}\\[0.2cm]
+                {\fontsize{35}{45}\selectfont \textbf{\textcolor{black}{PROGRAMMAZIONE}}}\\[0.2cm]
+                {\fontsize{35}{45}\selectfont \textbf{\textcolor{black}{ED ALGORITMICA}}}\\[1.5cm]
+                
+                % Linea divisoria (Sinistra)
+                \textcolor{jsYellow}{\rule{8cm}{4pt}}\\[1cm]
+                
+                {\Large \textbf{#1}}\\[0.2cm]
+                {\large \textit{#2}}\\[1.5cm]
+                
+                {\large Docenti titolari:}\\[0.2cm]
+                {\Large \textbf{[Nome Docente]}}\\[2cm]
+                
+                \textbf{\large Autore del riassunto:}\\
+                {\large Joseph Zucchelli}\\[2cm]
+                
+                \vfill
+                {\large \textbf{Anno Accademico 2024 - 2025}}
+            
+        };
+        
+        % Badge (Opzionale)
+        \node[anchor=south east] at ($(current page.south east) + (-2cm, 2cm)$) {
+            \tikz\draw[fill=jsYellow, draw=none] (0,0) rectangle (2,2) node[midway, black, font=\bfseries\huge] {P\&A};
+        };
+
+    \end{tikzpicture}
+    \end{titlepage}
+    \clearpage
+}
+
+% --- Box per il Codice e Note (tcolorbox) ---
+\usepackage[most]{tcolorbox}
+\usepackage{listings}
+\usepackage{titlesec} % Per colorare i titoli
 \usepackage[pdfusetitle, bookmarksopen=true, bookmarksnumbered=true]{hyperref}
 \hypersetup{
     colorlinks=true,
-    linkcolor=RoyalBlue,
-    citecolor=OliveGreen,
-    urlcolor=NavyBlue,
-    filecolor=Magenta,
+    linkcolor=mainOrange,
+    citecolor=niceBlue,
+    urlcolor=niceBlue,
     linktoc=all
 }
 
-% ---- 6. HEADER E FOOTER (Stile più leggero) ----
-\usepackage{fancyhdr}
-\pagestyle{fancy}
-\fancyhf{}
-\fancyhead[LE,RO]{\small A.A 2024-2025}
-\fancyhead[RE,LO]{\small Programmazione ed Algoritmi}
-\fancyfoot[RE,LO]{\small \rightmark} 
-\fancyfoot[LE,RO]{\small \thepage}
-\renewcommand{\headrulewidth}{0.4pt}
-\renewcommand{\footrulewidth}{0.4pt}
-\setlength{\headheight}{14pt} %%% AGGIUNTO: Corregge l'avviso "headheight is too small"
 
-% ---- 7. AMBIENTI TEOREMA (STILE ISOLATO) ----
-\usepackage{amsthm}
-\usepackage{mdframed} 
+% Setup Titoli Arancioni
+\titleformat{\section}
+{\color{mainOrange}\normalfont\Large\bfseries}
+{\color{mainOrange}\thesection}{1em}{}[\color{mainOrange}\hrule height 1pt]
 
-% Definizioni di base
-\theoremstyle{plain}
-\newtheorem{theorem}{Teorema}[section]
-\theoremstyle{definition}
-\newtheorem{definition}{Definizione}[section]
-\newtheorem{example}{Esempio}[section]
-\newtheorem{observation}{Osservazione}[subsection]
-\newtheorem{dimostrazione}{Dimostrazione}[section]
-\newtheorem{note}{Note}[subsection]
+\titleformat{\subsection}
+{\color{mainOrange}\normalfont\large\bfseries}
+{\color{mainOrange}\thesubsection}{1em}{}
 
-% --- STILE BOX ISOLATO ---
-\mdfdefinestyle{boxTeorema}{
-    linewidth=1pt,
-    linecolor=gray!40,
-    backgroundcolor=gray!5,
-    roundcorner=5pt,
-    skipabove=\topsep,
-    skipbelow=\topsep
-}
-\surroundwithmdframed[style=boxTeorema]{definition}
-\surroundwithmdframed[style=boxTeorema]{example}
-\surroundwithmdframed[style=boxTeorema]{observation}
-
-% ---- 8. CODICE (LISTINGS) ----
-\usepackage{listings}
-
-\definecolor{codegray}{rgb}{0.97,0.97,0.97}
-\definecolor{commentpurple}{rgb}{0.5,0,0.5}
-\definecolor{stringred}{rgb}{0.8,0,0}
-\lstset{ 
-    language=javascript, 
-    backgroundcolor=\color{codegray}, 
-    basicstyle=\footnotesize\ttfamily,
-    numbers=left, numberstyle=\tiny\color{gray},
-    frame=tb, framerule=0.4pt,
-    
+% Stile per il codice JS
+\lstdefinelanguage{JavaScript}{
+  keywords={typeof, new, true, false, catch, function, return, null, catch, switch, var, if, in, while, do, else, case, break, const, let},
+  keywordstyle=\color{green!60!black}\bfseries,
+  ndkeywords={class, export, boolean, throw, implements, import, this, console, log, prompt, alert},
+  ndkeywordstyle=\color{green!60!black}\bfseries,
+  identifierstyle=\color{black}, 
+  sensitive=false,
+  comment=[l]{//},
+  morecomment=[s]{/*}{*/},
+  commentstyle=\color{teal}\itshape,
+  stringstyle=\color{red!60!black}\ttfamily,
+  morestring=[b]',
+  morestring=[b]"
 }
 
-% ---- 9. ALTRI PACCHETTI UTILI ----
-\usepackage{multicol} 
-\usepackage{soul}     
-\usepackage{enumitem} 
-\usepackage{lipsum}   
-\usepackage{mwe}      
-
-% ---- 10. PACCHETTI E STILE PSEUDOCODICE (Stile Box Automatico) ----
-\usepackage{algorithm}     
-\usepackage{algpseudocode} 
-\usepackage{etoolbox}      
-
-% --- Stile Box (Grayscale) per Algoritmi ---
-% 1. Definiamo uno STILE SPECIFICO 'algoBoxStyle' (scala di grigi).
-\mdfdefinestyle{algoBoxStyle}{
-    linewidth=1pt,
-    linecolor=gray!60,      % Bordo grigio medio
-    backgroundcolor=gray!8, % Sfondo grigio chiarissimo
-    roundcorner=5pt,
-    skipabove=\topsep,
-    skipbelow=\topsep,
-    nobreak=true            % Tenta di non spezzare il blocco tra le pagine
+% Box Codice
+\newtcblisting{jsbox}[1][]{
+  colback=codeBg,
+  colframe=gray!50,
+  listing only,
+  listing options={
+    language=JavaScript,
+    basicstyle=\ttfamily\small, % Testo nero di default
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    breaklines=true,
+    columns=fullflexible
+  },
+  title={\textbf{Codice}},
+  coltitle=black,
+  fonttitle=\bfseries\ttfamily,
+  enhanced,
+  attach boxed title to top right={yshift=-3mm, xshift=-3mm},
+  boxed title style={colback=jsYellow},
+  #1
 }
 
-% 2. Applichiamo automaticamente il box a TUTTI gli ambienti 'algorithmic'
-
-\BeforeBeginEnvironment{algorithmic}{%
-  \begin{mdframed}[style=algoBoxStyle]%
+% Box Funzioni Viola
+\newtcblisting{funcbox}[1][]{
+  colback=violet!5,        % Sfondo Viola chiarissimo
+  colframe=violet!75,      % Bordo Viola
+  listing only,
+  listing options={
+    language=JavaScript,
+    basicstyle=\ttfamily\small,
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    breaklines=true,
+    columns=fullflexible
+  },
+  title={\textbf{Funzione: #1}},
+  coltitle=white,
+  fonttitle=\bfseries\ttfamily,
+  enhanced,
+  attach boxed title to top left={yshift=-3mm, xshift=3mm},
+  boxed title style={colback=violet}, 
+  drop shadow,
+  #1
 }
-%    Rileva \end{algorithmic} e chiude il box.
-\AfterEndEnvironment{algorithmic}{%
-  \end{mdframed}%
+
+% Box Concetti/Note
+\newtcolorbox{concept}[1]{
+  colback=niceBlue!5,
+  colframe=niceBlue,
+  title={#1},
+  fonttitle=\bfseries,
+  sharp corners=downhill,
+  enhanced,
+  drop shadow
 }
 
-% --- Miglioramento Stile Interno (algpseudocode) ---
+% --- COMPATIBILITÀ CON VECCHI AMBIENTI ---
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{etoolbox}
 
-% 1. Commenti: grigi, font teletype (tt), corsivo, con simbolo
-\algrenewcommand\algorithmiccomment[1]{\color{gray!80}\ttfamily\itshape\(\triangleright\) #1}
+% 1. Box per Algoritmi (Replica lo stile JSBox ma per pseudocodice)
+\newtcolorbox{algobox}{
+  colback=codeBg,
+  colframe=mainOrange,
+  title={\textbf{Algoritmo}},
+  coltitle=white,
+  fonttitle=\bfseries\ttfamily,
+  enhanced,
+  attach boxed title to top left={yshift=-3mm, xshift=3mm},
+  boxed title style={colback=mainOrange},
+  drop shadow
+}
+% --- Global Listings Style (Matches User Image) ---
+\lstset{
+  basicstyle=\ttfamily\small,
+  keywordstyle=\color{green!60!black}\bfseries,
+  commentstyle=\color{teal}\itshape,
+  stringstyle=\color{red!60!black}\ttfamily,
+  numberstyle=\tiny\color{gray},
+  breaklines=true,
+  tabsize=2,
+  backgroundcolor=\color{codeBg}
+}
 
-% 2. Numeri di riga: piccoli e grigi, per essere meno invadenti
-\algrenewcommand\alglinenumber[1]{\tiny\color{gray!80}#1:}
+% --- Customizing Algorithmic Colors ---
+\algrenewcommand\algorithmicprocedure{\textbf{\textcolor{green!60!black}{Procedure}}}
+\algrenewcommand\algorithmicfunction{\textbf{\textcolor{green!60!black}{Function}}}
+\algrenewcommand\algorithmicwhile{\textbf{\textcolor{green!60!black}{While}}}
+\algrenewcommand\algorithmicfor{\textbf{\textcolor{green!60!black}{For}}}
+\algrenewcommand\algorithmicif{\textbf{\textcolor{green!60!black}{If}}}
+\algrenewcommand\algorithmicelse{\textbf{\textcolor{green!60!black}{Else}}}
+\algrenewcommand\algorithmicreturn{\textbf{\textcolor{green!60!black}{Return}}}
+\algrenewcommand\algorithmicstate{\State} % State remains default (usually black)
+
+\BeforeBeginEnvironment{algorithmic}{\begin{algobox}}
+\AfterEndEnvironment{algorithmic}{\end{algobox}}
+
+% --- Explanation Box Style ---
+\newtcolorbox{explanation}[1]{
+    colback=yellow!10,
+    colframe=orange!80!black,
+    coltitle=black,
+    fonttitle=\bfseries\sffamily,
+    title={#1},
+    arc=2mm,
+    left=4mm, right=4mm, top=4mm, bottom=4mm,
+    sharp corners=south,
+    boxrule=1pt,
+    width=\linewidth
+}
+
+% 3. Box per Codice Generico (codebox)
+\newtcolorbox{codebox}[1]{
+    colback=codeBg,
+    colframe=paletteIndigo,
+    title={\textbf{#1}},
+    coltitle=white,
+    fonttitle=\bfseries\ttfamily,
+    enhanced,
+    attach boxed title to top left={yshift=-3mm, xshift=3mm},
+    boxed title style={colback=paletteIndigo},
+    drop shadow
+}
+
+% 2. Mappatura Teoremi/Definizioni al nuovo stile 'concept'
+% Definiamo nuovi ambienti che wrappano 'concept'
+% Se i file inclusi usano \begin{definition} ... \end{definition}, useranno questo stile.
+
+\newenvironment{definition}[1][Definizione]
+  {\begin{concept}{#1}}
+  {\end{concept}}
+
+\newenvironment{theorem}[1][Teorema]
+  {\begin{concept}{#1}}
+  {\end{concept}}
+
+\newenvironment{example}[1][Esempio]
+  {\begin{concept}{#1}}
+  {\end{concept}}
+
+\newenvironment{observation}[1][Osservazione]
+  {\begin{concept}{#1}}
+  {\end{concept}}
+  
+\newenvironment{property}[1][Proprietà]
+  {\begin{concept}{#1}}
+  {\end{concept}}
+
+\newenvironment{intuition}[1][Intuizione]
+  {\begin{concept}{#1}}
+  {\end{concept}}
+
+\newenvironment{analysis}[1][Analisi]
+  {\begin{concept}{#1}}
+  {\end{concept}}
+
+\newenvironment{note}[1][Nota]
+  {\begin{concept}{#1}}
+  {\end{concept}}
+
+% Mappatura Dimostrazione (usa standard proof di amsthm o custom box)
+\newenvironment{dimostrazione}
+  {\begin{proof}[Dimostrazione]}
+  {\end{proof}}
+
+% Comandi di formattazione extra
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+
 
 % ===================================================================
-% INIZIO DOCUMENTO PRINCIPALE
+% INIZIO DOCUMENTO
 % ===================================================================
 \begin{document}
 
-% --- TITOLO E INDICE (Generati dal Main) ---
-\title{\textbf{Appunti di Programmazione ed Algoritmi}}
-\author{Realizzato da: Joseph Zucchelli}
-\date{A.A 2024-2025}
-\maketitle
-\tableofcontents
+% Copertina Personalizzata
+\customcover{Appunti Completi}{Informatica - Università di Pisa}
 
+\tableofcontents
 \newpage
 
-% ---- Inclusione dei capitoli/lezioni ----
-% Se hai spostato i file in una cartella 'lezioni', usa 'lezioni/Lezione1'
-% Altrimenti lascia 'Lezione1' se sono nella stessa cartella.
+% ---- Inclusione Capitoli ----
+\newpage \input{lezioni/Lezione1}
+\newpage \input{lezioni/Precisazione0}
+\newpage \input{lezioni/Lezione2}
+% \input{lezioni/Lezione3} (Removed duplicate)
+\newpage \input{lezioni/Lezione4}
+\newpage \input{lezioni/Lezione5}
+\newpage \input{lezioni/Lezione6}
+\newpage \input{lezioni/Lezione7}
+\newpage \input{lezioni/Lezione8}
+\newpage \input{lezioni/Precisazione1}
+\newpage \input{lezioni/Lezione9}
+\newpage \input{lezioni/Approfondimento2}
+\newpage \input{lezioni/Lezione10}
+\newpage \input{lezioni/Lezione11}
+% \input{lezioni/Lezione12}
+\newpage \input{lezioni/Lezione13grossi}
+\newpage \input{lezioni/Lezione14}
+\newpage \input{lezioni/Lezione15}
+\newpage \input{lezioni/Lezione16}
+\newpage \input{lezioni/Lezione17}
+\newpage \input{lezioni/Lezione18}
+\newpage \input{lezioni/Lezione19}
 
-\input{lezioni/Lezione1}
-\input{lezioni/Precizazione0}
-
-\input{lezioni/Lezione2}
-\input{lezioni/Lezione3}
-\input{lezioni/Lezione4}
-\input{lezioni/Lezione5}
-\input{lezioni/Lezione6}
-\input{lezioni/Lezione7}
-\input{lezioni/Lezione8}
-\input{lezioni/Precizazione1}
-
-
-
-% ... ecc.
+\newpage
+\part{Errori Comuni e Note}
+\input{lezioni/Errori}
 
 \end{document}

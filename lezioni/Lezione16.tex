@@ -1,0 +1,93 @@
+% ===================================================================
+% FILE: Lezione16.tex
+% ===================================================================
+
+\part{Lezione 1/12: Heapsort e Code di Priorità}
+
+\section{Build-Max-Heap}
+
+
+\begin{algorithmic}[1]
+    \Procedure{Build-Max-Heap}{A, n}
+        \State $A.hs \gets n$
+        \For{$i = \lfloor n/2 \rfloor - 1 \textbf{ downto } 0$}
+            \State \Call{Max-Heapify}{A, i}
+        \EndFor
+    \EndProcedure
+\end{algorithmic}
+
+\begin{explanation}{Logica di Costruzione (Bottom-Up)}
+Partendo dall'ultimo nodo interno ($\lfloor n/2 \rfloor - 1$) fino alla radice, chiamiamo \texttt{Max-Heapify}.
+Le foglie sono già heap validi, quindi non serve processarle.
+\end{explanation}
+
+
+\subsection{Analisi di Complessità}
+\begin{itemize}
+    \item \textbf{Limite Superiore}: $n/2$ chiamate di \texttt{Max-Heapify} (costo $O(\log n)$) $\rightarrow T(n) = O(n \log n)$.
+    \item \textbf{Limite Stretto (Corretto)}: $T(n) = O(n)$.
+\end{itemize}
+
+\subsection{Correttezza}
+\textbf{Invariante}: All'inizio di ogni iterazione del ciclo for, ogni nodo $i+1, i+2, \dots, n-1$ è radice di un max-heap.
+
+\section{Heapsort}
+
+
+\begin{algorithmic}[1]
+    \Procedure{Heapsort}{A}
+        \State \Call{Build-Max-Heap}{A}
+        \For{$i = n-1 \textbf{ downto } 1$}
+            \State scambia $A[0]$ con $A[i]$
+            \State $A.hs \gets A.hs - 1$
+            \State \Call{Max-Heapify}{A, 0}
+        \EndFor
+    \EndProcedure
+\end{algorithmic}
+
+\begin{explanation}{Fasi dell'Heapsort}
+\begin{enumerate}
+    \item \textbf{Costruzione}: Si trasforma l'array in un Max-Heap.
+    \item \textbf{Estrazione}: Si scambia la radice (massimo) con l'ultimo elemento e si riduce la dimensione dell'heap.
+    \item \textbf{Ripristino}: Si chiama \texttt{Max-Heapify} sulla nuova radice per far "affondare" il valore scambiato.
+\end{enumerate}
+\end{explanation}
+
+
+\textbf{Costo Totale}: $T(n) = O(n \log n)$.
+
+\subsection{Esempio Grafico (Heap)}
+Esempio su Array: $A = [16, 14, 10, 8, 7, 9, 3]$.
+
+\begin{center}
+    \begin{tikzpicture}[
+        treenode/.style={draw=paletteIndigo, circle, fill=white, minimum size=8mm, font=\small},
+        level 1/.style={sibling distance=3cm},
+        level 2/.style={sibling distance=1.5cm},
+        edge from parent/.style={draw=paletteRegalia, thick, ->}
+    ]
+        \node[treenode] {16}
+            child {node[treenode] {14}
+                child {node[treenode] {8}}
+                child {node[treenode] {7}}
+            }
+            child {node[treenode] {10}
+                child {node[treenode] {9}}
+                child {node[treenode] {3}}
+            };
+            
+        \node[right, align=left, paletteWenge] at (4, -1) {\textbf{Max-Heap}:\\Ogni padre $\ge$ figli.\\Radice = Max Assoluto.};
+    \end{tikzpicture}
+\end{center}
+
+\section{Code di Priorità}
+Mantiene un insieme di elementi con chiavi (key, priorità).
+
+\subsection{Operazioni}
+\begin{itemize}
+    \item \texttt{Insert(S, x)}: $S = S \cup \{x\}$.
+    \item \texttt{Heap-Max(A)}: restituisce l'elemento massimo, $O(1)$.
+    \item \texttt{Heap-Extract-Max(A)}: rimuove e restituisce il massimo, $O(\log n)$.
+    \item \texttt{Heap-Increase-Key(A, i, k)}: aumenta il valore della chiave del nodo $i$ a $k$, $O(\log n)$.
+    \item \texttt{Max-Heap-Insert(A, key)}: inserisce una nuova chiave, $O(\log n)$.
+\end{itemize}

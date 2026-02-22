@@ -5,91 +5,91 @@
 \part{Lezione 14 (20/10/2025) }
 
 \section{Notazione Asintotica }
-La complessità $T(n)$ si esprime in \textbf{ordine di grandezza} , ignorando costanti moltiplicative e termini di ordine inferiore . [cite: 41]
+La complessità $T(n)$ si esprime in \textbf{ordine di grandezza}, ignorando costanti moltiplicative e termini di ordine inferiore.
 \begin{itemize}
-    \item $T(n) = 3n^2 + 2n + 5 \to$ Quadratica ($\Theta(n^2)$) 
-    \item $T(n) = 7n + 24 \to$ Lineare ($\Theta(n)$) 
-    \item $T(n) = 5 \to$ Costante ($\Theta(1)$) 
-    \item $T(n) = \log_3 n + 2 \to$ Logaritmica ($\Theta(\log n)$) 
+    \item $T(n) = 3n^2 + 2n + 5 \to$ Quadratica ($\Theta(n^2)$)
+    \item $T(n) = 7n + 24 \to$ Lineare ($\Theta(n)$)
+    \item $T(n) = 5 \to$ Costante ($\Theta(1)$)
+    \item $T(n) = \log_3 n + 2 \to$ Logaritmica ($\Theta(\log n)$)
 \end{itemize}
-Si usano funzioni di riferimento semplici $g(n)$ (es. $n^2$, $n$, $\log n$) per classificare $f(n) = T(n)$ . [cite: 42]
-\section{Notazione $\Theta$ (Theta) - Limite Stretto }
+Si usano funzioni di riferimento semplici $g(n)$ (es. $n^2$, $n$, $\log n$) per classificare $f(n) = T(n)$.
+\section{Notazione \texorpdfstring{$\Theta$}{Theta} (Theta) - Limite Stretto }
 % --- APPLICAZIONE STILE ---
 \begin{definition}[Notazione $\Theta$ (Theta)]
-$$ \Theta(g(n)) = \{ f(n) \mid \exists c_1, c_2, n_0 > 0 : \forall n \ge n_0, 0 \le c_1 g(n) \le f(n) \le c_2 g(n) \} $$
-Si dice "$f(n)$ è in Theta di $g(n)$" .
-$g(n)$ è un \textbf{limite asintotico stretto} per $f(n)$ . [cite: 44]
-Graficamente, da $n_0$ in poi, $f(n)$ è "intrappolata" tra $c_1 g(n)$ e $c_2 g(n)$ . [cite: 45]
-\begin{itemize}
-    \item Esempio: Selection Sort è $\Theta(n^2)$ . [cite: 46]
-    \item Esempio: $\frac{1}{2}n^2 - 2n \in \Theta(n^2)$ . [cite: 46]
-\end{itemize}
+    $$ \Theta(g(n)) = \{ f(n) \mid \exists c_1, c_2, n_0 > 0: \forall n \ge n_0, 0 \le c_1 g(n) \le f(n) \le c_2 g(n) \} $$
+    Si dice "$f(n)$ è in Theta di $g(n)$".
+    $g(n)$ è un \textbf{limite asintotico stretto} per $f(n)$.
+    Graficamente, da $n_0$ in poi, $f(n)$ è "intrappolata" tra $c_1 g(n)$ e $c_2 g(n)$.
+    \begin{itemize}
+        \item Esempio: Selection Sort è $\Theta(n^2)$.
+        \item Esempio: $\frac{1}{2}n^2 - 2n \in \Theta(n^2)$.
+    \end{itemize}
 \end{definition}
 
-\section{Notazione $O$ (O-grande) - Limite Superiore }
+\section{Notazione \texorpdfstring{$O$}{O} (O-grande) - Limite Superiore }
 % --- APPLICAZIONE STILE ---
 \begin{definition}[Notazione $O$ (O-grande)]
-$$ O(g(n)) = \{ f(n) \mid \exists c, n_0 > 0 : \forall n \ge n_0, 0 \le f(n) \le c g(n) \} $$
-Si dice "$f(n)$ è in O-grande di $g(n)$" .
-$g(n)$ è un \textbf{limite asintotico superiore} per $f(n)$ . [cite: 47]
-Graficamente, da $n_0$ in poi, $f(n)$ non cresce più velocemente di $c g(n)$ . [cite: 48]
-\begin{itemize}
-    \item Esempio: $f(n) = an^2 + bn + c \in O(n^2)$ . [cite: 49]
-    \item Esempio: $f(n) = an^2 + bn + c \in O(n^3)$ . [cite: 50]
-    \item Esempio: $f(n) = an^2 + bn + c \notin O(n)$ . [cite: 51]
-\end{itemize}
-Proprietà: $f(n) \in \Theta(g(n)) \implies f(n) \in O(g(n))$ .
+    $$ O(g(n)) = \{ f(n) \mid \exists c, n_0 > 0: \forall n \ge n_0, 0 \le f(n) \le c g(n) \} $$
+    Si dice "$f(n)$ è in O-grande di $g(n)$".
+    $g(n)$ è un \textbf{limite asintotico superiore} per $f(n)$.
+    Graficamente, da $n_0$ in poi, $f(n)$ non cresce più velocemente di $c g(n)$.
+    \begin{itemize}
+        \item Esempio: $f(n) = an^2 + bn + c \in O(n^2)$.
+        \item Esempio: $f(n) = an^2 + bn + c \in O(n^3)$.
+        \item Esempio: $f(n) = an^2 + bn + c \notin O(n)$.
+    \end{itemize}
+    Proprietà: $f(n) \in \Theta(g(n)) \implies f(n) \in O(g(n))$.
 \end{definition}
 
-\section{Notazione $\Omega$ (Omega) - Limite Inferiore }
+\section{Notazione \texorpdfstring{$\Omega$}{Omega} (Omega) - Limite Inferiore }
 % --- APPLICAZIONE STILE ---
 \begin{definition}[Notazione $\Omega$ (Omega)]
-$$ \Omega(g(n)) = \{ f(n) \mid \exists c, n_0 > 0 : \forall n \ge n_0, 0 \le c g(n) \le f(n) \} $$
-Si dice "$f(n)$ è in Omega di $g(n)$" .
-$g(n)$ è un \textbf{limite asintotico inferiore} per $f(n)$ . [cite: 52]
-Graficamente, da $n_0$ in poi, $f(n)$ non cresce più lentamente di $c g(n)$ . [cite: 53]
-\begin{itemize}
-    \item Esempio: $an^2 + bn + c \in \Omega(n^2)$ . [cite: 54]
-    \item Esempio: $an^2 + bn + c \in \Omega(n)$ . [cite: 54]
-    \item Esempio: $an^2 + bn + c \notin \Omega(n^3)$ . [cite: 55]
-\end{itemize}
-Proprietà: $f(n) \in \Theta(g(n)) \implies f(n) \in \Omega(g(n))$ .
+    $$ \Omega(g(n)) = \{ f(n) \mid \exists c, n_0 > 0: \forall n \ge n_0, 0 \le c g(n) \le f(n) \} $$
+    Si dice "$f(n)$ è in Omega di $g(n)$".
+    $g(n)$ è un \textbf{limite asintotico inferiore} per $f(n)$.
+    Graficamente, da $n_0$ in poi, $f(n)$ non cresce più lentamente di $c g(n)$.
+    \begin{itemize}
+        \item Esempio: $an^2 + bn + c \in \Omega(n^2)$.
+        \item Esempio: $an^2 + bn + c \in \Omega(n)$.
+        \item Esempio: $an^2 + bn + c \notin \Omega(n^3)$.
+    \end{itemize}
+    Proprietà: $f(n) \in \Theta(g(n)) \implies f(n) \in \Omega(g(n))$.
 \end{definition}
 
 \subsection{Teorema}
 % --- APPLICAZIONE STILE ---
 \begin{theorem}
-$$ f(n) \in \Theta(g(n)) \iff f(n) \in O(g(n)) \text{ e } f(n) \in \Omega(g(n)) $$
+    $$ f(n) \in \Theta(g(n)) \iff f(n) \in O(g(n)) \text{ e } f(n) \in \Omega(g(n)) $$
 \end{theorem}
 
 \section{Proprietà e Gerarchia}
 % --- APPLICAZIONE STILE ---
 \begin{observation}[Proprietà della Notazione Asintotica]
-\begin{itemize}
-    \item \textbf{Riflessività}: $f(n) \in \Theta(f(n))$, $f(n) \in O(f(n))$, $f(n) \in \Omega(f(n))$ . [cite: 56]
-    \item \textbf{Simmetria (Theta)}: $f(n) \in \Theta(g(n)) \iff g(n) \in \Theta(f(n))$ . [cite: 57]
-    \item \textbf{Trasposta (O/Omega)}: $f(n) \in O(g(n)) \iff g(n) \in \Omega(f(n))$ . [cite: 57]
-    \item \textbf{Transitività}: Vale per $O, \Omega, \Theta$. [cite: 58]
-    Es: $f_1 \in O(f_2)$ e $f_2 \in O(f_3) \implies f_1 \in O(f_3)$ . [cite: 59]
-    \item \textbf{Somma}: $f_1 \in O(g_1)$ e $f_2 \in O(g_2) \implies f_1+f_2 \in O(\max(g_1, g_2))$ . [cite: 60]
-    \item \textbf{Prodotto}: $f_1 \in O(g_1)$ e $f_2 \in O(g_2) \implies f_1 \cdot f_2 \in O(g_1 \cdot g_2)$ . [cite: 61]
-\end{itemize}
+    \begin{itemize}
+        \item \textbf{Riflessività}: $f(n) \in \Theta(f(n))$, $f(n) \in O(f(n))$, $f(n) \in \Omega(f(n))$.
+        \item \textbf{Simmetria (Theta)}: $f(n) \in \Theta(g(n)) \iff g(n) \in \Theta(f(n))$.
+        \item \textbf{Trasposta (O/Omega)}: $f(n) \in O(g(n)) \iff g(n) \in \Omega(f(n))$.
+        \item \textbf{Transitività}: Vale per $O, \Omega, \Theta$.
+        Es: $f_1 \in O(f_2)$ e $f_2 \in O(f_3) \implies f_1 \in O(f_3)$.
+        \item \textbf{Somma}: $f_1 \in O(g_1)$ e $f_2 \in O(g_2) \implies f_1+f_2 \in O(\max(g_1, g_2))$.
+        \item \textbf{Prodotto}: $f_1 \in O(g_1)$ e $f_2 \in O(g_2) \implies f_1 \cdot f_2 \in O(g_1 \cdot g_2)$.
+    \end{itemize}
 \end{observation}
 
 
 \begin{observation}[Equivalenza dei Logaritmi]
-Tutte le basi dei logaritmi sono asintoticamente equivalenti . [cite: 62]
-Dalla formula del cambio di base: $\log_a n = \frac{\log_b n}{\log_b a}$ . [cite: 63]
-Poiché $\frac{1}{\log_b a}$ è una costante , si ha $\Theta(\log_a n) = \Theta(\log_b n)$ . [cite: 64]
-Per questo motivo, si scrive genericamente $O(\log n)$ . [cite: 64]
+    Tutte le basi dei logaritmi sono asintoticamente equivalenti.
+    Dalla formula del cambio di base: $\log_a n = \frac{\log_b n}{\log_b a}$.
+    Poiché $\frac{1}{\log_b a}$ è una costante, si ha $\Theta(\log_a n) = \Theta(\log_b n)$.
+    Per questo motivo, si scrive genericamente $O(\log n)$.
 \end{observation}
 
 \subsection{Gerarchia degli ordini di grandezza }
 
 \begin{example}[Gerarchia di Crescita]
-Per $0 < h \le k$ e $1 < a < b$ :
-$$ \Theta(1) \subset \dots \subset \Theta(\log n) \subset \dots \subset \Theta(n^h) \subset \Theta(n^k) \subset \Theta(n^k \log n) \subset \dots \subset \Theta(a^n) \subset \Theta(b^n) \subset \dots $$
-Ordinando le funzioni in per ordine crescente:
-$1$ (costante), $4^5$ (costante) , $\log n$, $\log^2 n$, $n^{1/2}$ (o $\sqrt{n}$), $n$, $n \log n$, $n^4 - 7n^3 (\sim n^4)$, $n^5 - 5n^2 (\sim n^5)$, $2^n$, $3^n$. [cite: 65]
+    Per $0 < h \le k$ and $1 < a < b$:
+    $$ \Theta(1) \subset \dots \subset \Theta(\log n) \subset \dots \subset \Theta(n^h) \subset \Theta(n^k) \subset \Theta(n^k \log n) \subset \dots \subset \Theta(a^n) \subset \Theta(b^n) \subset \dots $$
+    Ordinando le funzioni in per ordine crescente:
+    $1$ (costante), $4^5$ (costante), $\log n$, $\log^2 n$, $n^{1/2}$ (o $\sqrt{n}$), $n$, $n \log n$, $n^4 - 7n^3 (\sim n^4)$, $n^5 - 5n^2 (\sim n^5)$, $2^n$, $3^n$.
 \end{example}
 \newpage

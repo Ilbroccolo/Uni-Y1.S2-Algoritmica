@@ -1,0 +1,117 @@
+% ===================================================================
+% FILE: Lezione26.tex
+% ===================================================================
+
+\part{Approfondimento: Limiti Inferiori alla Difficoltà di un Problema }
+
+\section{Limiti Inferiori alla Difficoltà di un Problema}
+
+Vogliamo stabilire quanto è "difficile" un problema $\mathcal{P}$ intrinsecamente, indipendentemente dall'algoritmo usato.
+
+\begin{definition}[Limite Inferiore]
+    Il \textbf{Limite Inferiore} $L(n)$ misura la difficoltà di un problema $\mathcal{P}$ in funzione della dimensione $n$ dell'input.
+    Rappresenta la complessità al \textbf{caso pessimo} del \textbf{miglior algoritmo possibile} che risolve $\mathcal{P}$.
+    \[ \forall \text{ algoritmo } A \text{ che risolve } \mathcal{P}, \quad T_A(n) \ge L(n) \quad (\text{nel caso pessimo}) \]
+    Ovvero, $L(n)$ è il minimo numero di operazioni necessarie per risolvere il caso pessimo.
+\end{definition}
+
+\subsection{Esempio Introduttivo: Ricerca}
+Consideriamo il problema $\mathcal{P}$: Ricerca di una chiave in un vettore \textbf{ordinato}.
+
+\begin{itemize}
+    \item \textbf{Approccio 1: Scansione Lineare}. Complessità $O(n)$.
+    Un algoritmo che risolve $\mathcal{P}$ fornisce un \textbf{Limite Superiore} alla difficoltà di $\mathcal{P}$.
+    \item \textbf{Approccio 2: Ricerca Binaria}. Complessità $O(\log n)$.
+    Migliora il limite superiore.
+    \item \textbf{Domanda:} Posso fare di meglio? Qual è il \textbf{Limite Inferiore} (la "pavimentazione") sotto il quale non posso scendere?
+\end{itemize}
+
+\section{Criteri per Stabilire i Limiti Inferiori}
+
+Esistono diverse tecniche per individuare $L(n)$.
+
+\subsection{1° Criterio: Dimensione dell'Input}
+Se la soluzione di un problema richiede, nel caso pessimo, l'esame di tutti i dati in ingresso, allora la dimensione dell'input $n$ è un limite inferiore.
+\[ L(n) = \Omega(n) \]
+Questo esclude la possibilità che si possa "fare meno" di leggere l'input.
+
+\begin{example}[Ricerca MAX in Vettore Non Ordinato]
+    Per trovare il massimo in un vettore non ordinato, devo necessariamente analizzare tutti gli $n$ elementi (altrimenti il massimo potrebbe essere proprio l'elemento saltato).
+    \begin{itemize}
+        \item \textbf{Limite Inferiore:} $L(n) = n$.
+        \item \textbf{Algoritmo noto:} Scansione Lineare, costo $O(n)$.
+    \end{itemize}
+    Poiché il costo dell'algoritmo ($n$) coincide con il limite inferiore ($n$), l'algoritmo di \textbf{Scansione Lineare è OTTIMO}.
+\end{example}
+
+\subsection{2° Criterio: Albero di Decisione}
+Questo criterio si applica a problemi risolvibili attraverso una sequenza di "decisioni" (es. confronti tra valori) che riducono via via lo spazio delle soluzioni possibili.
+
+\subsubsection{Struttura dell'Albero}
+Possiamo modellare l'esecuzione come un albero dove:
+\begin{itemize}
+    \item \textbf{Nodo Interno:} Rappresenta un confronto/decisione (es. $x > y$?).
+    \item \textbf{Foglia:} Rappresenta una possibile \textbf{soluzione} finale.
+    \item \textbf{Cammino Radice-Foglia:} Rappresenta una specifica esecuzione.
+    \item \textbf{Altezza dell'Albero:} Rappresenta il \textbf{caso pessimo} (il cammino più lungo).
+\end{itemize}
+
+\begin{theorem}[Limite Inferiore basato sulle Soluzioni]
+    Sia $SOL(n)$ il numero di possibili soluzioni distinte per un problema di dimensione $n$ (ovvero il numero di foglie dell'albero).
+    In un albero binario (o ternario), l'altezza $h$ deve soddisfare:
+    \[ h \ge \log_2(\#\text{foglie}) \]
+    Pertanto, il limite inferiore è dato dal logaritmo del numero delle possibili soluzioni:
+    \[ L(n) = \Omega(\log_2(SOL(n))) \]
+\end{theorem}
+
+\begin{observation}
+    L'algoritmo migliore al caso pessimo è quello che minimizza l'altezza dell'albero di decisione, ovvero quello che mantiene l'albero \textbf{bilanciato} (altezza logaritmica rispetto al numero di foglie).
+\end{observation}
+
+\subsubsection{Applicazione: Ricerca in Vettore Ordinato}
+Analizziamo il problema della ricerca di una chiave $k$ in un array ordinato $A[1..n]$.
+\begin{itemize}
+    \item \textbf{Possibili Soluzioni ($SOL(n)$):} L'elemento può trovarsi in una delle $n$ posizioni, oppure non esserci.
+    \[ \#\text{Soluzioni} = n + 1 \]
+    \item \textbf{Limite Inferiore:}
+    \[ L(n) = \log_2(n+1) \approx \log_2 n \]
+    \item \textbf{Confronto:} L'algoritmo \textbf{Ricerca Binaria} ha costo $O(\log n)$.
+\end{itemize}
+Poiché il costo dell'algoritmo coincide con il limite inferiore, la \textbf{Ricerca Binaria è OTTIMA}.
+
+\subsection{3° Criterio: Eventi Contabili}
+Se la ripetizione di un certo evento è indispensabile per risolvere il problema, allora:
+\[ L(n) = (\#\text{volte che si deve ripetere}) \times (\text{costo evento}) \]
+
+\begin{example}[Ricerca MAX in Array con Confronti]
+    Evento necessario: Un elemento, per non essere il massimo, deve "uscire perdente" da un confronto con un altro valore.
+    \begin{itemize}
+        \item Abbiamo $n$ candidati al massimo.
+        \item Alla fine deve rimanere 1 solo vincitore.
+        \item Devono esserci quindi $n-1$ "perdenti".
+        \item Ogni confronto elimina al massimo 1 candidato (il perdente).
+    \end{itemize}
+    Necessari almeno \textbf{$n-1$} confronti.
+    \[ L(n) = \Omega(n) \]
+\end{example}
+
+\section{Approfondimento: Limite Significativo}
+Non tutti i limiti inferiori sono utili. Un limite inferiore è utile solo se è "stretto", ovvero vicino alla complessità del miglior algoritmo conosciuto.
+
+\begin{observation}[Confronto tra Criteri: Ricerca Non Ordinata]
+    Consideriamo la ricerca di $k$ in un vettore \textbf{non ordinato}.
+    \begin{enumerate}
+        \item \textbf{Criterio Albero di Decisione:}
+        \[ \#\text{Soluzioni} = n+1 \implies L(n) = \Omega(\log n) \]
+        Questo limite è matematicamente vero, ma \textbf{non significativo}. Non esiste un algoritmo che risolva questo problema in $\log n$. È un limite troppo basso.
+
+        \item \textbf{Criterio Dimensione Input:}
+        Bisogna guardare tutti gli elementi per essere sicuri.
+        \[ L(n) = \Omega(n) \]
+    \end{enumerate}
+
+    \textbf{Conclusione:} Il limite derivato dalla dimensione dell'input ($n$) è più alto ("alza l'asticella") e coincide con il costo della Scansione Lineare ($O(n)$).
+    Quando Limite Inferiore e Superiore coincidono, il limite è \textbf{Significativo} e possiamo dire che l'algoritmo è \textbf{Ottimo}.
+\end{observation}
+
+\newpage

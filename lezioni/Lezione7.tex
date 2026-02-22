@@ -16,7 +16,7 @@ Gli appunti ne identificano tre tipi principali.
     Sono le più comuni negli algoritmi "Divide et Impera" (come Mergesort).
     Hanno una forma specifica:
     \[
-        T(n) = aT\left(\frac{n}{b}\right) + f(n)
+    T(n) = aT\left(\frac{n}{b}\right) + f(n)
     \]
     \begin{itemize}
         \item \textbf{$a$} è il numero di sotto-problemi in cui dividiamo il problema principale.
@@ -26,7 +26,7 @@ Gli appunti ne identificano tre tipi principali.
 \end{definition}
 
 \begin{enumerate}
-    \setcounter{enumi}{1} 
+    \setcounter{enumi}{1}
     \item \textbf{Relazioni di Ordine K:} Queste dipendono dai valori immediatamente precedenti, come $T(n-1)$, $T(n-2)$, ecc. (es. Fibonacci).
     \item \textbf{Caso Generale:} Una forma più complessa dove i sotto-problemi potrebbero non avere dimensioni uguali.
 \end{enumerate}
@@ -73,13 +73,13 @@ L'idea centrale è \textbf{confrontare due "forze"}:
             \item \textbf{Logica:} Il costo è dominato dalla ricorsione (dalle foglie).
             \item \textbf{Soluzione: $T(n) = \Theta(n^{\log_b a})$}.
         \end{itemize}
-        
+
         \item \textbf{Caso 2: $f(n)$ circa uguale} ($f(n) = \Theta(n^{\log_b a} \cdot \log^k n)$)
         \begin{itemize}
             \item \textbf{Logica:} Le forze sono bilanciate; il costo è lo stesso ad ogni livello.
             \item \textbf{Soluzione: $T(n) = \Theta(n^{\log_b a} \cdot \log^{k+1} n)$}. (Se $k=0$, la soluzione è $\Theta(n^{\log_b a} \cdot \log n)$).
         \end{itemize}
-        
+
         \item \textbf{Caso 3: $f(n)$ polinomialmente maggiore} ($f(n) = \Omega(n^{\log_b a + \epsilon})$)
         \begin{itemize}
             \item \textbf{Logica:} Il costo è dominato dal lavoro extra $f(n)$ (il collo di bottiglia).
@@ -151,7 +151,7 @@ L'idea centrale è \textbf{confrontare due "forze"}:
 
 \begin{observation}[Riepilogo della Lezione]
     Gli appunti della Lezione 23 introducono le \textbf{Relazioni di Ricorrenza} per analizzare $T(n)$ degli algoritmi ricorsivi. Si concentrano sulle \textbf{Relazioni Bilanciate} ($T(n) = aT(n/b) + f(n)$). Dopo aver elencato quattro metodi di risoluzione, si focalizzano sul \textbf{Master Theorem}.
-    
+
     Il teorema confronta $f(n)$ con lo "spartiacque" $n^{\log_b a}$ e definisce tre casi:
     \begin{enumerate}
         \item \textbf{Caso 1 ($f(n)$ minore):} Soluzione: $\Theta(n^{\log_b a})$.
